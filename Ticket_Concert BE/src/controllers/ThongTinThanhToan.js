@@ -1,0 +1,61 @@
+import { getAllThongTinThanhToan, getThongTinThanhToanByID, createThongTinThanhToan, updateThongTinThanhToan, deleteThongTinThanhToan } from '../models/ThongTinThanhToan.js';
+import { v4 as uuidv4 } from 'uuid';
+
+const getThongTinThanhToanData = (data) => ({
+    idNguoiDung: data.IDNguoiDung,
+    chuTaiKhoan: data.ChuTaiKhoan,
+    soTaiKhoan: data.SoTaiKhoan,
+    tenNganHang: data.TenNganHang,
+    chiNhanh: data.ChiNhanh,
+    loaiHinh: data.LoaiHinh
+});
+
+export const getThongTinThanhToan = async (req, res) => {
+    try {
+        const thongTinList = await getAllThongTinThanhToan();
+        res.json(thongTinList);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const getThongTinThanhToanByID = async (req, res) => {
+    try {
+        const thongTin = await getThongTinThanhToanByID(req.params.idThongTin);
+        if (thongTin) res.json(thongTin);
+        else res.status(404).json({ message: 'Không tìm thấy thông tin thanh toán' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const createThongTinThanhToan = async (req, res) => {
+    try {
+        const thongTinData = getThongTinThanhToanData(req.body);
+        const idThongTin = uuidv4();
+
+        const id = await createThongTinThanhToan(idThongTin, thongTinData);
+        res.status(201).json({ message: 'Thêm thông tin thanh toán thành công', id });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const updateThongTinThanhToan = async (req, res) => {
+    try {
+        const thongTinData = getThongTinThanhToanData(req.body);
+        await updateThongTinThanhToan(req.params.idThongTin, thongTinData);
+        res.json({ message: 'Cập nhật thông tin thanh toán thành công' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const deleteThongTinThanhToan = async (req, res) => {
+    try {
+        await deleteThongTinThanhToan(req.params.idThongTin);
+        res.json({ message: 'Xóa thông tin thanh toán thành công' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
