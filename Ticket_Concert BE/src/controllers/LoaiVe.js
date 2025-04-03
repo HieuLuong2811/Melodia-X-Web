@@ -1,4 +1,4 @@
-import { getAllLoaiVe, getLoaiVeByID, createLoaiVe, updateLoaiVe, deleteLoaiVe } from '../models/LoaiVe.js';
+import { getAllLoaiVe, getLoaiVeByID, getLoaiVeByIDSuatDien, createLoaiVe, updateLoaiVe, deleteLoaiVe } from '../models/LoaiVe.js';
 import { v4 as uuidv4 } from 'uuid';
 
 // Hàm lấy dữ liệu từ request body
@@ -32,6 +32,16 @@ export const getLoaiVeByIDHandler = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const getLoaiVeByIDSuatDien = async (req, res) => {
+    try {
+        const suatdien = await getLoaiVeByIDSuatDien(req.params.idSuatDien);
+        res.json(suatdien)
+        console.log(suatdien);
+    }catch(error){
+        res.status(500).json({massage : error.massage});
+    }
+}
 
 // Thêm loại vé mới
 export const createLoaiVeHandler = async (req, res) => {

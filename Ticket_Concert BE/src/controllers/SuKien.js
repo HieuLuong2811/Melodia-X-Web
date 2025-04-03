@@ -28,24 +28,72 @@ export const getSuKien = async (req, res) => {
     }
 };
 
-// Lấy sự kiện theo ID
-export const getSuKienByID = async (req, res) => {
+export const getSuKienById = async (req, res) => {
     try {
-        const suKien = await getSuKienById(req.params.idSuKien);
-        if (suKien) res.json(suKien);
-        else res.status(404).json({ message: "Sự kiện không tồn tại" });
+        const event = await getSuKienById(req.params.idSuKien)
+
+        if (event.length === 0) {
+            return res.status(404).json({ message: "Không tìm thấy sự kiện!" });
+        }
+
+
+        const suKienMap = {};
+
+        event.forEach(row => {
+            const { IDSuKien, TenSuKien, AnhNen, DiaDiem, ThongTinSuKien, LogoBanToChuc, TenBanToChuc, ThongTinBanToChuc, IDSuatDien, ThoiGianBatDau, ThoiGianKetThuc, IDLoaiVe, TenVe, GiaVe } = row;
+
+            if (!suKienMap[IDSuKien]) {
+                suKienMap[IDSuKien] = {
+                    IDSuKien,
+                    TenSuKien,
+                    AnhNen,
+                    DiaDiem,
+                    ThongTinSuKien,
+                    LogoBanToChuc,
+                    TenBanToChuc,
+                    ThongTinBanToChuc,
+                    suatDiens: {}
+                };
+            }
+
+
+            if (!suKienMap[IDSuKien].suatDiens[IDSuatDien]) {
+                suKienMap[IDSuKien].suatDiens[IDSuatDien] = {
+                    IDSuatDien,
+                    ThoiGianBatDau,
+                    ThoiGianKetThuc,
+                    loaiVes: []
+                };
+            }
+
+
+            suKienMap[IDSuKien].suatDiens[IDSuatDien].loaiVes.push({
+                IDLoaiVe,
+                TenVe,
+                GiaVe
+            });
+        });
+
+
+        const suKienArray = Object.values(suKienMap).map(suKien => ({
+            ...suKien,
+            suatDiens: Object.values(suKien.suatDiens)
+        }));
+
+        return res.json(suKienArray[0]); 
     } catch (error) {
-        res.status(500).json({ message: "Lỗi lấy sự kiện", error: error.message });
+        console.error(error);
+        return res.status(500).json({ message: "Lỗi server" });
     }
 };
 
 // Thêm mới sự kiện
-export const createSuKienController = async (req, res) => {
+export const createSuKien = async (req, res) => {
     try {
         const suKienData = getSuKienData(req.body);
-        suKienData.idSuKien = uuidv4().substring(0,10); 
+        const idSuKien = uuidv4(); 
 
-        const id = await createSuKien(suKienData);
+        const id = await createSuKien(idSuKien, suKienData);
         res.status(201).json({ message: "Tạo sự kiện thành công", id });
     } catch (error) {
         res.status(500).json({ message: "Lỗi tạo sự kiện", error: error.message });
@@ -53,7 +101,7 @@ export const createSuKienController = async (req, res) => {
 };
 
 // Cập nhật sự kiện
-export const updateSuKienController = async (req, res) => {
+export const updateSuKien = async (req, res) => {
     try {
         const suKienData = getSuKienData(req.body);
         await updateSuKien(req.params.idSuKien, suKienData);
@@ -64,7 +112,7 @@ export const updateSuKienController = async (req, res) => {
 };
 
 // Xóa sự kiện
-export const deleteSuKienController = async (req, res) => {
+export const deleteSuKien = async (req, res) => {
     try {
         await deleteSuKien(req.params.idSuKien);
         res.json({ message: "Xóa sự kiện thành công" });

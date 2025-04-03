@@ -33,7 +33,7 @@ export const getLoaiSuKienByID = async (req, res) => {
 export const createLoaiSuKien = async (req, res) => {
     try {
         const loaiSuKienData = getLoaiSuKienData(req.body);
-        const idLoaiSuKien = uuidv4().substring(0, 10);
+        const idLoaiSuKien = uuidv4();
         await createLoaiSuKien(idLoaiSuKien, loaiSuKienData);
         res.status(201).json({ message: 'Tạo loại sự kiện thành công', id: idLoaiSuKien });
     } catch (error) {

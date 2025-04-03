@@ -58,6 +58,7 @@ export const fetchAllHoaDonChiTiet = async () => {
                 ) AS chiTietHoaDon
             FROM HoaDonMuaVe h
             LEFT JOIN ChiTietHoaDon c ON h.IDHoaDon = c.IDHoaDon
+            INNER JOIN NguoiDung
             GROUP BY h.IDHoaDon;
         `);
         return rows;

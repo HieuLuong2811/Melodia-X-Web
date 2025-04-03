@@ -20,6 +20,19 @@ export const getLoaiVeByID = async (idLoaiVe) => {
     }
 };
 
+export const getLoaiVeByIDSuatDien = async (idSuatDien) => {
+    try {
+        const [rows] = await pool.query(
+            "SELECT LV.IDLoaiVe, SD.IDSuatDien, LV.TenVe, LV.AnhVe, LV.GiaVe, LV.ThongTinVe, SD.ThoiGianBatDau, SD.ThoiGianKetThuc FROM LoaiVe LV INNER JOIN SuatDien SD ON LV.IDSuatDien = SD.IDSuatDien WHERE LV.IDSuatDien = ?", 
+            [idSuatDien]
+        );
+        return rows; 
+    } catch (error) {
+        throw error;
+    }
+};
+
+
 // Thêm mới loại vé
 export const createLoaiVe = async (idLoaiVe, loaiVeData) => {
     try {

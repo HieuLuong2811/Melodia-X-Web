@@ -35,7 +35,7 @@ export const getSuatDienByID = async (req, res) => {
 export const createSuatDien = async (req, res) => {
     try {
         const suatDienData = getSuatDienData(req.body);
-        const idSuatDien = uuidv4().substring(0, 10);
+        const idSuatDien = uuidv4();
         await createSuatDien(idSuatDien, suatDienData);
         res.status(201).json({ message: 'Tạo suất diễn thành công', id: idSuatDien });
     } catch (error) {
