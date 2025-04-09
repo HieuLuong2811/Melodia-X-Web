@@ -1,26 +1,47 @@
-import { findUserByEmail } from "../models/Login";
+// controllers/LoginController.js
+import { findUserByEmail } from "../models/Login.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const loginUser = async (req, res) => {
-  try {
-    const { Email, MatKhau } = req.body;
-    if (!Email || !MatKhau) {
-      return res.status(400).json({ error: "Email và mật khẩu không được để trống" });
-    }
+    try {
+        const { Email, MatKhau } = req.body;
+        console.log("Dữ liệu nhận được:", { Email, MatKhau }); // Thêm dòng này
 
-   
-    const user = await findUserByEmail(Email);
-    const isValid = bcrypt.compare(MatKhau, user.MatKhau);
+        if (!Email || !MatKhau) {
+            return res.status(400).json({ error: "Email và mật khẩu không được để trống" });
+        }
 
-    if (!user || !isValid) {
-      return res.status(401).json({ error: "Sai email hoặc mật khẩu" });
-    }
+        const user = await findUserByEmail(Email);
+        if (!user) {
+            return res.status(401).json({ error: "Sai email hoặc mật khẩu" });
+        }
+        
+        console.log("User found:", user);
+        const isValid = await bcrypt.compare(MatKhau, user.MatKhau);
+        console.log("Kết quả so sánh mật khẩu:", isValid);
 
-    const token = jwt.sign({ IDNguoiDung: user.IDNguoiDung, QuyenHan : user.QuyenHan }, process.env.JWT_SECRET, { expiresIn: "7d" });
+        if (!isValid) {
+            return res.status(401).json({ error: "Sai email hoặc mật khẩu" });
+        }
 
-    res.json({ token, userId: user.IDNguoiDung, avatar : user.HinhAnh , name: user.TenNguoiDung });
+        const token = jwt.sign(
+            { IDNguoiDung: user.IDNguoiDung, QuyenHan: user.QuyenHan },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
+
+        return res.json({
+            token,
+            userId: user.IDNguoiDung,
+            avatar: user.HinhAnh,
+        });
     } catch (error) {
-    res.status(500).json({ error: "Lỗi khi đăng nhập" });
-  }
+        console.error("Lỗi khi đăng nhập:", error);
+        return res.status(500).json({ error: "Lỗi khi đăng nhập" });
+    }
 };
+  

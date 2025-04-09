@@ -1,16 +1,18 @@
 // controllers/NguoiDungController.js
 import { getAllNguoiDung, getNguoiDungByID, createNguoiDung, updateNguoiDung, deleteNguoiDung } from '../models/NguoiDung.js';
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
 
 const getNguoiDungData = (data) => ({
     hinhAnh: data.HinhAnh || null,
     tenNguoiDung: data.TenNguoiDung,
     email: data.Email,
-    soDienThoai: data.SoDienThoai,
+    soDienThoai: data.SoDienThoai || null,
     gioiTinh: data.GioiTinh || null,
     ngaySinh: data.NgaySinh || null,
     matKhau: data.MatKhau,
-    quyenHan: data.QuyenHan || null
+    quyenHan: data.QuyenHan || 'user',
+    trangThai: data.TrangThai || 'active'
 });
 
 export const getNguoiDung = async (req, res) => {
@@ -22,7 +24,7 @@ export const getNguoiDung = async (req, res) => {
     }
 };
 
-export const getNguoiDungByID = async (req, res) => {
+export const getNguoiDungById = async (req, res) => {
     try {
         const user = await getNguoiDungByID(req.params.idNguoiDung);
         if (user) res.json(user);
@@ -37,6 +39,9 @@ export const createNguoiDung = async (req, res) => {
         const nguoiDungData = getNguoiDungData(req.body);
         const idNguoiDung = uuidv4();
 
+     
+        nguoiDungData.matKhau = await bcrypt.hash(nguoiDungData.matKhau, 10);
+
         const id = await createNguoiDung(idNguoiDung, nguoiDungData);
         res.status(201).json({ message: 'Tạo người dùng thành công', id });
     } catch (error) {
@@ -47,6 +52,12 @@ export const createNguoiDung = async (req, res) => {
 export const updateNguoiDung = async (req, res) => {
     try {
         const nguoiDungData = getNguoiDungData(req.body);
+
+        // Nếu có mật khẩu mới, băm nó
+        if (nguoiDungData.matKhau) {
+            nguoiDungData.matKhau = await bcrypt.hash(nguoiDungData.matKhau, 10);
+        }
+
         await updateNguoiDung(req.params.idNguoiDung, nguoiDungData);
         res.json({ message: 'Cập nhật người dùng thành công' });
     } catch (error) {

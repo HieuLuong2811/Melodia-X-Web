@@ -1,5 +1,5 @@
 import express from 'express';
-import { getNguoiDung, getNguoiDungByID, createNguoiDung, updateNguoiDung, deleteNguoiDung } from '../controllers/NguoiDung.js';
+import { getNguoiDung, getNguoiDungById, createNguoiDung, updateNguoiDung, deleteNguoiDung } from '../controllers/NguoiDung.js';
 import {authenticate, authorize} from "../Middleware/Authen"
 const router = express.Router();
 
@@ -10,13 +10,13 @@ router.get('/NguoiDungs/:idNguoiDung', authenticate, (req, res, next) => {
         return next();
     }
     return res.status(403).json({ message: "Không có quyền truy cập!" });
-}, getNguoiDungByID);
+}, getNguoiDungById);
 
 
 router.post('/NguoiDungs', createNguoiDung);
 
 router.put('/NguoiDungs/:idNguoiDung', authenticate, (req, res, next) => {
-    if (req.user.QuyenHan === "Admin" || req.user.userId === req.params.idNguoiDung) {
+    if (req.user.QuyenHan === "Admin" || req.user.userId === req.params.IDNguoiDung) {
         return next();
     }
     return res.status(403).json({ message: "Không có quyền chỉnh sửa!" });

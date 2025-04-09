@@ -1,4 +1,4 @@
-import { getAllLoaiVe, getLoaiVeByID, getLoaiVeByIDSuatDien, createLoaiVe, updateLoaiVe, deleteLoaiVe } from '../models/LoaiVe.js';
+import { getAllLoaiVe, getLoaiVeByID, getLoaiVeByIDSuatDien, getVeDaMuaByUserId, createLoaiVe, updateLoaiVe, deleteLoaiVe } from '../models/LoaiVe.js';
 import { v4 as uuidv4 } from 'uuid';
 
 // Hàm lấy dữ liệu từ request body
@@ -8,8 +8,7 @@ const getLoaiVeData = (data) => ({
     AnhVe: data.AnhVe || null,
     GiaVe: data.GiaVe,
     SoLuongVe: data.SoLuongVe,
-    ThongTinVe: data.ThongTinVe || null,
-    TrangThai: data.TrangThai || 'Còn vé'
+    ThongTinVe: data.ThongTinVe || null
 });
 
 // Lấy tất cả loại vé
@@ -37,7 +36,6 @@ export const getLoaiVeByIDSuatDien = async (req, res) => {
     try {
         const suatdien = await getLoaiVeByIDSuatDien(req.params.idSuatDien);
         res.json(suatdien)
-        console.log(suatdien);
     }catch(error){
         res.status(500).json({massage : error.massage});
     }
@@ -78,3 +76,22 @@ export const deleteLoaiVeHandler = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+
+export const getVeDaMuaByUserId = async (req, res) => {
+    try {
+      const { idNguoiDung } = req.params;
+      const veDaMua = await getVeDaMuaByUserId(idNguoiDung);
+      
+      res.status(200).json({
+        success: true,
+        data: veDaMua
+      });
+    } catch (error) {
+      console.error('Lỗi khi lấy vé đã mua:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Lỗi server. Không thể lấy dữ liệu vé đã mua.'
+      });
+    }
+  };

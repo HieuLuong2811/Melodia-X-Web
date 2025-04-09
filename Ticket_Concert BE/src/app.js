@@ -16,6 +16,8 @@ import authRoutes from './routers/login.js';
 import SuatDienRouters from './routers/SuatDien.js';
 import HoaDonRouters from './routers/HoaDonMuaVe.js';
 import ChiTietHoaDonRouters from './routers/ChiTietHoaDon.js';
+import emailRoutes from './routers/emailRoutes.js';
+import dashboardAdmin from './routers/dashboardRoutes.js'
 
 // Cấu hình middleware
 app.use(cors());
@@ -33,8 +35,10 @@ app.use('/api', authRoutes);
 app.use('/api', ChiTietHoaDonRouters);
 app.use('/api', HoaDonRouters);
 app.use('/api', SuatDienRouters);
+app.use('/api', emailRoutes);
+app.use('/api', dashboardAdmin);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
     console.log(`✅ Server đang chạy trên http://localhost:${PORT}`);

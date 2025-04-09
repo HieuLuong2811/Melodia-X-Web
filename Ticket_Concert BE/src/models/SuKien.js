@@ -27,6 +27,36 @@ export const getAllSuKien = async () => {
     }
 };
 
+export const GetSuKienHaveVideo = async () => {
+    
+}
+
+export const getSuKienChiTietById = async (idSuKien) => {
+    const sql = `
+        SELECT 
+            sk.IDSuKien,
+            sk.TenSuKien,
+            sk.DiaDiem,
+            sk.ThongTinSuKien,
+            sk.TrangThaiSuKien,
+            sk.IDLoaiSuKien,
+            lsk.TenLoai AS TenLoaiSuKien,
+            sk.IDNguoiDung,
+            sk.Logo,
+            sk.AnhNen,
+            sk.LogoBanToChuc,
+            sk.TenBanToChuc,
+            sk.ThongTinBanToChuc,
+            sk.Video
+        FROM SuKien sk
+        JOIN LoaiSuKien lsk ON sk.IDLoaiSuKien = lsk.IDLoaiSuKien
+        WHERE sk.IDSuKien = ?`;
+
+    const [rows] = await pool.query(sql, [idSuKien]);
+    return rows[0];
+};
+
+
 // Lấy sự kiện theo ID
 export const getSuKienById = async (idSuKien) => {
     const sql = `
@@ -41,15 +71,28 @@ export const getSuKienById = async (idSuKien) => {
     return rows; 
 };
 
-// Thêm mới sự kiện
-export const createSuKien = async (idSuKien, suKien) => {
-    const sukienData = getSuKiendata(suKien);
 
+export const createSuKien = async (idSuKien, data) => {
+    const values = [
+        idSuKien,
+        data.idLoaiSuKien,
+        data.idNguoiDung,
+        data.logo,
+        data.anhNen,
+        data.tenSuKien,
+        data.diaDiem,
+        data.thongTinSuKien,
+        data.trangThaiSuKien || 'Chờ xác nhận',
+        data.logoBanToChuc,
+        data.tenBanToChuc,
+        data.thongTinBanToChuc,
+        data.video
+    ];
     const [result] = await pool.query(
         `INSERT INTO SuKien 
-        (IDSuKien, IDLoaiSuKien, IDNguoiDung, Logo, AnhNen, TenSuKien, DiaDiem, ThongTinSuKien, TrangThaiSuKien, LogoBanToChuc, TenBanToChuc, ThongTinBanToChuc)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
-        [idSuKien, ...sukienData]
+        (IDSuKien, IDLoaiSuKien, IDNguoiDung, Logo, AnhNen, TenSuKien, DiaDiem, ThongTinSuKien, TrangThaiSuKien, LogoBanToChuc, TenBanToChuc, ThongTinBanToChuc, Video)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+        values
     );
     return idSuKien;
 };
@@ -76,3 +119,5 @@ export const deleteSuKien = async (id) => {
         throw error;
     }
 };
+
+
