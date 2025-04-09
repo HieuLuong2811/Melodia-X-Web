@@ -1,0 +1,378 @@
+#banner {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+}
+
+.bg-1 {
+    background-color: rgb(47, 48, 51) !important; 
+}
+
+.bg-2 {
+    background-color: rgb(56, 56, 61);
+}
+
+.text-gray {
+    color: rgb(166, 166, 176);
+}
+
+.bg-pink {
+    color: rgb(255, 66, 79);
+    background-color: rgb(255, 184, 188);
+    border-radius: 12px;
+    padding: 4px 8px;
+    width: max-content;
+}
+
+.event-details img{
+    margin-bottom: 10px;
+}
+
+.text-success {
+    color: rgb(45, 194, 117) !important;
+}
+
+.event-details {
+    height: 500px;
+    overflow: hidden;
+    position: relative;
+    transition: height 0.5s ease;
+  }
+  
+  .event-details.expanded {
+    height: max-content;
+  }
+  
+  .event-details::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  
+  .event-details.expanded::after {
+    opacity: 0;
+  }
+  
+
+
+.collapse-content {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.5s ease-in-out;
+  }
+  
+  .collapse-content.show {
+    border-radius: 10px;
+    max-height: max-content;
+}
+
+.event-details ul li {
+    display: flex;
+    align-items: center;
+}
+body {
+    font-family: Inter, sans-serif;
+    zoom: 0.9 !important;
+}
+
+.title {
+    color: #FFF;
+    font-size: 20px;
+    background: linear-gradient(rgb(39, 39, 42) 48.04%, rgb(0, 0, 0) 100%);
+}
+
+#date-text {
+    color: rgb(45, 194, 117);
+    font-weight: bold;
+    font-size: 15px;
+}
+
+#banner {
+    width: 100%;
+    height: max-content;
+    padding-block: 2rem;
+    padding-inline: 1rem;
+    background: linear-gradient(rgb(39, 39, 42) 48.04%, rgb(0, 0, 0) 100%);
+    color: rgb(255, 255, 255);
+}
+
+
+.text-wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: rgb(56, 56, 61);
+    height: 415px !important;
+    justify-content: space-between;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    flex: 1 1 0%;
+    background-color: rgb(56, 56, 61);
+    position: relative;
+    padding: 1.875rem;
+}
+
+.img-wrapper {
+    flex: 2 0 0%;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    overflow: hidden;
+    background: linear-gradient(rgb(39, 39, 42) 48.04%, rgb(0, 0, 0) 100%);
+}
+
+.img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+}
+label {
+    color: #000;
+}
+/* Circles */
+#circle1, #circle2 {
+    background-color: rgb(39, 39, 42);
+    position: absolute;
+    z-index: 1;
+    right: 0;
+    width: 3.75rem;
+    height: 3.75rem;
+}
+
+#circle1 {
+    top: 0px;
+    border-bottom-right-radius: 50%;
+    border-bottom-left-radius: 50%;
+    transform: translate(1.875rem, -1.875rem);
+
+}
+
+#circle2 {
+    bottom: 0px;
+    transform: translate(1.875rem, 1.875rem);
+    border-top-right-radius: 50%;
+    background-color: rgb(2, 2, 3);
+    border-top-left-radius: 50%;
+}
+
+/* Vertical dashed lines */
+.vertical-dashed {
+    position: absolute;
+    width: 4px;
+    height: 100%;
+    color: gray !important;
+    z-index: 0;
+}
+
+.vertical-dashed:first-of-type {
+   right: -2px;
+   top: 10px;
+
+}
+
+.vertical-dashed:last-of-type {
+    right: -2px;
+    bottom: -370px;
+}
+
+.icon {
+    margin-right: 10px;
+}
+#vertical-dashed, #vertical-dashed-2 {
+    display: none;
+}
+#buynow-btn {
+    background-color: #2DC275;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+.img-wrapper img {
+    width: 100%;    
+    height: 100%;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+
+
+/* Container for event information */
+.event-info {
+    display: flex;
+    padding: 20px 50px;
+    gap: 10px;
+    background-color: #f1f2f3;
+    justify-content: space-between;
+    font-family: Arial, sans-serif;
+}
+
+/* Section Titles */
+.event-info h2 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    border-bottom: 2px solid #f2f2f2;
+    padding-bottom: 10px;
+}
+
+/* Event Intro Section */
+.event-intro {
+    padding: 30px;
+    min-height: 350px;
+}
+
+.event-details h3 {
+    font-size: 18px;
+    color: #2DC275;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.event-details p {
+    font-size: 16px;
+    margin: 5px 0;
+    color: #555;
+}
+
+.event-details ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.event-details ul li {
+    font-size: 15px;
+    margin: 8px 0;
+    color: #555;
+}
+
+.event-details ul li strong {
+    color: #333;
+}
+
+.event-details ul li::before {
+    content: '✦';
+    color: #2DC275;
+    margin-right: 10px;
+}
+
+/* Ticket Info Section */
+.ticket-info {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+}
+
+.ticket-section p {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.ticket-pricing {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ticket-type {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    font-size: 15px;
+    color: #555;
+}
+
+.mt-3 {
+    padding-top: 1rem;
+    border-top: 1px solid #ccc;
+}
+
+.btn-success {
+    background: rgb(45, 194, 117) !important;
+    border-color: #31ce36 !important;
+    font-weight: bold !important;
+}
+
+.btn-success:hover {
+    background: #FFF !important;
+    color: #000 !important;
+    border-color: #FFF !important;
+}
+/* Buy Now Button */
+.buy-now {
+    background-color: #2DC275;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.buy-now:hover {
+    background-color: #28a865;
+}
+.price {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.ticket-modal {
+    position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ticket-modal .container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 10px;
+    min-width: 300px;
+}
+
+.close-btn {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 25px;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

@@ -1,0 +1,24 @@
+img{
+    display: none !important; 
+}
+
+video {
+  display: none !important;
+}
+
+.text-center img, .text-center video {
+    display: block !important;
+}
+
+.logo-upload, .background-upload {
+    height: 430px;
+    background-color: #64646d;
+  }
+  .logoOrganizer-upload {
+    height: 250px; 
+    background-color: #64646d;
+
+  }
+  
+  
+  
