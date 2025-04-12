@@ -9,7 +9,6 @@ dotenv.config();
 export const loginUser = async (req, res) => {
     try {
         const { Email, MatKhau } = req.body;
-        console.log("Dữ liệu nhận được:", { Email, MatKhau }); // Thêm dòng này
 
         if (!Email || !MatKhau) {
             return res.status(400).json({ error: "Email và mật khẩu không được để trống" });
@@ -20,9 +19,7 @@ export const loginUser = async (req, res) => {
             return res.status(401).json({ error: "Sai email hoặc mật khẩu" });
         }
         
-        console.log("User found:", user);
         const isValid = await bcrypt.compare(MatKhau, user.MatKhau);
-        console.log("Kết quả so sánh mật khẩu:", isValid);
 
         if (!isValid) {
             return res.status(401).json({ error: "Sai email hoặc mật khẩu" });

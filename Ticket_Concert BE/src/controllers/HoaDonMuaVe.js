@@ -42,7 +42,6 @@ export const getHoaDonByID = async (req, res) => {
     }
 };
 
-
 // tạo hóa đơn và chi tiết hóa đơn
 export const createHoaDonWithDetails = async (req, res) => {
     try {

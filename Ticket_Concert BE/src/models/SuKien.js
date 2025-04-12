@@ -20,6 +20,15 @@ const getSuKiendata = (suKien) => {
 // Lấy tất cả sự kiện
 export const getAllSuKien = async () => {
     try {
+        const [rows] = await pool.query("SELECT * FROM SuKien WHERE TrangThaiSuKien in ('Đã xác nhận', 'Chưa bắt đầu', 'Đang diễn ra', 'Hoàn thành')");
+        return rows;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getAllSuKienAdmin = async () => {
+    try {
         const [rows] = await pool.query("SELECT * FROM SuKien");
         return rows;
     } catch (error) {
@@ -71,6 +80,15 @@ export const getSuKienById = async (idSuKien) => {
     return rows; 
 };
 
+export const getSuKienByIdUser = async (idNguoiDung) => {
+    const sql = `
+       select * from SuKien where IDNguoiDung = ?`;
+
+    const [rows] = await pool.query(sql, [idNguoiDung]);
+
+    return rows;
+};
+
 
 export const createSuKien = async (idSuKien, data) => {
     const values = [
@@ -120,4 +138,13 @@ export const deleteSuKien = async (id) => {
     }
 };
 
-
+export const DuyetSuKien = async (idSuKien) => {
+    try{
+        const sql = "UPDATE SuKien SET TrangThaiSuKien = 'Đã xác nhận' WHERE IDSuKien = ?";
+        const [result] = await pool.query(sql, [idSuKien]);
+        console.log(`DuyetSuKien: affectedRows = ${result.affectedRows}, idSuKien = ${idSuKien}`);
+        return result.affectedRows[0];
+    }catch (error) {
+        throw error;
+    }
+}

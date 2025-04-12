@@ -11,9 +11,9 @@ export const getAllThongTinThanhToan = async () => {
 };
 
 // Lấy thông tin thanh toán theo ID
-export const getThongTinThanhToanByID = async (idThongTin) => {
+export const getThongTinThanhToanByID = async (idNguoiDung) => {
     try {
-        const [rows] = await pool.execute('SELECT * FROM ThongTinThanhToan WHERE IDThongTin = ?', [idThongTin]);
+        const [rows] = await pool.execute('SELECT * FROM ThongTinThanhToan WHERE IDNguoiDung = ?', [idNguoiDung]);
         return rows.length ? rows[0] : null;
     } catch (error) {
         throw error;

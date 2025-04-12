@@ -21,7 +21,7 @@ export const getThongTinThanhToan = async (req, res) => {
 
 export const getThongTinThanhToanByID = async (req, res) => {
     try {
-        const thongTin = await getThongTinThanhToanByID(req.params.idThongTin);
+        const thongTin = await getThongTinThanhToanByID(req.params.idNguoiDung);
         if (thongTin) res.json(thongTin);
         else res.status(404).json({ message: 'Không tìm thấy thông tin thanh toán' });
     } catch (error) {

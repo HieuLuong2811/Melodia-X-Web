@@ -1,5 +1,5 @@
 // controllers/suKien.js
-import { getAllSuKien, getSuKienById, createSuKien, updateSuKien, deleteSuKien, getSuKienChiTietById } from '../models/SuKien.js';
+import { getAllSuKien, getAllSuKienAdmin, DuyetSuKien, getSuKienById, getSuKienByIdUser ,createSuKien, updateSuKien, deleteSuKien, getSuKienChiTietById } from '../models/SuKien.js';
 import { v4 as uuidv4 } from 'uuid';
 import { createSuatDien } from '../models/SuatDien.js'; 
 import { createLoaiVe } from '../models/LoaiVe.js';
@@ -25,7 +25,6 @@ export const createSuKienlist = async (req, res) => {
     danhSachSuKien,
     danhSachSuatDien,
     danhSachLoaiVe,
-    danhSachThanhToan,
   } = req.body;
 
   try {
@@ -80,26 +79,14 @@ export const createSuKienlist = async (req, res) => {
           GiaVe: ve.GiaVe,
           SoLuongVe: ve.SoLuongVe,
           ThongTinVe: ve.ThongTinVe || null,
-          TrangThai: ve.TrangThai || 'Còn vé',
+          TrangThai: ve.TrangThai || 'Còn vé'
         };
         await createLoaiVe(IDLoaiVe, loaiVeData);
       })
     );
 
-    const thanhToan = danhSachThanhToan[0];
-    const IDThongTin = uuidv4();
-    const thanhToanData = {
-      idNguoiDung: suKien.IDNguoiDung, 
-      chuTaiKhoan: thanhToan.ChuTaiKhoan,
-      soTaiKhoan: thanhToan.SoTaiKhoan,
-      tenNganHang: thanhToan.TenNganHang,
-      chiNhanh: thanhToan.ChiNhanh,
-      loaiHinh: thanhToan.LoaiHinh,
-    };
-    await createThongTinThanhToan(IDThongTin, thanhToanData);
-
     res.status(201).json({
-      message: 'Sự kiện, suất diễn, loại vé và thông tin thanh toán đã được tạo thành công!',
+      message: 'Tạo sự kiện thành công',
       IDSuKien,
     });
   } catch (error) {
@@ -113,8 +100,6 @@ export const createSuKienlist = async (req, res) => {
 
 export default createSuKien ;
 
-
-// Lấy tất cả sự kiện
 export const getSuKien = async (req, res) => {
     try {
         const suKiens = await getAllSuKien();
@@ -122,6 +107,15 @@ export const getSuKien = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Lỗi lấy danh sách sự kiện", error: error.message });
     }
+};
+
+export const getSuKienAdmin = async (req, res) => {
+  try {
+      const suKiens = await getAllSuKienAdmin();
+      res.json(suKiens);
+  } catch (error) {
+      res.status(500).json({ message: "Lỗi lấy danh sách sự kiện", error: error.message });
+  }
 };
 
 export const getSuKienById = async (req, res) => {
@@ -196,6 +190,25 @@ export const updateSuKien = async (req, res) => {
     }
 };
 
+export const DuyetSuKienControllers = async (req, res) => {
+  try {
+    const idSuKien = req.params.idSuKien;
+    if (!idSuKien) {
+      return res.status(400).json({ message: "Thiếu ID sự kiện" });
+    }
+
+    const affectedRows = await DuyetSuKien(idSuKien);
+    if (affectedRows === 0) {
+      return res.status(404).json({ message: `Không tìm thấy sự kiện với ID: ${idSuKien}` });
+    }
+
+    res.json({ message: "Duyệt sự kiện thành công" });
+  } catch (error) {
+    console.error(`Lỗi khi duyệt sự kiện ${req.params.idSuKien}:`, error);
+    res.status(500).json({ message: `Lỗi khi duyệt sự kiện: ${error.message}` });
+  }
+};
+
 // Xóa sự kiện
 export const deleteSuKien = async (req, res) => {
     try {
@@ -221,4 +234,20 @@ export const getSuKienChiTiet = async (req, res) => {
         console.error("Lỗi khi lấy chi tiết sự kiện:", error);
         res.status(500).json({ message: "Lỗi server" });
     }
+};
+
+export const getSuKienByIdUser = async (req, res) => {
+  const { idNguoiDung } = req.params;
+  try {
+      const suKien = await getSuKienByIdUser(idNguoiDung);
+
+      if (!suKien) {
+          return res.status(404).json({ message: "Không tìm thấy sự kiện!" });
+      }
+
+      res.status(200).json(suKien);
+  } catch (error) {
+      console.error("Lỗi khi lấy chi tiết sự kiện:", error);
+      res.status(500).json({ message: "Lỗi server" });
+  }
 };

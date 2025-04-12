@@ -1,5 +1,5 @@
 // controllers/dashboardController.js
-import { getStats, getRevenueStats, getTicketStats, getEventStats, getRecentEvents } from '../models/statisticsModel';
+import { getStats, getRevenueStats, getEventStats, getRecentEvents } from '../models/statisticsModel';
 
 const dashboardController = {
   getStats: async (req, res) => {
@@ -27,21 +27,21 @@ const dashboardController = {
     }
   },
 
-  getTicketStats: async (req, res) => {
-    try {
-      const ticketData = await getTicketStats();
-      const labels = ticketData.map(row => row.status);
-      const data = ticketData.map(row => parseInt(row.value));
-      const backgroundColor = ['#ff7f50', '#00c49f', '#ffbb28']; // Đã bán, Còn vé, Hủy
-      res.json({
-        labels,
-        datasets: [{ label: 'Tình trạng vé', data, backgroundColor }],
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Lỗi khi lấy tình trạng vé' });
-    }
-  },
+  // getTicketStats: async (req, res) => {
+  //   try {
+  //     const ticketData = await getTicketStats();
+  //     const labels = ticketData.map(row => row.status);
+  //     const data = ticketData.map(row => parseInt(row.value));
+  //     const backgroundColor = ['#ff7f50', '#00c49f', '#ffbb28']; 
+  //     res.json({
+  //       labels,
+  //       datasets: [{ label: 'Tình trạng vé', data, backgroundColor }],
+  //     });
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(500).json({ error: 'Lỗi khi lấy tình trạng vé' });
+  //   }
+  // },
 
   getEventStats: async (req, res) => {
     try {

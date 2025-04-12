@@ -7,6 +7,9 @@ export default defineConfig({
     // vite server configs, for details see [vite doc](https://vitejs.dev/config/#server-host)
     port: 3000
   },
+  watch: {
+    usePolling: true, 
+  },
   plugins: [
     ...VitePluginNode({
       // Nodejs native Request adapter

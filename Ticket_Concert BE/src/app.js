@@ -18,6 +18,8 @@ import HoaDonRouters from './routers/HoaDonMuaVe.js';
 import ChiTietHoaDonRouters from './routers/ChiTietHoaDon.js';
 import emailRoutes from './routers/emailRoutes.js';
 import dashboardAdmin from './routers/dashboardRoutes.js'
+import paymentRouter from './routers/payment.js';
+import ThongTinThanhToanRouter from './routers/ThongTinThanhToan.js'
 
 // Cấu hình middleware
 app.use(cors());
@@ -36,7 +38,9 @@ app.use('/api', ChiTietHoaDonRouters);
 app.use('/api', HoaDonRouters);
 app.use('/api', SuatDienRouters);
 app.use('/api', emailRoutes);
+app.use('/api', paymentRouter);
 app.use('/api', dashboardAdmin);
+app.use('/api', ThongTinThanhToanRouter);
 
 const PORT = process.env.PORT;
 

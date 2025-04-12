@@ -38,7 +38,7 @@ export const createLoaiVe = async (idLoaiVe, loaiVeData) => {
     try {
         const query = `
             INSERT INTO LoaiVe (IDLoaiVe, IDSuatDien, TenVe, AnhVe, GiaVe, SoLuongVe, ThongTinVe)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         `;
         const { IDSuatDien, TenVe, AnhVe, GiaVe, SoLuongVe, ThongTinVe } = loaiVeData;
 
