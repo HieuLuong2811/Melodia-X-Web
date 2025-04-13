@@ -11,6 +11,14 @@ export const userService = {
     return response.data;
   },
 
+  login: async (Email : string, MatKhau : string): Promise<NguoiDung> => {
+    const response = await axios.post<NguoiDung>(`http://localhost:3000/api/login`, {
+      Email,
+      MatKhau
+    });
+    return response.data;
+  },
+
   getUserById: async (IDNguoiDung: string): Promise<NguoiDung> => {
     const response = await axiosInstance.get<NguoiDung>(`${API_URL}/${IDNguoiDung}`); 
     return response.data;

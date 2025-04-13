@@ -1,44 +1,102 @@
 import pool from '../config/db.js';
 
-
-const getSuKiendata = (suKien) => {
-    return [  
-        suKien.idLoaiSuKien,          
-        suKien.idNguoiDung,           
-        suKien.logo,                   
-        suKien.anhNen,                 
-        suKien.tenSuKien,              
-        suKien.diaDiem,               
-        suKien.thongTinSuKien,         
-        suKien.trangThaiSuKien,     
-        suKien.logoBanToChuc,          
-        suKien.tenBanToChuc,           
-        suKien.thongTinBanToChuc      
-    ];
-};
-
 // Lấy tất cả sự kiện
-export const getAllSuKien = async () => {
+export const getSuKienListAdmin = async (isAdmin = false) => {
+    const sql = `SELECT 
+    IDSuKien,
+    IDNguoiDung,
+    TenSuKien,
+    AnhNen,
+    DiaDiem,
+    LogoBanToChuc,
+    TenBanToChuc,
+    TrangThaiSuKien FROM SuKien`
+    const [rows] = await pool.query(sql);
+    return rows;
+};
+
+export const getSuKienListUser = async (isAdmin = false) => {
+    const sql = `SELECT 
+            sk.IDSuKien,
+            sk.TenSuKien,
+            sk.AnhNen,
+            MIN(sd.ThoiGianBatDau) AS NgayDienDauTien,
+            MIN(lv.GiaVe) AS GiaVeReNhat
+            FROM SuKien sk
+            JOIN SuatDien sd ON sk.IDSuKien = sd.IDSuKien
+            JOIN LoaiVe lv ON lv.IDSuatDien = sd.IDSuatDien
+        WHERE sk.TrangThaiSuKien in ('Đã xác nhận', 'Chưa bắt đầu', 'Đang diễn ra', 'Hoàn thành')
+        GROUP BY sk.IDSuKien, sk.TenSuKien, sk.AnhNen
+        ORDER BY NgayDienDauTien ASC;`
+    const [rows] = await pool.query(sql);
+    return rows;
+};
+
+export const getSuKienDatalist = async (type) => {
+    let sql;
+    switch (type) {
+        case 'TongVeBan':
+            sql = `
+                SELECT sk.Logo, SUM(cthd.SoLuong) AS TongVeBan
+                FROM SuKien sk
+                JOIN SuatDien sd ON sk.IDSuKien = sd.IDSuKien
+                JOIN LoaiVe lv ON lv.IDSuatDien = sd.IDSuatDien
+                JOIN ChiTietHoaDon cthd ON cthd.IDLoaiVe = lv.IDLoaiVe
+                WHERE sk.TrangThaiSuKien = 'Đã xác nhận'
+                GROUP BY sk.IDSuKien
+                ORDER BY TongVeBan DESC
+                LIMIT 10;
+            `;
+            break;
+
+        case 'GanNhatMua':
+            sql = `
+                SELECT sk.AnhNen, MAX(hd.NgayThanhToan) AS GanNhatMua
+                FROM SuKien sk
+                JOIN SuatDien sd ON sk.IDSuKien = sd.IDSuKien
+                JOIN LoaiVe lv ON lv.IDSuatDien = sd.IDSuatDien
+                JOIN ChiTietHoaDon cthd ON cthd.IDLoaiVe = lv.IDLoaiVe
+                JOIN HoaDonMuaVe hd ON hd.IDHoaDon = cthd.IDHoaDon
+                WHERE sk.TrangThaiSuKien = 'Đã xác nhận'
+                GROUP BY sk.IDSuKien
+                ORDER BY GanNhatMua DESC
+                LIMIT 10;
+            `;
+            break;
+
+        case 'SuKienCoVideo':
+            sql = `
+                SELECT IDSuKien, Video, AnhNen 
+                FROM SuKien 
+                WHERE Video IS NOT NULL AND TrangThaiSuKien = 'Đã xác nhận'
+                LIMIT 6;
+            `;
+            break;
+
+        case 'SuKienNormal':
+            sql = `
+                SELECT * 
+                FROM SuKien 
+                WHERE TrangThaiSuKien = 'Đã xác nhận'
+                LIMIT 10;
+            `;
+            break;
+
+        default:
+            throw new Error('Invalid query type');
+    }
+
     try {
-        const [rows] = await pool.query("SELECT * FROM SuKien WHERE TrangThaiSuKien in ('Đã xác nhận', 'Chưa bắt đầu', 'Đang diễn ra', 'Hoàn thành')");
+        const [rows] = await pool.query(sql);
         return rows;
     } catch (error) {
+        console.error(`Lỗi query ${type}:`, error);
         throw error;
     }
 };
 
-export const getAllSuKienAdmin = async () => {
-    try {
-        const [rows] = await pool.query("SELECT * FROM SuKien");
-        return rows;
-    } catch (error) {
-        throw error;
-    }
-};
 
-export const GetSuKienHaveVideo = async () => {
-    
-}
+
 
 export const getSuKienChiTietById = async (idSuKien) => {
     const sql = `

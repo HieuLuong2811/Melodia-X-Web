@@ -32,7 +32,7 @@ export const createNguoiDung = async (idNguoiDung, nguoiDung) => {
     const userData = getNguoiDungData(nguoiDung);
     const [result] = await pool.query(
         `INSERT INTO NguoiDung (IDNguoiDung, HinhAnh, TenNguoiDung, Email, SoDienThoai, GioiTinh, NgaySinh, MatKhau, QuyenHan, TrangThai) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Hoạt động')`,
         [idNguoiDung, ...userData]
     );
 

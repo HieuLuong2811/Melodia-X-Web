@@ -1,9 +1,8 @@
 // controllers/suKien.js
-import { getAllSuKien, getAllSuKienAdmin, DuyetSuKien, getSuKienById, getSuKienByIdUser ,createSuKien, updateSuKien, deleteSuKien, getSuKienChiTietById } from '../models/SuKien.js';
+import { getSuKienListUser,getSuKienListAdmin, DuyetSuKien, getSuKienDatalist , getSuKienById, getSuKienByIdUser ,createSuKien, updateSuKien, deleteSuKien, getSuKienChiTietById } from '../models/SuKien.js';
 import { v4 as uuidv4 } from 'uuid';
 import { createSuatDien } from '../models/SuatDien.js'; 
 import { createLoaiVe } from '../models/LoaiVe.js';
-import { createThongTinThanhToan } from '../models/ThongTinThanhToan.js';
 
 const getSuKienData = (data) => [
   data.idLoaiSuKien,
@@ -43,7 +42,7 @@ export const createSuKienlist = async (req, res) => {
       logoBanToChuc: suKien.LogoBanToChuc,
       tenBanToChuc: suKien.TenBanToChuc,
       thongTinBanToChuc: suKien.ThongTinBanToChuc,
-      video : suKien.video,
+      video : suKien.Video,
     };
     await createSuKien(IDSuKien, suKienData); 
 
@@ -100,18 +99,46 @@ export const createSuKienlist = async (req, res) => {
 
 export default createSuKien ;
 
-export const getSuKien = async (req, res) => {
-    try {
-        const suKiens = await getAllSuKien();
-        res.json(suKiens);
-    } catch (error) {
-        res.status(500).json({ message: "Lỗi lấy danh sách sự kiện", error: error.message });
-    }
+export const getSuKienTongVeBan = async (req, res) => {
+  try {
+      const suKiens = await getSuKienDatalist('TongVeBan');
+      res.json(suKiens);
+  } catch (error) {
+      res.status(500).json({ message: "Lỗi lấy danh sách sự kiện", error: error.message });
+  }
+};
+
+export const getSuKienGanNhatMua = async (req, res) => {
+  try {
+      const suKiens = await getSuKienDatalist('GanNhatMua');
+      res.json(suKiens);
+  } catch (error) {
+      res.status(500).json({ message: "Lỗi lấy danh sách sự kiện", error: error.message });
+  }
+};
+
+export const getSuKienCoVideo = async (req, res) => {
+  try {
+    const suKiens = await getSuKienDatalist('SuKienCoVideo');
+    res.json(suKiens);
+  } catch (error) {
+    console.error("Lỗi getSuKienCoVideo:", error); 
+    res.status(500).json({ message: "Lỗi lấy danh sách sự kiện", error: error.message });
+  }
+};
+
+export const getSuKienUser = async (req, res) => {
+  try {
+      const suKiens = await getSuKienListUser();
+      res.json(suKiens);
+  } catch (error) {
+      res.status(500).json({ message: "Lỗi lấy danh sách sự kiện", error: error.message });
+  }
 };
 
 export const getSuKienAdmin = async (req, res) => {
   try {
-      const suKiens = await getAllSuKienAdmin();
+      const suKiens = await getSuKienListAdmin();
       res.json(suKiens);
   } catch (error) {
       res.status(500).json({ message: "Lỗi lấy danh sách sự kiện", error: error.message });

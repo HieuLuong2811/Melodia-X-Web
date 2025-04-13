@@ -1,12 +1,12 @@
 import express from "express";
-import { getSuKien, getSuKienAdmin, getSuKienById, createSuKienlist, DuyetSuKienControllers, getSuKienByIdUser, updateSuKien, deleteSuKien, getSuKienChiTiet} from "../controllers/SuKien.js";
+import {getSuKienUser, getSuKienAdmin, getSuKienById,getSuKienTongVeBan, getSuKienGanNhatMua, getSuKienCoVideo, createSuKienlist, DuyetSuKienControllers, getSuKienByIdUser, updateSuKien, deleteSuKien, getSuKienChiTiet} from "../controllers/SuKien.js";
 import { authenticate, authorize } from "../Middleware/Authen";
 
 const router = express.Router();
 
-router.get("/SuKiens", getSuKien);
+router.get("/SuKiens", getSuKienUser);
 
-router.get("/Admin/SuKiens", authenticate, authorize(["Admin"]), getSuKienAdmin);
+router.get("/Admin/SuKiensList", authenticate, authorize(["Admin"]), getSuKienAdmin);
 
 router.get("/Admin/SuKiens/:idSuKien", authenticate, authorize(["Admin"]), getSuKienChiTiet);
 
@@ -31,5 +31,9 @@ router.delete("/SuKiens/:idSuKien", authenticate, (req, res, next) => {
     }
     return res.status(403).json({ message: "Không có quyền xóa sự kiện!" });
 }, deleteSuKien);
+
+router.get("/Special-Event/", getSuKienTongVeBan);
+router.get("/Trending-Events/", getSuKienGanNhatMua);
+router.get("/Title-Event/", getSuKienCoVideo);
 
 export default router;
