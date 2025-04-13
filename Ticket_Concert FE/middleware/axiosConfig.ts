@@ -13,7 +13,7 @@ axiosInstance.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     } else {
-      throw new Error("Token không có sẵn, vui lòng đăng nhập!");
+      window.location.href = "/Authen/Login/";
     }
 
     return config;

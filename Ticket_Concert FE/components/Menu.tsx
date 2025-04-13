@@ -29,7 +29,7 @@ export default function Menu() {
       <div className="container d-flex justify-content-between align-items-center ps-3 pe-3" style={{ height: "70px" }}>
         <div className="d-flex gap-4">
           {type.map((loaiSK) => (
-            <Link key={loaiSK.IDLoaiSuKien} href="#" className="text-white fs-6 text-decoration-none">
+            <Link key={loaiSK.IDLoaiSuKien} href="#" style={{}} className="text-white text-decoration-none">
               {loaiSK.TenLoai}
             </Link>
           ))}

@@ -1,0 +1,179 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  body {
+    width: 100%;
+    cursor: pointer !important;
+    overflow: hidden !important;
+  }
+  
+ .container .pt-4 ul li:hover {
+  background-color: #e6e6e6;
+  transition: all 0.3s ease-in-out;
+ }
+  
+  a {
+    text-decoration: none;
+    color: #f1f3f2;
+    font-size: 14px;
+  }
+  
+  canvas {
+    width: 100% !important;
+  }
+  
+  img {
+    object-fit: cover;
+  }
+  
+  /*================ Menu trái =================*/
+  #left {
+    background: linear-gradient(#13241b, #08100b);
+    z-index: 2;
+    border-right: 1px solid #4a4848;
+    width: 17% !important;
+    transition: width 0.3s ease;
+  }
+  
+  #left #logo {
+    height: max-content;
+    z-index: 10;
+  }
+  
+  #left #logo img {
+    width: 70px !important;
+    height: 70px  !important;
+  }
+  
+  #left #logo h3 {
+    font-size: 19px;
+    font-weight: 600;
+    transition: opacity 0.3s ease;
+  }
+  
+  #left #logo:hover h3 {
+    color: #40e065;
+  }
+  
+  #left .content {
+    transform: translate(0);
+  }
+  
+  #left .content::-webkit-scrollbar {
+    display: none;
+  }
+  
+  #left .menu-content {
+    transition: background-color 0.3s ease;
+    padding: 5px 15px;
+  }
+  
+  #left .menu-content i {
+    font-size: 19px;
+    min-width: 20px;
+    color: #fff;
+  }
+  
+  #left .menu-content span {
+    font-size: 15px;
+    color: #fff;
+    transition: opacity 0.3s ease;
+  }
+  
+  .menu-content {
+    padding: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .menu-content.selected {
+    background-color: #4f5250;
+    color: white;
+  }
+  
+  #left .menu-content:hover i, 
+  #left .menu-content:hover span {
+    color: #35f061;
+  }
+  
+  #left:hover .menu-content.active {
+    background-color: rgba(126, 117, 255, 0.1);
+  }
+  
+  #left .menu-content.active {
+    background-color: rgba(126, 117, 255, 0.1);
+  }
+  
+  #left .menu-content .box {
+    width: 250px;
+    padding: 10px 5px 10px 16px;
+  }
+  
+  #left .logout {
+    height: 50px;
+    line-height: 50px;
+    padding: 0 20px;
+    font-size: 19px;
+  }
+  
+  #left .logout span {
+    padding: 0 20px;
+  }
+  
+  #left .logout:hover .bi,
+  #left .logout:hover span {
+    color: red !important;
+  }
+  
+  /*================ Page Phải =================*/
+  
+  #right {
+    width: calc(100% - 17%) !important;
+    height: 100dvh;
+  }
+  
+  #right::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .nav {
+    z-index: 1;
+    background: #313332;
+    border-bottom: 1px solid #4a4848;
+    padding: 10px 35px 10px;
+  }
+  
+  #right .dropdown-menu {
+    width: 100%;
+  }
+  
+  #right .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  #right .container{
+    background-color: transparent;
+    padding: 30px;
+
+  }
+  
+  #right .container li:hover button{
+    border-bottom: 1px solid #00b894;
+  }
+  
+  label::before {
+    display: inline-block;
+    margin-inline-end: 4px;
+    color: #ff4d4f;
+    font-size: 14px;
+    font-family: SimSun, sans-serif;
+    line-height: 1;
+    content: "*";
+  }
+  
+  

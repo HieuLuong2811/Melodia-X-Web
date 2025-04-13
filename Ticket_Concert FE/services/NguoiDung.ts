@@ -1,5 +1,6 @@
 import axios from "axios";
 import { NguoiDung } from "../interfaces/NguoiDung";
+import axiosInstance from "@/middleware/axiosConfig";
 
 const API_URL = "http://localhost:3000/api/nguoidungs";
 
@@ -11,7 +12,7 @@ export const userService = {
   },
 
   getUserById: async (IDNguoiDung: string): Promise<NguoiDung> => {
-    const response = await axios.get<NguoiDung>(`${API_URL}/${IDNguoiDung}`); 
+    const response = await axiosInstance.get<NguoiDung>(`${API_URL}/${IDNguoiDung}`); 
     return response.data;
   },
 

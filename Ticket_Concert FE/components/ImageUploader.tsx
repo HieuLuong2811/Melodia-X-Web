@@ -83,7 +83,7 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({ type, expectedSize, media
 
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "event_images"); // Thay đổi upload preset nếu cần
+    formData.append("upload_preset", mediaType === "video" ? "event_videos" : "event_images");
 
     try {
       const response = await axios.post(
@@ -132,13 +132,7 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({ type, expectedSize, media
           </>
         )}
       </label>
-      <input
-        id={`${type}Upload`}
-        type="file"
-        accept={mediaType === "video" ? "video/mp4" : "image/*"}
-        className="d-none"
-        onChange={handleMediaUpload}
-      />
+      <input id={`${type}Upload`} type="file" accept={mediaType === "video" ? "video/mp4" : "image/*"} className="d-none" onChange={handleMediaUpload}/>
 
       <div className="d-flex justify-content-between">
         <input type="text" className="form-control w-100 mt-2" value={mediaUrl || ""} readOnly />

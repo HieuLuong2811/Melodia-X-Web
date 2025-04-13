@@ -13,4 +13,13 @@ export interface SuKien {
     ThongTinBanToChuc: string;
     Video : string
   }
+
+  export interface SuKienNormal {
+    IDSuKien: string;
+    TenSuKien: string;
+    AnhNen: string;
+    NgayDienDauTien : string;
+    GiaVeReNhat : number | string;
+  }
+
   

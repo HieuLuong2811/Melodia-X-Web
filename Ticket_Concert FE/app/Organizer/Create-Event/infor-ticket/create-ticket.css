@@ -1,0 +1,63 @@
+.ticket {
+    background-color: rgb(255, 255, 255);
+}
+
+.ticket-time {
+    background-color: rgb(35, 37, 44) !important;
+    border: 1px solid rgb(228, 92, 92);
+}
+
+.datetime,.number {
+    width: 600px !important;
+}
+
+button.form-control{
+    color: #ffffff;
+    background-color: #11cb6b !important;
+}
+
+button.form {
+  width: max-content !important;
+}
+
+button.form-control:hover {
+    background-color: #FFF !important;
+    color: #000 !important;
+}
+
+.Ad-Ticket {
+    position: absolute;
+    z-index: 10;
+}
+
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 11;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Popup căn giữa màn hình */
+  .popup {
+    backdrop-filter: blur(30px);
+    background-color: rgba(81, 81, 88, .3);
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .popup .fo {
+    background-color: #6464674d;
+  }
+ .popup textarea.form-control {
+    height: 210px !important;
+  }
+
+  .wt {
+    width: 15% !important;
+  }

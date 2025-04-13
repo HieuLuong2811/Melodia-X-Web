@@ -1,0 +1,30 @@
+.nav-link.active{
+    border-bottom: 3px solid #2dc275 !important;
+}
+
+.nav-link.active .bi {
+    color: #2dc275 !important;
+}
+
+.form-control {
+    width: 100% !important;
+}
+
+.nav-item {
+    cursor: not-allowed;
+}
+
+textarea.form-control  {
+    height : 170px !important; 
+    font-size: 18px !important;
+    resize: none;
+}
+
+.form-control, .form-select {
+    height: 40px !important;
+    font-size: 17px !important;
+}
+
+.logo::before {
+    content: "" !important;
+}

@@ -1,0 +1,31 @@
+.text {
+    color: #2dc275 !important;;
+    font-weight: bold !important
+}
+
+body {
+    zoom: 0.9 !important;
+}
+.text-gray {
+    color: rgb(166, 166, 176);
+}
+
+.bg-pink {
+    color: rgb(255, 66, 79);
+    background-color: rgb(255, 184, 188);
+    border-radius: 12px;
+    padding: 4px 8px;
+    width: max-content;
+}
+.row-default {
+    border-bottom: 1px dashed rgb(128, 128, 137);
+}
+
+.text-start, .bi-exclamation-circle {
+    font-size: 14px !important;
+    color: #454545 !important;
+}
+
+a {
+    text-decoration: none !important;
+}

@@ -1,0 +1,40 @@
+.text {
+    color: #2dc275 !important;;
+    font-weight: bold !important
+}
+
+label::before {
+    display: inline-block;
+    margin-inline-end: 4px;
+    color: #ff4d4f;
+    font-size: 14px;
+    font-family: SimSun, sans-serif;
+    line-height: 1;
+    content: "*";
+}
+
+.background-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .background-img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(35px); 
+  }
+
+  .container {
+    position: relative;
+    z-index: 1; 
+  }
+
+.time span {
+    border-radius: 20px;
+    width: 70px;
+    font-size: 25px;
+    background-color: #4cdd92;
+}

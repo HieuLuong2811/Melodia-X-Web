@@ -1,5 +1,6 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect} from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 import { usePathname } from "next/navigation";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";

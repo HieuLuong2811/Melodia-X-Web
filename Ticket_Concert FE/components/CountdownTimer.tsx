@@ -5,19 +5,23 @@ const CountdownTimer = ({ onTimeout }: { onTimeout: () => void }) => {
   const [countdown, setCountdown] = useState<number>(900); 
 
   useEffect(() => {
-    
+    let initialCountdown = 900;
     const storedCountdown = sessionStorage.getItem("countdownTime");
+
     if (storedCountdown) {
-      setCountdown(Number(storedCountdown)); 
+      initialCountdown = Number(storedCountdown);
     } else {
-      sessionStorage.setItem("countdownTime", countdown.toString());
+      sessionStorage.setItem("countdownTime", initialCountdown.toString());
     }
+
+    setCountdown(initialCountdown);
 
     const timerInterval = setInterval(() => {
       setCountdown((prevCountdown) => {
         if (prevCountdown <= 1) {
-          onTimeout(); 
-          clearInterval(timerInterval); 
+          clearInterval(timerInterval);
+          onTimeout();
+          sessionStorage.removeItem("countdownTime");
           return 0;
         }
 
@@ -27,7 +31,6 @@ const CountdownTimer = ({ onTimeout }: { onTimeout: () => void }) => {
       });
     }, 1000);
 
-    
     return () => clearInterval(timerInterval);
   }, [onTimeout]);
 
@@ -38,9 +41,9 @@ const CountdownTimer = ({ onTimeout }: { onTimeout: () => void }) => {
     <div className="text-center pt-4 pb-4 border bg-white-transparen" style={{ borderRadius: "40px", background: "rgba(255, 255, 255, 0.5)" }}>
       <span className="fw-bold mb-2">Hoàn tất đặt vé trong</span>
       <div className="time text-white rounded mt-3 mb-2 fw-bold d-flex justify-content-center gap-2">
-        <span className="p-3 fw-bold">{minutes}</span>
+        <span className="p-3 fw-bold">{minutes.toString().padStart(2, "0")}</span>
         <p className="fs-2">꞉</p>
-        <span className="p-3 fw-bold">{seconds}</span>
+        <span className="p-3 fw-bold">{seconds.toString().padStart(2, "0")}</span>
       </div>
     </div>
   );
