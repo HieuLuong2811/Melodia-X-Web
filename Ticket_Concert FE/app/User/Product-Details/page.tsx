@@ -37,7 +37,14 @@ export default function Product_details() {
           }
         }, []);
     if (!suKien) {
-        return <p>Đang tải sự kiện...</p>;
+        return <div className="loading-wrapper d-flex flex-column align-items-center gap-2">
+        <p>Đang tải sự kiện...</p>
+        <div className="d-flex align-items-center gap-3">
+          <div className="loading set_1"></div>
+          <div className="loading set_2"></div>
+          <div className="loading set_3"></div>
+        </div>
+      </div>;;
     }
     const firstShow = suKien.suatDiens.length > 0 ? suKien.suatDiens[0] : null;
 

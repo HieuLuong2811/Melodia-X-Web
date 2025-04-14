@@ -1,10 +1,12 @@
 import express from "express";
-import {getSuKienUser, getSuKienAdmin, getSuKienById,getSuKienTongVeBan, getSuKienGanNhatMua, getSuKienCoVideo, createSuKienlist, DuyetSuKienControllers, getSuKienByIdUser, updateSuKien, deleteSuKien, getSuKienChiTiet} from "../controllers/SuKien.js";
+import {getSuKienUser, getSuKienAdmin, getSuKienById, SoLuongEvent ,getSuKienTongVeBan, getSuKienGanNhatMua, getSuKienCoVideo, createSuKienlist, DuyetSuKienControllers, getSuKienByIdUser, updateSuKien, deleteSuKien, getSuKienChiTiet} from "../controllers/SuKien.js";
 import { authenticate, authorize } from "../Middleware/Authen";
 
 const router = express.Router();
 
 router.get("/SuKiens", getSuKienUser);
+
+router.get("/Admin/CountSuKiens",authenticate, authorize(["Admin"]), SoLuongEvent);
 
 router.get("/Admin/SuKiensList", authenticate, authorize(["Admin"]), getSuKienAdmin);
 

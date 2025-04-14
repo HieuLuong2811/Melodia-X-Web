@@ -4,6 +4,7 @@ import Link from "next/link";
 import CountdownTimer from "@/components/CountdownTimer";
 import Swal from "sweetalert2";
 import DisplayEventTime from "@/components/DisplayEventTime";
+import { useRouter } from 'next/navigation';
 import "./Checkout-Tickets.css";
 import {userService} from "@/services/NguoiDung";
 import {NguoiDung} from "@/interfaces/NguoiDung";
@@ -16,6 +17,8 @@ interface CartItem {
 }
 
 const Checkout = () => {
+  const router = useRouter();
+
   const [AnhNen, setAnhNen] = useState<string | null>(null);
   const [tenSuKien, setTenSuKien] = useState("");
   const [diaDiem, setDiaDiem] = useState("");
@@ -48,13 +51,13 @@ const Checkout = () => {
     const savedCart = sessionStorage.getItem("cart");
 
     if (!savedCart) {
-      window.location.href = "/";
+      router.push('/');
       return;
     }
 
     const parsedCart = JSON.parse(savedCart);
     if (!parsedCart.chiTiet || parsedCart.chiTiet.length === 0) {
-      window.location.href = "/";
+      router.push('/');
       return;
     }
     setCart(parsedCart);
@@ -75,7 +78,7 @@ const Checkout = () => {
   const handleTimeout = () => {
     sessionStorage.removeItem("cart");
     sessionStorage.removeItem("countdownTime");
-    window.location.href = "/";
+    router.push('/');
   };
 
   const handleTabClick = () => {
@@ -90,7 +93,7 @@ const Checkout = () => {
     }).then((result) => {
       if(result.isConfirmed){
         sessionStorage.removeItem("countdownTime")
-        window.location.href = "/User/Book-Tickets";
+        router.push('/User/Book-Tickets');
       }
       else{
 
@@ -116,7 +119,7 @@ const Checkout = () => {
           </Link>
         </div>
       </nav>
-      <div className="w-100 d-flex justify-content-center align-items-center bg-secondary gap-3 pt-1 pb-1">
+      <div className="w-100 d-flex justify-content-center align-items-center bg-secondary gap-3 pt-1 pb-1"  style={{cursor : "pointer"}}>
         <div onClick={() => handleTabClick()} className="d-flex flex-column align-items-center">
           <i className="bi bi-check-circle-fill text-white"></i>
           <span className="text-white">Chọn vé</span>

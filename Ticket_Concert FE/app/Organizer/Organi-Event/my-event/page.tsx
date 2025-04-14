@@ -27,7 +27,14 @@ const MyEvent = () => {
         }
     }, []);
     if(!suKiens) {
-        return <p>Đang tải sự kiện...</p>;
+        return<div className="loading-wrapper d-flex flex-column align-items-center gap-2">
+        <p>Đang tải sự kiện...</p>
+        <div className="d-flex align-items-center gap-3">
+          <div className="loading set_1"></div>
+          <div className="loading set_2"></div>
+          <div className="loading set_3"></div>
+        </div>
+      </div>;;
     }
     const tab = [
         { id: "cho-xac-nhan", label: "Chờ xác nhận" },
@@ -88,7 +95,7 @@ const MyEvent = () => {
                                                         <img src={`${suKien.AnhNen}?t=${new Date().getTime()}`}  alt="Logo" loading="lazy" style={{ width: "300px", height: "150px", objectFit: "cover", borderRadius: "8px" }}/>
                                                     </div>
                                                     <div className="col-md-5 fw-bold">
-                                                    <h5 className="text-white mb-4">Tên sự kiện: {suKien.TenSuKien}</h5>
+                                                    <h5 className="text-white mb-4" style={{height: "45px", overflow : "hidden"}}>Tên sự kiện: {suKien.TenSuKien}</h5>
                                                     <div style={{ fontSize: "13px" }} className="d-flex flex-column gap-2">
                                                         <span className="d-flex align-items-center gap-2">
                                                         <i className="bi bi-calendar-fill"></i>
@@ -96,7 +103,7 @@ const MyEvent = () => {
                                                         </span>
                                                         <span className="d-flex align-items-center gap-2">
                                                         <i className="bi bi-geo-alt-fill"></i>
-                                                        <span style={{ color: "rgb(45, 194, 117)" }}>{suKien.DiaDiem}</span>
+                                                        <span style={{ color: "rgb(45, 194, 117)",height: "40px", overflow : "hidden" }}>{suKien.DiaDiem}</span>
                                                         </span>
                                                     </div>
                                                     </div>

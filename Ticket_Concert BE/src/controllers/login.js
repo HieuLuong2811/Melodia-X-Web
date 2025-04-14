@@ -35,6 +35,7 @@ export const loginUser = async (req, res) => {
             token,
             userId: user.IDNguoiDung,
             avatar: user.HinhAnh,
+            QuyenHan: user.QuyenHan,
         });
     } catch (error) {
         console.error("Lỗi khi đăng nhập:", error);

@@ -1,15 +1,24 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import "./style/Home.css";
 import dynamic from "next/dynamic";
+import { useRouter } from 'next/navigation';
 const LeftSidebar = dynamic(() => import("@/components/LeftSide-Organizer"), { ssr: false });
-const TopSidebar = dynamic(() => import("@/components/topSide-Organizer"), { ssr: false });
-import Event from "../Organizer/Create-Event/infor-event/page";
+import TopSidebar from "@/components/topSide-Organizer";
+import EventForm from "../Organizer/Create-Event/infor-event/page";
 
 
-export default function event() {
+const Event = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if(!token) {
+      router.push('/Authen/Login');
+    }
+  },[]);
+
   return (
-    
     <>
       <link
         rel="stylesheet"
@@ -23,10 +32,11 @@ export default function event() {
       < LeftSidebar />
         <div id="right" className="bg-black overflow-auto">	
           < TopSidebar title = "Thông tin sự kiện"/>
-          <Event />
+          <EventForm />
         </div>
       </div>
     </>
   );
 }
 
+export default Event;

@@ -146,7 +146,14 @@ const TicketBooking = () => {
   };
   
   if (LoaiVes.length === 0) {
-    return <p>Đang tải danh sách vé...</p>;
+    return <div className="loading-wrapper d-flex flex-column align-items-center gap-2">
+      <p>Đang tải danh sách vé...</p>
+      <div className="d-flex align-items-center gap-3">
+        <div className="loading set_1"></div>
+        <div className="loading set_2"></div>
+        <div className="loading set_3"></div>
+      </div>
+    </div>;
   }
 
   return (
@@ -155,7 +162,7 @@ const TicketBooking = () => {
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
       />
-      <div >
+      <div style={{height : "100%"}}>
         <nav className="navbar navbar-expand-lg navbar-light pt-3 pb-3 position-sticky top-0 z-3">
           <div className="container justify-content-center">        
             <Link href="/">

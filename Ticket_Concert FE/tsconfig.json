@@ -24,6 +24,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/Organizer/Create-Event/infor-ticket/page.tsx", "app/Organizer/Create-Event/infor-payment/page.tsx", "app/Organizer/Create-Event/mess-custor/page.jsx", "components/Menu.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/Organizer/Create-Event/infor-ticket/page.tsx", "app/Organizer/Create-Event/infor-payment/page.tsx", "app/Organizer/Create-Event/mess-custor/page.jsx", "components/Menu.tsx", "components/PaymentPopup.tsx"],
   "exclude": ["public/node_modules"]
 }

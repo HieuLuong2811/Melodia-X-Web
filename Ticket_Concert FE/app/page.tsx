@@ -117,12 +117,12 @@ export default function Home() {
   const settings3 = { ...baseSettings, slidesToShow: 4 };
   
   const crewData = [
-    { name: "Avery Davis", image: "/crew/crew1.jpg" },
-    { name: "Benjamin Shah", image: "/crew/crew2.jpg" },
-    { name: "Olivia Wilson", image: "/crew/crew3.jpg" },
-    { name: "Daniel Gallego", image: "/crew/crew4.jpg" },
-    { name: "Jenna Rivera", image: "/crew/crew5.jpg" },
-    { name: "Liam Chen", image: "/crew/crew6.jpg" },
+    { name: "Avery Davis", image: "/crew1.jpg" },
+    { name: "Benjamin Shah", image: "/crew2.jpg" },
+    { name: "Olivia Wilson", image: "/crew3.jpg" },
+    { name: "Daniel Gallego", image: "/crew4.jpg" },
+    { name: "Jenna Rivera", image: "/crew5.jpg" },
+    { name: "Liam Chen", image: "/crew6.jpg" },
   ];
   
     const settings4 = {
@@ -271,7 +271,7 @@ export default function Home() {
                             <div className="card text-white border-0 rounded-3 overflow-hidden bg-transparent">
                               <img className="card-img" src={suKien.AnhNen} style={{ height: "200px", objectFit: "cover" }}/>
                               <div className="card-body p-0 pt-3">
-                                <h6 className="card-title fw-bold fs-5" style={{height : "45px"}}>{suKien.TenSuKien}</h6>
+                                <h6 className="card-title fw-bold fs-5" style={{height : "45px", overflow : "hidden"}}>{suKien.TenSuKien}</h6>
                                 <p className="text t fw-bold mb-1" style={{fontSize : "17px"}}>
                                   Từ {suKien.GiaVeReNhat? Number(suKien.GiaVeReNhat).toLocaleString() + "đ" : "Đang cập nhật"}
                                 </p>
@@ -311,7 +311,7 @@ export default function Home() {
                           <div className="card text-white border-0 rounded-3 overflow-hidden bg-transparent">
                             <img className="card-img" src={event.AnhNen} style={{ height: "200px", objectFit: "cover" }} />
                             <div className="card-body p-0 pt-3">
-                              <h6 className="card-title fw-bold fs-5" style={{ height: "45px" }}>{event.TenSuKien}</h6>
+                              <h6 className="card-title fw-bold fs-5" style={{ height: "45px",overflow : "hidden"}}>{event.TenSuKien}</h6>
                               <p className="text t fw-bold mb-1" style={{ fontSize: "17px" }}>
                                 Từ {event.GiaVeReNhat ? Number(event.GiaVeReNhat).toLocaleString() + "đ" : "Đang cập nhật"}
                               </p>

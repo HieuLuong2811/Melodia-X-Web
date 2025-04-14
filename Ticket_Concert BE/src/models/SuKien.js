@@ -15,6 +15,16 @@ export const getSuKienListAdmin = async (isAdmin = false) => {
     return rows;
 };
 
+export const CountSuKien = async () => {
+    const sql = `SELECT COUNT(*) AS SoLuong
+                 FROM SuKien
+                 WHERE TrangThaiSuKien = "Chờ xác nhận"`;
+
+    const [rows] = await pool.query(sql);
+    return rows[0].SoLuong;  
+}
+
+
 export const getSuKienListUser = async (isAdmin = false) => {
     const sql = `SELECT 
             sk.IDSuKien,
@@ -196,11 +206,10 @@ export const deleteSuKien = async (id) => {
     }
 };
 
-export const DuyetSuKien = async (idSuKien) => {
+export const DuyetSuKien = async (idSuKien, trangThaiSuKien) => {
     try{
-        const sql = "UPDATE SuKien SET TrangThaiSuKien = 'Đã xác nhận' WHERE IDSuKien = ?";
-        const [result] = await pool.query(sql, [idSuKien]);
-        console.log(`DuyetSuKien: affectedRows = ${result.affectedRows}, idSuKien = ${idSuKien}`);
+        const sql = "UPDATE SuKien SET TrangThaiSuKien = ? WHERE IDSuKien = ?";
+        const [result] = await pool.query(sql, [trangThaiSuKien ,idSuKien]);
         return result.affectedRows[0];
     }catch (error) {
         throw error;

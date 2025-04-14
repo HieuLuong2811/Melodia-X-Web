@@ -149,7 +149,14 @@ const Payment = () => {
     }
   };
 
-  if (loading) return <p>Đang tải...</p>;
+  if (loading) return <div className="loading-wrapper d-flex flex-column align-items-center gap-2">
+  <p>Đang tải thông tin...</p>
+  <div className="d-flex align-items-center gap-3">
+    <div className="loading set_1"></div>
+    <div className="loading set_2"></div>
+    <div className="loading set_3"></div>
+  </div>
+</div>;;
 
   return (
     <div className="p-3 rounded bg-dark text-light">

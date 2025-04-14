@@ -1,5 +1,5 @@
 // controllers/suKien.js
-import { getSuKienListUser,getSuKienListAdmin, DuyetSuKien, getSuKienDatalist , getSuKienById, getSuKienByIdUser ,createSuKien, updateSuKien, deleteSuKien, getSuKienChiTietById } from '../models/SuKien.js';
+import { getSuKienListUser,getSuKienListAdmin, CountSuKien, DuyetSuKien, getSuKienDatalist , getSuKienById, getSuKienByIdUser ,createSuKien, updateSuKien, deleteSuKien, getSuKienChiTietById } from '../models/SuKien.js';
 import { v4 as uuidv4 } from 'uuid';
 import { createSuatDien } from '../models/SuatDien.js'; 
 import { createLoaiVe } from '../models/LoaiVe.js';
@@ -18,8 +18,17 @@ const getSuKienData = (data) => [
   data.thongTinBanToChuc,
 ];
 
+export const SoLuongEvent = async(req, res) => {
+  try {
+    const count = await CountSuKien();  
+    res.json({ count });  
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi lấy số lượng sự kiện", error: error.message });
+  }
+}
+
+
 export const createSuKienlist = async (req, res) => {
-  console.log(req.body);  
   const {
     danhSachSuKien,
     danhSachSuatDien,
@@ -220,11 +229,13 @@ export const updateSuKien = async (req, res) => {
 export const DuyetSuKienControllers = async (req, res) => {
   try {
     const idSuKien = req.params.idSuKien;
+    const trangThaiSuKien = req.body.trangThaiSuKien;
     if (!idSuKien) {
       return res.status(400).json({ message: "Thiếu ID sự kiện" });
     }
 
-    const affectedRows = await DuyetSuKien(idSuKien);
+    const affectedRows = await DuyetSuKien(idSuKien, trangThaiSuKien);
+    console.log(affectedRows);
     if (affectedRows === 0) {
       return res.status(404).json({ message: `Không tìm thấy sự kiện với ID: ${idSuKien}` });
     }
