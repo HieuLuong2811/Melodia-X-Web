@@ -25,8 +25,12 @@ export const suKienService = {
     return response.data;
   },
 
-  getSuKienById: async (): Promise<SuKien> => {
-    const IDSuKien = localStorage.getItem("IDSuKien_User_Detail");
+  getSuKienById: async (IDSuKien: string): Promise<SuKien> => {
+    const response = await axios.get<SuKien>(`http://localhost:3000/api/SuKiens/${IDSuKien}`);
+    return response.data;
+  },
+
+  getSuKienByIdOrganizer: async (IDSuKien : string): Promise<SuKien> => {
     const response = await axiosInstance.get<SuKien>(`'SuKiens'/${IDSuKien}`);
     return response.data;
   },

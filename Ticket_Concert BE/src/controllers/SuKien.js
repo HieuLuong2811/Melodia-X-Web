@@ -21,7 +21,7 @@ const getSuKienData = (data) => [
 export const SoLuongEvent = async(req, res) => {
   try {
     const count = await CountSuKien();  
-    res.json({ count });  
+    res.json(count);  
   } catch (error) {
     res.status(500).json({ message: "Lỗi lấy số lượng sự kiện", error: error.message });
   }
@@ -166,12 +166,13 @@ export const getSuKienById = async (req, res) => {
         const suKienMap = {};
 
         event.forEach(row => {
-            const { IDSuKien, TenSuKien, AnhNen, DiaDiem, ThongTinSuKien, LogoBanToChuc, TenBanToChuc, ThongTinBanToChuc, Video, IDSuatDien, ThoiGianBatDau, ThoiGianKetThuc, IDLoaiVe, TenVe, GiaVe, SoLuongVe } = row;
+            const { IDSuKien, TenSuKien, Logo, AnhNen, DiaDiem, ThongTinSuKien, LogoBanToChuc, TenBanToChuc, ThongTinBanToChuc, Video, IDSuatDien, ThoiGianBatDau, ThoiGianKetThuc, IDLoaiVe, TenVe, GiaVe, SoLuongVe } = row;
 
             if (!suKienMap[IDSuKien]) {
                 suKienMap[IDSuKien] = {
                     IDSuKien,
                     TenSuKien,
+                    Logo,
                     AnhNen,
                     DiaDiem,
                     ThongTinSuKien,
@@ -226,26 +227,28 @@ export const updateSuKien = async (req, res) => {
     }
 };
 
-export const DuyetSuKienControllers = async (req, res) => {
+export const TrangThaiSuKienController = async (req, res) => {
   try {
     const idSuKien = req.params.idSuKien;
-    const trangThaiSuKien = req.body.trangThaiSuKien;
-    if (!idSuKien) {
-      return res.status(400).json({ message: "Thiếu ID sự kiện" });
-    }
+    const { trangThaiSuKien } = req.body;
 
     const affectedRows = await DuyetSuKien(idSuKien, trangThaiSuKien);
-    console.log(affectedRows);
+
     if (affectedRows === 0) {
       return res.status(404).json({ message: `Không tìm thấy sự kiện với ID: ${idSuKien}` });
     }
 
-    res.json({ message: "Duyệt sự kiện thành công" });
+    let message = "Cập nhật trạng thái sự kiện thành công";
+    if (trangThaiSuKien === 2) message = "Duyệt sự kiện thành công";
+    if (trangThaiSuKien === 3) message = "Huỷ sự kiện thành công";
+
+    res.json({ message });
   } catch (error) {
-    console.error(`Lỗi khi duyệt sự kiện ${req.params.idSuKien}:`, error);
-    res.status(500).json({ message: `Lỗi khi duyệt sự kiện: ${error.message}` });
+    console.error(`Lỗi khi cập nhật trạng thái sự kiện ${req.params.idSuKien}:`, error);
+    res.status(500).json({ message: `Lỗi khi cập nhật trạng thái sự kiện: ${error.message}` });
   }
 };
+
 
 // Xóa sự kiện
 export const deleteSuKien = async (req, res) => {

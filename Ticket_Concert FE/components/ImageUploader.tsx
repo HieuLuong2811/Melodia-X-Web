@@ -55,6 +55,7 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({ type, expectedSize, media
     const objectUrl = URL.createObjectURL(file);
 
     if (mediaType === "image" && expectedSize) {
+
       // Kiểm tra kích thước ảnh
       const img = new Image();
       img.src = objectUrl;
@@ -73,6 +74,7 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({ type, expectedSize, media
         }
       };
     } else {
+      
       // Upload video không cần kiểm tra kích thước
       await uploadMedia(file, objectUrl);
     }
@@ -110,8 +112,7 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({ type, expectedSize, media
 
   return (
     <div className="text-center" style={{ width: type === "background" ? "73%" : "26%", height: "max-content" }}>
-      <label
-        htmlFor={`${type}Upload`}
+      <label htmlFor={`${type}Upload`}
         className={`logo w-100 rounded-3 d-flex flex-column align-items-center justify-content-center cursor-pointer p-2 text-white ${type}-upload`}>
         {preview ? (
           mediaType === "video" ? (

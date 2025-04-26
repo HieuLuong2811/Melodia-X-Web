@@ -78,15 +78,14 @@ export const deleteLoaiVe = async (idLoaiVe) => {
 export const getVeDaMuaByUserId = async (idNguoiDung) => {
     const [rows] = await pool.query(`
       SELECT 
+          sk.IDSuKien,  
           sk.TenSuKien,
           lv.TenVe,
           lv.GiaVe,
           cthd.SoLuong,
           cthd.GiaTien,
           cthd.TrangThaiVe,
-          hd.NgayThanhToan,
-          sd.ThoiGianBatDau,
-          sd.ThoiGianKetThuc
+          hd.NgayThanhToan
       FROM ChiTietHoaDon cthd
       JOIN HoaDonMuaVe hd ON cthd.IDHoaDon = hd.IDHoaDon
       JOIN LoaiVe lv ON cthd.IDLoaiVe = lv.IDLoaiVe

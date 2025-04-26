@@ -20,7 +20,7 @@ const MyEvent = () => {
                 <LeftSidebar />
                 <div id="right" className="bg-black overflow-auto w-100">
                     <TopSidebar title= "Điều khoản cho ban tổ chức"/>
-                    <div className="container">
+                    <div className="container px-4 pt-1">
                         <object title="ticketbox" data="https://salt.tkbcdn.com/file_pdf/8.%20Ticketbox_Hang_hoa_dich_vu_cam_quang_cao_BTC_20%2012%202023.docx.pdf" type="application/pdf" width="100%" height="100vh" style={{height: "100vh" ,width: "100%"}}></object>                
                     </div>
                 </div>

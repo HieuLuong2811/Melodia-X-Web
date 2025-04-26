@@ -36,6 +36,11 @@ export const createHoaDon = async (idHoaDon,hoaDon ) => {
     return idHoaDon;
 };
 
+export const deleteHoaDon = async (idHoaDon) => {
+    const [result] = await pool.query('delete from HoaDonMuaVe where IDHoaDon = ?', [idHoaDon]);
+    return result;
+}   
+
 export const fetchAllHoaDonChiTiet = async () => {
     try {
         const [rows] = await pool.query(`
@@ -66,3 +71,23 @@ export const fetchAllHoaDonChiTiet = async () => {
         throw error;
     }
 };
+
+
+export const getHoaDonByIDSuatDien = async(idSuatDien) => {
+    const [result] = await pool.query(`
+       SELECT
+            ND.TenNguoiDung,
+            ND.Email,
+            ND.SoDienThoai,
+            HD.PhuongThucThanhToan,
+            SUM(HD.TongSoVe) AS TongSoVeMua,
+            SUM(HD.TongTien) AS TongTienThanhToan
+        FROM HoaDonMuaVe HD
+        JOIN NguoiDung ND ON HD.IDNguoiDung = ND.IDNguoiDung
+        JOIN ChiTietHoaDon CTHD ON HD.IDHoaDon = CTHD.IDHoaDon
+        JOIN LoaiVe LV ON CTHD.IDLoaiVe = LV.IDLoaiVe
+        JOIN SuatDien SD ON LV.IDSuatDien = SD.IDSuatDien
+        WHERE SD.IDSuatDien = 'a2e75f4d-9a27-42cf-ba6f-4fba04622ce1'  
+        GROUP BY ND.TenNguoiDung, ND.Email, ND.SoDienThoai, HD.PhuongThucThanhToan;`, [idSuatDien]);
+    return result;
+}

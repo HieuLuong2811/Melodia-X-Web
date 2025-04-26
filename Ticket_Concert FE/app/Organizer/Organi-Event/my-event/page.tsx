@@ -15,6 +15,13 @@ const MyEvent = () => {
     
     const [suKiens, setSuKiens] = useState<SuKien[]>([]);    
 
+    const handleClick = (() => {
+        localStorage.removeItem("uploadedMedia_logo");
+        localStorage.removeItem("uploadedMedia_background");
+        localStorage.removeItem("uploadedMedia_logoOrganizer");
+        localStorage.removeItem("uploadedMedia_video");
+    })
+
     useEffect(() => {
         const IDNguoiDung = localStorage.getItem("IDNguoiDung");
         if(IDNguoiDung) {
@@ -59,8 +66,8 @@ const MyEvent = () => {
                 <LeftSidebar />
                 <div id="right" className="my-event bg-black overflow-auto w-100">
                     <TopSidebar title= "Sự kiện của tôi"/>
-                    <div className="container d-flex w-100" style={{background: "linear-gradient(rgb(19, 36, 27), rgb(37, 15, 33))"}}>
-                        <div className="container-fluid text-white min-vh-100 pt-2 p-4">
+                    <div className="d-flex w-100 m-0">
+                        <div className="container-fluid text-white min-vh-100 pt-2 p-4" style={{ background: "linear-gradient(rgb(19, 36, 27), rgb(37 15 33))" }}>
                             <div className="d-flex pt-3 pb-3 justify-content-between gap-1" style={{height : "75px"}}>
                                 <div className="search col-md-3">
                                     <input type="search" className="w-100 h-100 ps-3 form-control form rounded-3 form-control-sm" placeholder="Nhập thông tin tìm kiếm..."/>
@@ -111,7 +118,8 @@ const MyEvent = () => {
                                                 <ul className="d-flex list-unstyled rounded-bottom-4 justify-content-center gap-5 p-2" style={{ backgroundColor: "#414652", fontSize : "14px" }}>
                                                     <li className="d-flex flex-column align-items-center">
                                                     <i className="bi bi-peace-fill"></i>
-                                                        <Link href="/Organizer/Organi-Event/my-event/Dashboard/">
+                                                        <Link href="/Organizer/Organi-Event/my-event/Dashboard/" onClick={() => {handleClick();localStorage.setItem("IDSuKien_Organizer_Detail", suKien.IDSuKien)
+                                                        }}>
                                                             <span style={{ color: "rgb(45, 194, 117)" }}>Tổng quan</span>
                                                         </Link>
                                                     </li>

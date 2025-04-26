@@ -21,9 +21,9 @@ export const getAllSuatDien = async (req, res) => {
 };
 
 // Lấy suất diễn theo ID
-export const getSuatDienByID = async (req, res) => {
+export const getSuatDienByIDSuKien = async (req, res) => {
     try {
-        const data = await getSuatDienByID(req.params.idSuatDien);
+        const data = await getSuatDienByID(req.params.idSuKien);
         if (data) res.json(data);
         else res.status(404).json({ message: 'Không tìm thấy suất diễn' });
     } catch (error) {

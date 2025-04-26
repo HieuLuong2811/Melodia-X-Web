@@ -4,10 +4,13 @@ import Link from "next/link";
 import CountdownTimer from "@/components/CountdownTimer";
 import Swal from "sweetalert2";
 import DisplayEventTime from "@/components/DisplayEventTime";
-import { useRouter } from 'next/navigation';
+import { useRouter,useSearchParams } from 'next/navigation';
 import "./Checkout-Tickets.css";
 import {userService} from "@/services/NguoiDung";
 import {NguoiDung} from "@/interfaces/NguoiDung";
+// import { HoaDonMuaService } from "@/services/HoaDonMuaVe";
+// import { HoaDonMuaVe } from "@/interfaces/HoaDonMuaVe";
+import axios from "axios";
 
 interface CartItem {
   idLoaiVe: string;
@@ -18,6 +21,10 @@ interface CartItem {
 
 const Checkout = () => {
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const id_detail = searchParams.get("id_detail");
+  // const [hoadon, setHoaDon] = useState<HoaDonMuaVe[]>([]);
 
   const [AnhNen, setAnhNen] = useState<string | null>(null);
   const [tenSuKien, setTenSuKien] = useState("");
@@ -48,7 +55,7 @@ const Checkout = () => {
     const storedAnhNen = localStorage.getItem("AnhNen");
     setAnhNen(storedAnhNen);
 
-    const savedCart = sessionStorage.getItem("cart");
+    const savedCart = sessionStorage.getItem("invoice");
 
     if (!savedCart) {
       router.push('/');
@@ -76,7 +83,7 @@ const Checkout = () => {
   }, []);
 
   const handleTimeout = () => {
-    sessionStorage.removeItem("cart");
+    sessionStorage.removeItem("invoice");
     sessionStorage.removeItem("countdownTime");
     router.push('/');
   };
@@ -93,7 +100,7 @@ const Checkout = () => {
     }).then((result) => {
       if(result.isConfirmed){
         sessionStorage.removeItem("countdownTime")
-        router.push('/User/Book-Tickets');
+        router.push(`/User/Product-Details/?id_detail=${id_detail}`);
       }
       else{
 
@@ -101,6 +108,52 @@ const Checkout = () => {
     })
   };
 
+  const handleCreateOrder = async () => {
+    try {
+      const cart = JSON.parse(sessionStorage.getItem("invoice") || "[]");
+  
+      const createOrderRes = await axios.post("http://localhost:3000/api/HoaDons", cart , {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`
+        }
+      });
+
+      if (createOrderRes.status === 201) {
+        const hoaDon = createOrderRes.data; 
+        sessionStorage.setItem("invoice", JSON.stringify(hoaDon));
+        console.log("Sending to MoMo:", {
+          orderId: hoaDon.idHoaDon,
+          amount: hoaDon.tongTien,
+          orderInfo: "Thanh toán vé sự kiện"
+        }); 
+  
+        // Gửi đến API MoMo để tạo link thanh toán
+        const momoRes = await axios.post("http://localhost:3000/api/momo", {
+          orderId: hoaDon.idHoaDon,
+          amount: hoaDon.tongTien,
+          orderInfo: "Thanh toán vé sự kiện",
+          redirectUrl: "http://localhost:3005/User/My-Infor/",
+          ipnUrl: "http://localhost:3000/api/payment/momo-ipn"
+        });
+       
+        if (momoRes.status === 200 && momoRes.data.payUrl) {
+          window.location.href = momoRes.data.payUrl;
+        } else {
+          console.error("MoMo không trả về link:", momoRes.data);
+          throw new Error("Không nhận được link thanh toán MoMo.");
+        }
+
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi" + error,
+        text: "Lỗi khi tạo đơn hàng. Vui lòng thử lại.",
+      });
+    }
+  };
+  
 
   return (
     <>
@@ -240,7 +293,7 @@ const Checkout = () => {
             </div>
             <div className="text-center mt-4">
               <span className="text-secondary">Vui lòng trả lời tất cả các câu hỏi để tiếp tục</span>
-              <button className="btn btn-success mt-2 w-100" >
+              <button className="btn btn-success mt-2 w-100" onClick={() => handleCreateOrder()}>
                 Tiếp tục »
               </button>
             </div>

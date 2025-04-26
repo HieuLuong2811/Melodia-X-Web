@@ -11,9 +11,9 @@ export const getAllSuatDien = async () => {
 };
 
 // Lấy suất diễn theo ID
-export const getSuatDienByID = async (idSuatDien) => {
+export const getSuatDienByID = async (idSuKien) => {
     try {
-        const [rows] = await pool.execute('SELECT * FROM SuatDien WHERE IDSuatDien = ?', [idSuatDien]);
+        const [rows] = await pool.execute('SELECT * FROM SuatDien WHERE IDSuKien = ?', [idSuKien]);
         return rows.length ? rows[0] : null;
     } catch (error) {
         throw error;

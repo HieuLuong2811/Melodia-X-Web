@@ -1,0 +1,33 @@
+.ant-table-content th,
+.ant-table-content td {
+  vertical-align: middle !important;
+}
+.table-light {
+    border-top-right-radius: 10px;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.table th, table td {
+  text-align: center;
+}
+
+.modal-dialog {
+  width: 1034px !important;
+}
+
+@media (min-width: 576px) {
+  .modal-dialog {
+      max-width: 1034px !important;
+      margin-right: auto;
+      margin-left: auto;
+  }
+}

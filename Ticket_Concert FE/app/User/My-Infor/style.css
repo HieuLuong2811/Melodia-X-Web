@@ -4,6 +4,43 @@
     display: block;               
 }
 
+.ant-table-content th,
+.ant-table-content td {
+  vertical-align: middle !important;
+}
+.table-light {
+    border-top-right-radius: 10px;
+}
+
+.loading-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.loading {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #FF7F3E;
+  box-shadow:  rgba(0,0,0,0.24) 0px 3px 8px;
+  animation: animation 1s ease-in-out infinite;
+}
+
+.set_1 {
+  animation-delay: 0s;
+}
+
+.set_2 {
+  animation-delay: 0.25s;
+}
+
+.set_3 {
+  animation-delay: 0.5s;
+}
+
+
 label {
     border : 0px !important;
 }

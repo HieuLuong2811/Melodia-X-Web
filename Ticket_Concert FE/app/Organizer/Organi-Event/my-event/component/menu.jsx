@@ -6,7 +6,13 @@ import Link from "next/link";
 export default function LeftSidebar() {
   const pathname = usePathname();
   const [selected, setSelected] = useState(pathname);
-
+  const [eventId, setEventId] = useState(null); 
+  
+  useEffect(() => {
+    const id = localStorage.getItem("IDSuKien_Organizer_Detail");
+    setEventId(id);
+  }, []);
+  
   useEffect(() => {
     setSelected(pathname);
   }, [pathname]);
@@ -17,15 +23,13 @@ export default function LeftSidebar() {
       items: [
         { href: "/Organizer/Organi-Event/my-event/Dashboard", icon: "fa-chart-pie", label: "Tổng kết" },
         { href: "/Organizer/Organi-Event/my-event/Order-list", icon: "fa-receipt", label: "Danh sách đơn hàng" },
-        { href: "/Organizer/check-in", icon: "fa-check-circle", label: "Check-in" },
       ],
     },
     {
       title: "Cài đặt sự kiện",
       items: [
-        { href: "/Organizer/members", icon: "fa-user", label: "Thành viên" },
-        { href: "/Organizer/edit-event", icon: "fa-pen", label: "Chỉnh sửa" },
-        { href: "/Organizer/seatmap", icon: "fa-chair", label: "SeatMap" },
+        { href: "/Organizer/Organi-Event/my-event/members", icon: "fa-user", label: "Thành viên" },
+        { href: `/Organizer/?eventId=${eventId}`, icon: "fa-pen", label: "Chỉnh sửa" },
       ],
     },
   ];

@@ -1,4 +1,4 @@
-import { getAllThanhVien, getThanhVienByID, createThanhVien, updateThanhVien, deleteThanhVien } from '../models/ThanhVien.js';
+import { getThanhVienByID, createThanhVien, updateThanhVien, deleteThanhVien } from '../models/ThanhVien.js';
 import { v4 as uuidv4 } from 'uuid';
 
 const getThanhVienData = (data) => ({
@@ -8,18 +8,9 @@ const getThanhVienData = (data) => ({
     vaiTro: data.VaiTro
 });
 
-export const getThanhVien = async (req, res) => {
-    try {
-        const members = await getAllThanhVien();
-        res.json(members);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
 export const getThanhVienByID = async (req, res) => {
     try {
-        const member = await getThanhVienByID(req.params.idThanhVien);
+        const member = await getThanhVienByID(req.params.idSuKien);
         if (member) res.json(member);
         else res.status(404).json({ message: 'Không tìm thấy thành viên' });
     } catch (error) {

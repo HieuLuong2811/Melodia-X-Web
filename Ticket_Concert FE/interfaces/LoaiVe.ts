@@ -10,7 +10,10 @@ export interface LoaiVe {
 
 
 export interface LoaiVe2 {
+    IDLoaiVe : string,
     TenSuKien : string,
-    ThoiGianBatDau : string,
+    TenVe : string,
+    GiaVe : string,
     SoLuong : string,
+    NgayThanhToan : string
 }

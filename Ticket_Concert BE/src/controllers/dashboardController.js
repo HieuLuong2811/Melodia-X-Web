@@ -1,5 +1,36 @@
 // controllers/dashboardController.js
-import { getStats, getRevenueStats, getEventStats, getRecentEvents } from '../models/statisticsModel';
+import { getStats, getRevenueStats, getEventStats, getRecentEvents, account } from '../models/statisticsModel';
+
+import { getDoanhThuBySuKien, getSoLuongVeDaBanBySuKien } from '../models/dashboard.js';
+
+export const DoanhThu = async (req, res) => {
+  try {
+    const { idsukien } = req.params;
+    const doanhThu = await getDoanhThuBySuKien(idsukien);
+    res.json(doanhThu);
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi khi lấy doanh thu sự kiện", error: error.message });
+  }
+};
+
+export const SoLuongVe = async (req, res) => {
+  try {
+    const { idsukien } = req.params;
+    const soLuong = await getSoLuongVeDaBanBySuKien(idsukien);
+    res.json(soLuong);
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi khi lấy số lượng vé đã bán", error: error.message });
+  }
+};
+
+export const countacc = async (req, res) => {
+  try {
+    const soLuong = await account();
+    res.json(soLuong);
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi khi lấy số lượng vé đã bán", error: error.message });
+  }
+}; 
 
 const dashboardController = {
   getStats: async (req, res) => {

@@ -11,7 +11,6 @@ import loaiVeRoutes from './routers/LoaiVe.js';
 import hoaDonRoutes from './routers/HoaDonMuaVe.js';
 import loaiSuKienRoutes from './routers/LoaiSuKien.js';
 import SuKienRoutes from './routers/SuKien.js';
-import DanhGiaRoutes from './routers/DanhGia.js';
 import authRoutes from './routers/login.js';
 import SuatDienRouters from './routers/SuatDien.js';
 import HoaDonRouters from './routers/HoaDonMuaVe.js';
@@ -19,7 +18,8 @@ import ChiTietHoaDonRouters from './routers/ChiTietHoaDon.js';
 import emailRoutes from './routers/emailRoutes.js';
 import dashboardAdmin from './routers/dashboardRoutes.js'
 import paymentRouter from './routers/payment.js';
-import ThongTinThanhToanRouter from './routers/ThongTinThanhToan.js'
+import ThongTinThanhToanRouter from './routers/ThongTinThanhToan.js';
+import ThanhVienRouter from './routers/ThanhVien.js';
 
 // Cấu hình middleware
 app.use(cors());
@@ -29,10 +29,10 @@ app.use(express.urlencoded({ extended: true }));
 // Định nghĩa các tuyến API
 app.use('/api', NguoiDungRouter);
 app.use('/api', hoaDonRoutes);
+app.use('/api', ThanhVienRouter);
 app.use('/api', loaiSuKienRoutes);
 app.use('/api', SuKienRoutes);
 app.use('/api', loaiVeRoutes);
-app.use('/api', DanhGiaRoutes);
 app.use('/api', authRoutes);
 app.use('/api', ChiTietHoaDonRouters);
 app.use('/api', HoaDonRouters);

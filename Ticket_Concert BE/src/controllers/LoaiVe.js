@@ -83,10 +83,7 @@ export const getVeDaMuaByUserId = async (req, res) => {
       const { idNguoiDung } = req.params;
       const veDaMua = await getVeDaMuaByUserId(idNguoiDung);
       
-      res.status(200).json({
-        success: true,
-        data: veDaMua
-      });
+      res.status(200).json(veDaMua);
     } catch (error) {
       console.error('Lỗi khi lấy vé đã mua:', error);
       res.status(500).json({

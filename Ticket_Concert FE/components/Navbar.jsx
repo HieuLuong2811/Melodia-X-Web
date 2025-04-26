@@ -10,7 +10,6 @@ const Nav = () => {
   const suggestions = ["Jisoo", "NTPMM", "Noo Phước Thịnh", "Chị đẹp"];
   const [avatars, setAvatar] = useState('');
 
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -107,18 +106,18 @@ const Nav = () => {
                 Tạo sự kiện
               </Link>
 
-              <Link href="#" className="d-flex align-items-center text-decoration-none text-white gap-2">
+              <Link href="/User/My-Infor/" className="d-flex align-items-center text-decoration-none text-white gap-2">
                 <i className="bi bi-ticket-detailed fs-3"></i> Vé đã mua
               </Link>
 
               <div className="dropdown mt-0">
                 <button className="btn text-white dropdown-toggle" type="button">
                   <Link href= "/Authen/Login/" className="text-decoration-none text-white" passHref>
-                    <img src={avatars}style={{ borderRadius : "50%", width : "2.5rem", height : "2.5rem", objectFit : "cover"}} alt="" /> Tài khoản
+                    <img src={avatars} style={{ borderRadius : "50%", width : "2.5rem", height : "2.5rem", objectFit : "cover"}} alt="" /> Tài khoản
                   </Link>
                 </button>
                 <ul className="dropdown-menu mt-0">
-                    <li><Link className="dropdown-item d-flex align-items-center gap-2" href="#"><i className="bi bi-ticket-detailed"></i> Vé đã mua</Link></li>
+                    <li><Link className="dropdown-item d-flex align-items-center gap-2" href="/User/My-Infor/"><i className="bi bi-ticket-detailed"></i> Vé đã mua</Link></li>
                     <li><Link className="dropdown-item d-flex align-items-center gap-2" target="blank" href="/Organizer/Organi-Event/my-event"><i className="bi bi-calendar-event"></i> Sự kiện của tôi</Link></li>
                     <li><Link className="dropdown-item d-flex align-items-center gap-2" href="/User/My-Infor/"><i className="bi bi-person-circle"></i> Trang cá nhân</Link></li>
                     <li><hr className="dropdown-divider" /></li>

@@ -1,5 +1,5 @@
 import express from 'express';
-import { getNguoiDung, getNguoiDungById, createNguoiDung, updateNguoiDung, deleteNguoiDung } from '../controllers/NguoiDung.js';
+import { getNguoiDung, getNguoiDungById, createNguoiDung, lockOrUnlockUser, updateNguoiDung, deleteNguoiDung } from '../controllers/NguoiDung.js';
 import {authenticate, authorize} from "../Middleware/Authen"
 const router = express.Router();
 
@@ -21,6 +21,8 @@ router.put('/NguoiDungs/:idNguoiDung', authenticate, (req, res, next) => {
     }
     return res.status(403).json({ message: "Không có quyền chỉnh sửa!" });
 }, updateNguoiDung);
+
+router.put('/NguoiDungTrangThai/:idNguoiDung', authenticate, authorize(["Admin"]), lockOrUnlockUser);
 
 
 router.delete('/NguoiDungs/:idNguoiDung', authenticate, authorize(["Admin"]), deleteNguoiDung);

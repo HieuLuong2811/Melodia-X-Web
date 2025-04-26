@@ -9,25 +9,22 @@ const getNguoiDungData = (nguoiDung) => {
         nguoiDung.soDienThoai,
         nguoiDung.gioiTinh,
         nguoiDung.ngaySinh,
-        nguoiDung.matKhau, // Đây sẽ là mật khẩu chưa băm, sẽ được xử lý trước khi lưu
+        nguoiDung.matKhau,
         nguoiDung.quyenHan,
         nguoiDung.trangThai
     ];
 };
 
-// Lấy danh sách người dùng
 export const getAllNguoiDung = async () => {
     const [rows] = await pool.query('SELECT * FROM NguoiDung');
     return rows;
 };
 
-// Lấy người dùng theo ID
 export const getNguoiDungByID = async (idNguoiDung) => {
     const [rows] = await pool.query('SELECT * FROM NguoiDung WHERE idNguoiDung = ?', [idNguoiDung]);
     return rows[0];
 };
 
-// Tạo người dùng mới
 export const createNguoiDung = async (idNguoiDung, nguoiDung) => {
     const userData = getNguoiDungData(nguoiDung);
     const [result] = await pool.query(
@@ -39,12 +36,10 @@ export const createNguoiDung = async (idNguoiDung, nguoiDung) => {
     return idNguoiDung;
 };
 
-// Cập nhật người dùng
 export const updateNguoiDung = async (IDNguoiDung, nguoiDung) => {
     const userData = getNguoiDungData(nguoiDung);
 
-    // Băm mật khẩu nếu có thay đổi
-    if (userData[6]) { // Kiểm tra xem mật khẩu có được cung cấp không
+    if (userData[6]) { 
         userData[6] = await bcrypt.hash(userData[6], 10);
     }
 
@@ -56,7 +51,16 @@ export const updateNguoiDung = async (IDNguoiDung, nguoiDung) => {
     );
 };
 
-// Xóa người dùng
 export const deleteNguoiDung = async (idNguoiDung) => {
     await pool.query('DELETE FROM NguoiDung WHERE idNguoiDung = ?', [idNguoiDung]);
+};
+
+export const updateTrangThaiNguoiDung = async (idNguoiDung, trangThai) => {
+    try{
+        const sql = "UPDATE NguoiDung SET TrangThai = ? WHERE IDNguoiDung = ?";
+        const [result] = await pool.query(sql, [trangThai, idNguoiDung]);
+        return result.affectedRows[0];
+    }catch (error) {
+        throw error;
+    }
 };

@@ -8,5 +8,6 @@ export interface NguoiDung {
     NgaySinh?: string | null;
     MatKhau: string;
     QuyenHan: "Admin" | "Organizer" | "User";
+    TrangThai : "Hoạt động" | "Khoá"
   }
   

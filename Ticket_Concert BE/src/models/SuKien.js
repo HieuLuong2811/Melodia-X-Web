@@ -16,12 +16,11 @@ export const getSuKienListAdmin = async (isAdmin = false) => {
 };
 
 export const CountSuKien = async () => {
-    const sql = `SELECT COUNT(*) AS SoLuong
-                 FROM SuKien
+    const sql = `SELECT * FROM SuKien
                  WHERE TrangThaiSuKien = "Chờ xác nhận"`;
 
     const [rows] = await pool.query(sql);
-    return rows[0].SoLuong;  
+    return rows;  
 }
 
 
@@ -45,9 +44,9 @@ export const getSuKienListUser = async (isAdmin = false) => {
 export const getSuKienDatalist = async (type) => {
     let sql;
     switch (type) {
-        case 'TongVeBan':
+        case 'TongVeBan': //Sự kiện đặc biệt
             sql = `
-                SELECT sk.Logo, SUM(cthd.SoLuong) AS TongVeBan
+                SELECT sk.IDSuKien, sk.Logo, SUM(cthd.SoLuong) AS TongVeBan
                 FROM SuKien sk
                 JOIN SuatDien sd ON sk.IDSuKien = sd.IDSuKien
                 JOIN LoaiVe lv ON lv.IDSuatDien = sd.IDSuatDien
@@ -59,9 +58,9 @@ export const getSuKienDatalist = async (type) => {
             `;
             break;
 
-        case 'GanNhatMua':
+        case 'GanNhatMua': // Sự kiện xu hướng
             sql = `
-                SELECT sk.AnhNen, MAX(hd.NgayThanhToan) AS GanNhatMua
+                SELECT sk.IDSuKien, sk.AnhNen, MAX(hd.NgayThanhToan) AS GanNhatMua
                 FROM SuKien sk
                 JOIN SuatDien sd ON sk.IDSuKien = sd.IDSuKien
                 JOIN LoaiVe lv ON lv.IDSuatDien = sd.IDSuatDien
@@ -74,7 +73,7 @@ export const getSuKienDatalist = async (type) => {
             `;
             break;
 
-        case 'SuKienCoVideo':
+        case 'SuKienCoVideo': // Sự kiện trên banner
             sql = `
                 SELECT IDSuKien, Video, AnhNen 
                 FROM SuKien 
@@ -83,7 +82,7 @@ export const getSuKienDatalist = async (type) => {
             `;
             break;
 
-        case 'SuKienNormal':
+        case 'SuKienNormal': 
             sql = `
                 SELECT * 
                 FROM SuKien 

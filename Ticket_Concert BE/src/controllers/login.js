@@ -1,6 +1,7 @@
 // controllers/LoginController.js
-import { findUserByEmail } from "../models/Login.js";
+import { findUserByEmail,createUser,findUserByEmailOrPhone  } from "../models/Login.js";
 import bcrypt from "bcrypt";
+import { v4 as uuidv4 } from 'uuid';
 import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
 
@@ -43,3 +44,35 @@ export const loginUser = async (req, res) => {
     }
 };
   
+export const registerUser = async (req, res) => {
+    try {
+        const { TenNguoiDung, Email, SoDienThoai, GioiTinh, NgaySinh, MatKhau } = req.body;
+
+        if (!TenNguoiDung || !Email || !SoDienThoai || !MatKhau) {
+            return res.status(400).json({ error: "Vui lòng điền đầy đủ thông tin bắt buộc" });
+        }
+
+        const existing = await findUserByEmailOrPhone(Email, SoDienThoai);
+        if (existing.length > 0) {
+            return res.status(409).json({ error: "Email hoặc số điện thoại đã tồn tại" });
+        }
+
+        const hashedPassword = await bcrypt.hash(MatKhau, 10);
+        const IDNguoiDung = uuidv4();
+
+        await createUser({
+            IDNguoiDung,
+            TenNguoiDung,
+            Email,
+            SoDienThoai,
+            GioiTinh,
+            NgaySinh,
+            MatKhau: hashedPassword
+        });
+
+        res.status(201).json({ message: "Đăng ký thành công!" });
+    } catch (error) {
+        console.error("Lỗi khi đăng ký:", error);
+        res.status(500).json({ error: "Lỗi khi đăng ký" });
+    }
+};

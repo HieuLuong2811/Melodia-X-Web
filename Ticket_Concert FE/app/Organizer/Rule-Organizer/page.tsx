@@ -21,7 +21,7 @@ const MyEvent = () => {
                 <LeftSidebar />
                 <div id="right" className="bg-black overflow-auto w-100">
                     <TopSidebar title= "Điều khoản cho ban tổ chức"/>
-                    <div className="container">
+                    <div className="container p-3">
                         <div className="bg-white rounded">
                             <div className="pt-4 ps-4 pb-3 pe-4">
                                 <ul className="list-unstyled mt-2 border rounded m-0">

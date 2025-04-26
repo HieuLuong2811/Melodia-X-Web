@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import "./product-detail.css";
 import Menu from "@/components/Menu.tsx";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {suKienDetailsService} from "@/services/SuKienDetails";
 import {SuKienDetails} from "@/interfaces/SuKienDetails";
 import DisplayEventTime from "@/components/DisplayEventTime";
@@ -17,6 +18,9 @@ export default function Product_details() {
     const MemoizedMenu= useMemo(() => <Menu />, []);
     const MemoizedFooter = useMemo(() => <Footer />, []);
 
+    const searchParams = useSearchParams();
+    const eventId = searchParams?.get("id_detail");    
+
     const [openSuat, setOpenSuat] = useState<string | null>(null);
     const [openDetail , setopenDetail] = useState(false);
 
@@ -27,15 +31,19 @@ export default function Product_details() {
     const [suKien, setSuKien] = useState<SuKienDetails | null>(null);
 
     useEffect(() => {
-        const idSuKien = localStorage.getItem("IDSuKien_User_Detail");
-        if (idSuKien) {
-            suKienDetailsService.getSuKienById(idSuKien).then((data) => {
-              if (data) {
-                setSuKien(data);
-              }
+        if (typeof eventId === "string") {
+            suKienDetailsService.getSuKienById(eventId).then((data) => {
+                if (data) {
+                    setSuKien(data);
+                } else {
+                    console.error("Không tìm thấy sự kiện");
+                }
+            }).catch(error => {
+                console.error("Lỗi khi gọi API:", error);
             });
-          }
-        }, []);
+        }
+    }, [eventId]); 
+    
     if (!suKien) {
         return <div className="loading-wrapper d-flex flex-column align-items-center gap-2">
         <p>Đang tải sự kiện...</p>
@@ -144,7 +152,7 @@ export default function Product_details() {
                                             </p>
                                         </div>            
                                     </div>
-                                    <Link href="/User/Book-Tickets/" className="text-decoration-none text-white"
+                                    <Link href={`/User/Book-Tickets?id_detail=${suKien?.IDSuKien}`} className="text-decoration-none text-white"
                                         onClick={() => {
                                             const suatInfo = {
                                             IDSuatDien: suat.IDSuatDien,

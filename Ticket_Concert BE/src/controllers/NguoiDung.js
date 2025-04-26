@@ -1,5 +1,5 @@
 // controllers/NguoiDungController.js
-import { getAllNguoiDung, getNguoiDungByID, createNguoiDung, updateNguoiDung, deleteNguoiDung } from '../models/NguoiDung.js';
+import { getAllNguoiDung, getNguoiDungByID, createNguoiDung, updateNguoiDung, updateTrangThaiNguoiDung, deleteNguoiDung } from '../models/NguoiDung.js';
 import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt';
 
@@ -11,8 +11,8 @@ const getNguoiDungData = (data) => ({
     gioiTinh: data.GioiTinh || null,
     ngaySinh: data.NgaySinh || null,
     matKhau: data.MatKhau,
-    quyenHan: data.QuyenHan || 'user',
-    trangThai: data.TrangThai || 'active'
+    quyenHan: data.QuyenHan || 'User',
+    trangThai: data.TrangThai || 'Hoạt động'
 });
 
 export const getNguoiDung = async (req, res) => {
@@ -22,6 +22,26 @@ export const getNguoiDung = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+};
+
+export const lockOrUnlockUser = async (req, res) => {
+    try {
+        const idNguoiDung = req.params.idNguoiDung
+        const {trangThai} = req.body;
+    
+        const affectedRows = await updateTrangThaiNguoiDung(idNguoiDung, trangThai);
+    
+        if (affectedRows === 0) {
+          return res.status(404).json({ message: `Không tìm thấy sự kiện với ID: ${idNguoiDung}` });
+        }
+    
+        let message = "Cập nhật trạng thái sự kiện thành công";
+    
+        res.json({ message });
+      } catch (error) {
+        console.error(`Lỗi khi cập nhật trạng thái sự kiện ${req.params.idNguoiDung}:`, error);
+        res.status(500).json({ message: `Lỗi khi cập nhật trạng thái sự kiện: ${error.message}` });
+      }
 };
 
 export const getNguoiDungById = async (req, res) => {

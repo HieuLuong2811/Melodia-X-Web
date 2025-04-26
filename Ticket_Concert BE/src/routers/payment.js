@@ -1,9 +1,11 @@
 import express from 'express';
-import { createMoMoPayment, handleMoMoIPN } from '../controllers/PaymentController.js';
+import { createMoMoPayment,handleMomoIPN } from '../controllers/PaymentController.js';
 
 const router = express.Router();
 
-router.post('/payment/momo', createMoMoPayment);
-router.post('/payment/momo-ipn', handleMoMoIPN); 
+// POST /api/payment/momo
+router.post('/momo', createMoMoPayment);
+router.post('/payment/momo-ipn', handleMomoIPN);
+
 
 export default router;

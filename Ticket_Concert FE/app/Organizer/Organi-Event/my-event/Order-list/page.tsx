@@ -1,101 +1,101 @@
+// pages/OrdersAndTickets.tsx
 "use client";
-import { useState } from "react";
-import LeftSidebar from "../component/menu";
-import TopSidebar from "@/components/topSide-Organizer";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import "../../../style/Home.css"
+import { Editor } from "@tinymce/tinymce-react";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { SuatDien } from "@/interfaces/SuatDien";
+import { SuatDienService } from "@/services/SuatDien";
+import DisplayEventTime from "@/components/DisplayEventTime";
+import { HoaDonMuaService } from "@/services/HoaDonMuaVe";
+import { HoaDonMua } from "@/interfaces/HoaDonMuaVe";
+import "../../../style/Home.css";
 
-const Editor = dynamic(() => import("@tinymce/tinymce-react").then((mod) => mod.Editor), {
-  ssr: false,
-});
-
-export interface Order {
-  name: string;
-  email: string;
-  phone: string;
-  paymentMethod: string;
-  ticketType: string;
-  price: string;
-  total: string;
-}
-
-export interface Ticket extends Order {
-  status: string;
-}
+// Dynamic imports cho sidebar
+const LeftSidebar = dynamic(() => import("../component/menu").then(), { ssr: false });
+const TopSidebar = dynamic(() => import("@/components/topSide-Organizer").then(), { ssr: false });
 
 export default function OrdersAndTickets() {
-  const [activeTab, setActiveTab] = useState<"Đơn hàng" | "Vé">("Đơn hàng");
-  const [startDate, setStartDate] = useState<string>("2025-03-01");
-  const [endDate, setEndDate] = useState<string>("2025-03-21");
+
+
   const [showEmailModal, setShowEmailModal] = useState<boolean>(false);
   const [emailSubject, setEmailSubject] = useState<string>("");
   const [emailContent, setEmailContent] = useState<string>("");
-  const [selectedOrders, setSelectedOrders] = useState<string[]>([]); 
+  const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
 
-  const ordersData: Order[] = [
-    {
-      name: "Nguyễn Văn A",
-      email: "lyvanminh280504@gmail.com",
-      phone: "0909123456",
-      paymentMethod: "Chuyển khoản",
-      ticketType: "VIP",
-      price: "1.000.000đ",
-      total: "2.000.000đ",
-    },
-  ];
+  // State cho suất diễn
+  const [suatDiens, setSuatDiens] = useState<SuatDien[]>([]);
+  const [selectedSuatDienId, setSelectedSuatDienId] = useState<string>("");
+  const [selectedSuatDien, setSelectedSuatDien] = useState<SuatDien | null>(null);
 
-  const ticketsData: Ticket[] = [
-    {
-      name: "Trần Thị B",
-      email: "lhieu0357@gmail.com",
-      phone: "0911222333",
-      paymentMethod: "Momo",
-      ticketType: "Thường",
-      price: "500.000đ",
-      total: "1.000.000đ",
-      status: "Đã thanh toán",
-    },
-    {
-      name: "Lê Văn C",
-      email: "c@gmail.com",
-      phone: "0922333444",
-      paymentMethod: "Tiền mặt",
-      ticketType: "VIP",
-      price: "1.000.000đ",
-      total: "1.000.000đ",
-      status: "Chưa thanh toán",
-    },
-  ];
+  // State cho dữ liệu từ API
+  const [orders, setOrders] = useState<HoaDonMua[]>([]);
+  // const [tickets, setTickets] = useState<Ticket[]>([]);
+
+  // Lấy dữ liệu từ API khi component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const eventId = localStorage.getItem("IDSuKien_Organizer_Detail");
+        if (!eventId) {
+          console.error("Không tìm thấy IDSukien_Organizer_Detail trong localStorage");
+          alert("Vui lòng chọn một sự kiện để xem thông tin.");
+          return;
+        }
+
+        const suatDienData = await SuatDienService.getbyIDSuKien(eventId);
+        if (suatDienData) {
+          const suatDienArray = Array.isArray(suatDienData) ? suatDienData : [suatDienData];
+          setSuatDiens(suatDienArray);
+
+          if (suatDienArray.length > 0) {
+            setSelectedSuatDienId(suatDienArray[0].IDSuatDien);
+            setSelectedSuatDien(suatDienArray[0]);
+            try {
+              const ordersData = await HoaDonMuaService.getHoaDonByIDSuatDien(suatDienArray[0].IDSuatDien);
+              setOrders(ordersData);
+            } catch (error) {
+              console.error("Lỗi khi lấy đơn hàng:", error);
+              setOrders([]);
+            }
+          }
+        }
+
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // Xử lý thay đổi suất diễn
+  const handleSelectChange = (event: SelectChangeEvent<string>) => {
+    const selectedId = event.target.value;
+    setSelectedSuatDienId(selectedId);
+    const foundSuatDien = suatDiens.find((s) => s.IDSuatDien === selectedId);
+    setSelectedSuatDien(foundSuatDien || null);
+  };
+
+  // Xử lý chọn tất cả checkbox
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      const allEmails = ordersData.map((order) => order.email);
+      const allEmails = orders.map((order) => order.Email);
       setSelectedOrders(allEmails);
-      console.log("All selected emails:", allEmails);
     } else {
       setSelectedOrders([]);
     }
   };
 
-  // Hàm xử lý chọn từng checkbox
+  // Xử lý chọn từng checkbox
   const handleSelectTicket = (email: string) => {
     setSelectedOrders((prev) =>
       prev.includes(email) ? prev.filter((e) => e !== email) : [...prev, email]
     );
   };
 
-  // Hàm gửi email cho tất cả (tab Đơn hàng)
-  const handleSendAllEmails = async () => {
-    if (!emailSubject || !emailContent) {
-      alert("Vui lòng nhập tiêu đề và nội dung email!");
-      return;
-    }
 
-    const emailList = ordersData.map((order) => order.email);
-    console.log("Danh sách email đã chọn (tất cả):", emailList);
-    await sendEmails(emailList);
-  };
-
-  // Hàm gửi email cho các mục đã chọn (tab Đơn hàng)
+  // Gửi email cho các mục đã chọn
   const handleSendSelectedEmails = async () => {
     if (!emailSubject || !emailContent) {
       alert("Vui lòng nhập tiêu đề và nội dung email!");
@@ -107,12 +107,10 @@ export default function OrdersAndTickets() {
       return;
     }
 
-    console.log("Danh sách email đã chọn:", selectedOrders);
-    console.log("Nội dung email:", emailContent);
     await sendEmails(selectedOrders);
   };
 
-  // Hàm chung để gửi email
+  // Hàm gửi email chung
   const sendEmails = async (emailList: string[]) => {
     try {
       const response = await fetch("http://localhost:3000/api/send-emails", {
@@ -124,8 +122,8 @@ export default function OrdersAndTickets() {
           emails: emailList,
           subject: emailSubject,
           content: emailContent,
-          startDate,
-          endDate,
+          startDate: selectedSuatDien ? new Date(selectedSuatDien.ThoiGianBatDau).toISOString() : "",
+          endDate: selectedSuatDien ? new Date(selectedSuatDien.ThoiGianKetThuc).toISOString() : "",
         }),
       });
 
@@ -145,268 +143,172 @@ export default function OrdersAndTickets() {
     }
   };
 
+  // Render bảng đơn hàng
+  const renderOrdersTable = () => (
+    <table className="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>
+            <input
+              type="checkbox"
+              checked={selectedOrders.length === orders.length && orders.length > 0}
+              onChange={handleSelectAll}
+            />
+          </th>
+          <th>Họ và tên</th>
+          <th>Email</th>
+          <th>Điện thoại</th>
+          <th>Hình thức thanh toán</th>
+          <th>Tổng vé</th>
+          <th>Tổng tiền</th>
+        </tr>
+      </thead>
+      <tbody>
+        {orders.length === 0 ? (
+          <tr>
+            <td colSpan={8} className="text-center">
+              <img src="https://via.placeholder.com/50?text=No+Data" alt="No data" className="mb-2" />
+              <p>No data</p>
+            </td>
+          </tr>
+        ) : (
+          orders.map((order, index) => (
+            <tr key={index}>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={selectedOrders.includes(order.Email)}
+                  onChange={() => handleSelectTicket(order.Email)}
+                />
+              </td>
+              <td>{order.TenNguoiDung}</td>
+              <td>{order.Email}</td>
+              <td>{order.SoDienThoai}</td>
+              <td>{order.PhuongThucThanhToan}</td>
+              <td>{order.TongSoVeMua}</td>
+              <td>{order.TongTienThanhToan}</td>
+            </tr>
+          ))
+        )}
+      </tbody>
+    </table>
+  );
+
+  // Render modal gửi email
+  const renderEmailModal = () => (
+    <div className="modal text-dark fade show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+      onClick={() => setShowEmailModal(false)}>
+      <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: "1000px" }}
+        onClick={(e) => e.stopPropagation()}>
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">
+              <img src="/logo.png" width={50} height={50} className="me-2" alt="Logo" />
+              Gửi Email Suất Diễn
+            </h5>
+            <button type="button" className="btn-close"
+              onClick={() => setShowEmailModal(false)}
+            ></button>
+          </div>
+          <div className="modal-body">
+            <div className="mb-3">
+              <label className="form-label">
+                Suất diễn:{" "}
+                {selectedSuatDien ? (
+                  <DisplayEventTime
+                    start={selectedSuatDien.ThoiGianBatDau}
+                    end={selectedSuatDien.ThoiGianKetThuc}/>
+                ) : (
+                  "Chưa chọn suất diễn"
+                )}
+              </label>
+            </div>
+            <div className="mb-3">
+              <label htmlFor="emailSubject" className="form-label">
+                Tiêu đề email
+              </label>
+              <div className="input-group">
+                <span className="input-group-text">
+                  <img src="/logo.png" width={24} height={24} alt="Logo" />
+                </span>
+                <input type="text" className="form-control border-2" id="emailSubject" value={emailSubject} placeholder="Tiêu đề email"
+                  onChange={(e) => setEmailSubject(e.target.value)}/>
+              </div>
+
+            </div>
+            <div className="mb-3">
+              <label htmlFor="emailContent" className="form-label">
+                Nội dung email
+              </label>
+              <Editor value={emailContent}
+                onEditorChange={(content) => setEmailContent(content)}
+                apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
+                init={{
+                  height: 300,
+                  content_style: "body { font-size: 14px; }",
+                  menubar: true,
+                  plugins: "lists link image table",
+                  toolbar:
+                    "undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image",
+                }}
+              />
+            </div>
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" onClick={() => setShowEmailModal(false)}>
+              Hủy
+            </button>
+            <button type="button" className="btn btn-primary"
+              onClick={() => handleSendSelectedEmails}>
+              Gửi đi
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="d-flex">
       <LeftSidebar />
-      <div id="right" className="overflow-auto w-100">
+      <div id="right" className="overflow-auto w-100" style={{ background: "linear-gradient(rgb(15, 46, 29), rgb(30 10 30))" }}>
         <TopSidebar title="Sự kiện của tôi" />
-        <div className="container">
+        <div className="container mt-4">
           <div className="bg-light p-3 pt-4 rounded">
+
             {/* Phần chọn thời gian */}
-            <div className="row mb-4">
-              <div className="col-md-12">
+            <div className="row mb-4 text-dark">
+              <div className="col-md-6">
                 <div className="d-flex align-items-center gap-3">
-                  <h5 className="mb-0">Danh sách buổi biểu diễn</h5>
+                  <h5 className="mb-0 fw-bold">Danh sách buổi biểu diễn</h5>
                   <div className="d-flex gap-2">
-                    <input
-                      type="date"
-                      className="form-control border"
-                      style={{ width: "150px" }}
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                    />
-                    <input
-                      type="date"
-                      className="form-control border"
-                      style={{ width: "150px" }}
-                      value={endDate}
-                      onChange={(e) => setEndDate(e.target.value)}
-                    />
+                    <Select id="suatDienSelect" value={selectedSuatDienId} onChange={handleSelectChange}>
+                      {suatDiens.map((suatDien) => (
+                        <MenuItem key={suatDien.IDSuatDien} value={suatDien.IDSuatDien}>
+                          <DisplayEventTime
+                            start={suatDien.ThoiGianBatDau}
+                            end={suatDien.ThoiGianKetThuc}
+                          />
+                        </MenuItem>
+                      ))}
+                    </Select>
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* Tabs */}
-            <div className="row mb-3">
-              <div className="d-flex rounded mb-3">
-                <button
-                  className={`w-50 rounded-0 border rounded-start btn ${
-                    activeTab === "Đơn hàng" ? "btn-success" : "btn"
-                  }`}
-                  onClick={() => setActiveTab("Đơn hàng")}
-                >
-                  Đơn hàng
-                </button>
-                <button
-                  className={`w-50 rounded-0 border rounded-end btn ${
-                    activeTab === "Vé" ? "btn-success" : "btn"
-                  }`}
-                  onClick={() => setActiveTab("Vé")}
-                >
-                  Vé
-                </button>
-              </div>
-              <div className="col-md-12 d-flex gap-2">
+              <div className="col-md-6 d-flex gap-2">
                 <div className="ms-auto d-flex gap-2">
-                  {activeTab === "Đơn hàng" && (
-                    <>
-                      <button
-                        className="btn btn-success"
-                        onClick={() => setShowEmailModal(true)}
-                      >
-                        Gửi tất cả email
-                      </button>
-                      <button
-                        className="btn btn-outline-secondary"
-                        onClick={() => setShowEmailModal(true)}
-                      >
-                        Email đã chọn
-                      </button>
-                    </>
-                  )}
-                  {activeTab === "Vé" && (
-                    <>
-                      <button className="btn btn-success">Xuất báo cáo</button>
-                    </>
-                  )}
+                 <button className="btn btn-success" onClick={() => setShowEmailModal(true)}>
+                    Gửi tất cả email
+                  </button>
                 </div>
               </div>
 
-              {/* Modal Popup */}
-              {showEmailModal && (
-                <div
-                  className="modal fade show d-block"
-                  style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-                  onClick={() => setShowEmailModal(false)}
-                >
-                  <div
-                    className="modal-dialog modal-dialog-centered"
-                    style={{ maxWidth: "1000px" }}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <h5 className="modal-title">
-                          <img src="/logo.png" width={50} height={50} className="me-2" alt="Logo" />
-                          Gửi Email Suất Diễn
-                        </h5>
-                        <button
-                          type="button"
-                          className="btn-close"
-                          onClick={() => setShowEmailModal(false)}
-                        ></button>
-                      </div>
-                      <div className="modal-body">
-                        <div className="mb-3">
-                          <label className="form-label">
-                            Suất diễn: {startDate} - {endDate}
-                          </label>
-                        </div>
-                        <div className="mb-3">
-                          <label htmlFor="emailSubject" className="form-label">
-                            Tiêu đề email
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control border"
-                            id="emailSubject"
-                            value={emailSubject}
-                            onChange={(e) => setEmailSubject(e.target.value)}
-                          />
-                        </div>
-                        <div className="mb-3">
-                          <label htmlFor="emailContent" className="form-label">
-                            Nội dung email
-                          </label>
-                          <Editor
-                            value={emailContent}
-                            onEditorChange={(content) => setEmailContent(content)} // Sửa onChange thành onEditorChange
-                            apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-                            init={{
-                              height: 300,
-                              content_style: "body { font-size: 14px; }",
-                              menubar: true,
-                              plugins: "lists link image table",
-                              toolbar:
-                                "undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image",
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="modal-footer">
-                        <button
-                          type="button"
-                          className="btn btn-secondary"
-                          onClick={() => setShowEmailModal(false)}
-                        >
-                          Hủy
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={
-                            activeTab === "Đơn hàng" && selectedOrders.length === 0
-                              ? handleSendAllEmails
-                              : handleSendSelectedEmails
-                          }
-                        >
-                          Gửi đi
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+              {showEmailModal && renderEmailModal()}
             </div>
 
-            {/* Bảng dữ liệu */}
             <div className="row">
               <div className="col-md-12">
-                {activeTab === "Đơn hàng" && (
-                  <table className="table table-bordered table-hover">
-                    <thead>
-                      <tr>
-                        <th>
-                          <input
-                            type="checkbox"
-                            checked={
-                              selectedOrders.length === ordersData.length &&
-                              ordersData.length > 0
-                            }
-                            onChange={handleSelectAll}
-                          />
-                        </th>
-                        <th>Họ và tên</th>
-                        <th>Email</th>
-                        <th>Điện thoại</th>
-                        <th>Hình thức thanh toán</th>
-                        <th>Loại vé</th>
-                        <th>Giá</th>
-                        <th>Số tiền</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {ordersData.length === 0 ? (
-                        <tr>
-                          <td colSpan={8} className="text-center">
-                            <img src="https://via.placeholder.com/50?text=No+Data" alt="No data" className="mb-2"/>
-                            <p>No data</p>
-                          </td>
-                        </tr>
-                      ) : (
-                        ordersData.map((order, index) => (
-                          <tr key={index}>
-                            <td>
-                              <input
-                                type="checkbox"
-                                checked={selectedOrders.includes(order.email)}
-                                onChange={() => handleSelectTicket(order.email)}
-                              />
-                            </td>
-                            <td>{order.name}</td>
-                            <td>{order.email}</td>
-                            <td>{order.phone}</td>
-                            <td>{order.paymentMethod}</td>
-                            <td>{order.ticketType}</td>
-                            <td>{order.price}</td>
-                            <td>{order.total}</td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                )}
-
-                {activeTab === "Vé" && (
-                  <table className="table table-bordered table-hover">
-                    <thead>
-                      <tr>
-                        <th>Họ và tên</th>
-                        <th>Email</th>
-                        <th>Điện thoại</th>
-                        <th>Hình thức thanh toán</th>
-                        <th>Loại vé</th>
-                        <th>Giá</th>
-                        <th>Số tiền</th>
-                        <th>Trạng thái thanh toán</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {ticketsData.length === 0 ? (
-                        <tr>
-                          <td colSpan={8} className="text-center">
-                            <img src="https://via.placeholder.com/50?text=No+Data" alt="No data" className="mb-2"/>
-                            <p>No data</p>
-                          </td>
-                        </tr>
-                      ) : (
-                        ticketsData.map((ticket, index) => (
-                          <tr key={index}>
-                            <td>{ticket.name}</td>
-                            <td>{ticket.email}</td>
-                            <td>{ticket.phone}</td>
-                            <td>{ticket.paymentMethod}</td>
-                            <td>{ticket.ticketType}</td>
-                            <td>{ticket.price}</td>
-                            <td>{ticket.total}</td>
-                            <td>{ticket.status}</td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                )}
+                {renderOrdersTable()}
               </div>
             </div>
           </div>

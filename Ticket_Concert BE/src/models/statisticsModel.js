@@ -88,3 +88,13 @@ export const getRecentEvents = async () => {
   `);
   return rows;
 };
+
+export const account = async () => {
+  const [rows] = await pool.query(`
+    SELECT 
+      COUNT(*) AS totalAccounts 
+    FROM NguoiDung 
+    WHERE TrangThai = 'Hoạt động';
+  `);
+  return rows[0].totalAccounts;
+}

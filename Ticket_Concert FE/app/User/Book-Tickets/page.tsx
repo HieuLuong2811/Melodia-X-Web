@@ -4,6 +4,9 @@ import Link from "next/link";
 import { LoaiVe } from "@/interfaces/LoaiVe";
 import { LoaiVeService } from "@/services/LoaiVe";
 import "./Book-Tickets.css";
+import { useSearchParams } from 'next/navigation';
+
+
 
 const TicketBooking = () => {
 
@@ -14,6 +17,9 @@ const TicketBooking = () => {
   const [diaDiem, setDiaDiem] = useState("");
   const [thoiGianBatDau, setThoiGianBatDau] = useState("");
   const [thoiGianKetThuc, setThoiGianKetThuc] = useState("");
+
+  const searchParams = useSearchParams();
+  const id_detail = searchParams.get("id_detail");
 
   // Load danh sách vé từ API
   useEffect(() => {
@@ -41,7 +47,7 @@ const TicketBooking = () => {
 
 
   useEffect(() => {
-    const savedCart = sessionStorage.getItem("cart");
+    const savedCart = sessionStorage.getItem("invoice");
     try {
       const parsedCart = JSON.parse(savedCart || "[]");
       if (Array.isArray(parsedCart)) {
@@ -63,7 +69,7 @@ const TicketBooking = () => {
       tongTien,
       tongSoLuong
     };
-    sessionStorage.setItem("cart", JSON.stringify(cartData));
+    sessionStorage.setItem("invoice", JSON.stringify(cartData));
   }, [cart]);
   
 
@@ -109,8 +115,7 @@ const TicketBooking = () => {
   const totalAmount = cart.reduce((sum, item) => sum + item.SoLuong * item.GiaTien, 0);
 
   const createInvoice = () => {
-    const idNguoiDung = localStorage.getItem("IDNguoiDung"); 
-  
+
     // Lấy tổng số vé
     const tongSoVe = cart.reduce((sum, item) => sum + item.SoLuong, 0);
   
@@ -127,9 +132,9 @@ const TicketBooking = () => {
       .padStart(2, "0")}`;
   
     const invoice = {
-      idNguoiDung: idNguoiDung || "", 
+      idNguoiDung: localStorage.getItem("IDNguoiDung") || "", 
       tongSoVe: tongSoVe,
-      NgayThanhToan: NgayThanhToan,
+      ngayThanhToan: NgayThanhToan,
       tongTien: totalAmount,
       phuongThucThanhToan: "Momo", 
       chiTiet: cart.map((item) => ({
@@ -141,7 +146,7 @@ const TicketBooking = () => {
       })),
     };
   
-    sessionStorage.setItem("cart", JSON.stringify(invoice));
+    sessionStorage.setItem("invoice", JSON.stringify(invoice));
     return invoice;
   };
   
@@ -158,9 +163,9 @@ const TicketBooking = () => {
 
   return (
     <>
-        <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
       />
       <div style={{height : "100%"}}>
         <nav className="navbar navbar-expand-lg navbar-light pt-3 pb-3 position-sticky top-0 z-3">
@@ -175,7 +180,7 @@ const TicketBooking = () => {
             <div className="col-md-6 p-3 flex-grow-1 text-center">
               <div className="d-flex align-items-center justify-content-between fs-5">
                 <Link
-                  href="/User/Product-Details"
+                  href={`/User/Product-Details/?id_detail=${id_detail}`}
                   className="text d-flex align-items-center text-decoration-none"
                   onClick={() => {
                     localStorage.removeItem("TenSuKien");
@@ -296,10 +301,10 @@ const TicketBooking = () => {
               </p>
 
               <div className="position-fixed w-100 bottom-0 bg-secondary p-3 text-center text-white" style={{ maxWidth: "39.5rem" }}>
-                <Link href="/User/Checkout-Tickets">
-                  <button className="btn btn-success text-white d-flex justify-content-center align-items-center gap-2 w-100 fw-bold"
+                <Link href={`/User/Checkout-Tickets/?id_detail=${id_detail}`}>
+                  <button className="btn fs-4 btn-success text-white d-flex justify-content-center align-items-center gap-2 w-100 fw-bold"
                     onClick={createInvoice} disabled={cart.length === 0}>
-                    Tiếp tục
+                    Tiếp tục - {totalAmount.toLocaleString()} đ
                     <i className="bi bi-chevron-double-right"></i>
                   </button>
                 </Link>

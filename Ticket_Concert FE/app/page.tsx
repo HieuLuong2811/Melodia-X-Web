@@ -117,12 +117,10 @@ export default function Home() {
   const settings3 = { ...baseSettings, slidesToShow: 4 };
   
   const crewData = [
-    { name: "Avery Davis", image: "/crew1.jpg" },
-    { name: "Benjamin Shah", image: "/crew2.jpg" },
-    { name: "Olivia Wilson", image: "/crew3.jpg" },
-    { name: "Daniel Gallego", image: "/crew4.jpg" },
-    { name: "Jenna Rivera", image: "/crew5.jpg" },
-    { name: "Liam Chen", image: "/crew6.jpg" },
+    { name: "Tp.Hồ Chí Minh", image: "/crew1.jpg" },
+    { name: "Hà Nội", image: "/crew2.jpg" },
+    { name: "Đà Lạt", image: "/crew3.jpg" },
+    { name: "Vị trí khác", image: "/crew4.jpg" },
   ];
   
     const settings4 = {
@@ -130,7 +128,7 @@ export default function Home() {
       infinite: true,
       speed: 500,
       slidesToShow: 4,
-      slidesToScroll: 4,
+      slidesToScroll: 1,
       responsive: [
         {
           breakpoint: 992,
@@ -172,8 +170,7 @@ export default function Home() {
         <Nav />
         <Menu />
         <main className="flex-1 flex flex-col row-start-2 items-center sm:items-start" style={{ backgroundColor: "#27272A" }}>
-          <div
-            className="hero-section d-flex align-items-center"
+          <div className="hero-section d-flex align-items-center"
             style={{ backgroundImage: "url(/anhnen.jpg)", backgroundSize: "cover",
               backgroundPosition: "center",
               height: "640px",
@@ -184,16 +181,15 @@ export default function Home() {
             <div className="container position-relative z-1 text-white">
               <div className="d-flex justify-content-between">
                 <div className="col-md-5">
-                  <p className="text-uppercase fw-light mb-2">Music Concert</p>
+                  <p className="text-uppercase fw-light mb-2">Sự kiện ca nhạc</p>
                   <h1 className="display-3 fw-bold">Festival</h1>
                   <h2 className="display-6 fw-light mb-4">Music</h2>
                   <p className="mb-4">
-                    Presentations are tools that can be used as lectures, speeches,
-                    reports, and more. It is mostly presented like before an
-                    audience it serves a variety.
+                    Website quản lý sự kiện ca nhạc giúp người dùng dễ dàng tạo sự kiện, quản lý suất diễn và các loại vé. Đây là công cụ hiệu quả cho ban tổ chức trong việc theo dõi thông tin sự kiện và bán vé đến khán giả một cách chuyên nghiệp.
                   </p>
+
                   <a href="#event" className="btn btn-outline-light btn-lg">
-                    Buy Ticket Now 
+                    Mua vé ngay
                     <i className="fas fa-arrow-right ms-2"></i>
                   </a>
                 </div>
@@ -209,7 +205,7 @@ export default function Home() {
                         )}
                         <div className="content">
                           <div className="info">
-                            <Link href="/User/Product-Details">
+                            <Link href= {`/User/Product-Details/?id_detail=${event.IDSuKien}`}>
                               <button className="btn btn-border">Xem chi tiết</button>
                             </Link>
                           </div>
@@ -227,8 +223,10 @@ export default function Home() {
               <h5 className="text-light fw-bold ps-2">Sự kiện đặc biệt</h5>
               <Slider {...settings2}>
                 {specialEvents.map((event) => (
-                  <div key={event.IDSuKien} className="rounded p-2  cursor-pointer">
-                    <img  src={event.Logo}  alt={event.TenSuKien}  className="img-fluid rounded-3 " />
+                  <div key={event.IDSuKien} className="rounded p-2 cursor-pointer">
+                    <Link href= {`/User/Product-Details/?id_detail=${event.IDSuKien}`}>
+                      <img  src={event.Logo}  alt={event.TenSuKien}  className="img-fluid rounded-3 " />
+                    </Link>
                   </div>
                 ))}
               </Slider>
@@ -242,8 +240,7 @@ export default function Home() {
                     <Slider {...settings3}>
                       {trendingEvents.map((suKien) => (
                         <div key={suKien.IDSuKien} className="p-2">
-                          <Link className="text-decoration-none" href="/User/Product-Details/"
-                          onClick={() => {localStorage.setItem("IDSuKien_User_Detail", suKien.IDSuKien)}}>
+                          <Link className="text-decoration-none" href= {`/User/Product-Details/?id_detail=${suKien.IDSuKien}`}>
                             <div className="card text-white border-0 rounded-3 overflow-hidden bg-transparent">
                               <img className="card-img" src={suKien.AnhNen} style={{ height: "200px", objectFit: "cover" }}/>
                             </div>
@@ -266,8 +263,7 @@ export default function Home() {
                     <Slider {...settings3}>
                       {suKiens.map((suKien) => (
                         <div key={suKien.IDSuKien} className="p-2">
-                          <Link className="text-decoration-none" href="/User/Product-Details/"
-                          onClick={() => {localStorage.setItem("IDSuKien_User_Detail", suKien.IDSuKien)}}>
+                          <Link className="text-decoration-none" href= {`/User/Product-Details/?id_detail=${suKien.IDSuKien}`}>
                             <div className="card text-white border-0 rounded-3 overflow-hidden bg-transparent">
                               <img className="card-img" src={suKien.AnhNen} style={{ height: "200px", objectFit: "cover" }}/>
                               <div className="card-body p-0 pt-3">
@@ -307,7 +303,7 @@ export default function Home() {
                   <Slider {...settings3}>
                     {weekendEvents.map((event) => (
                       <div key={event.IDSuKien} className="p-2">
-                        <Link className="text-decoration-none" href="/User/Product-Details/" onClick={() => localStorage.setItem("IDSuKien_User_Detail", event.IDSuKien)}>
+                        <Link className="text-decoration-none" href= {`/User/Product-Details/?id_detail=${event.IDSuKien}`}>
                           <div className="card text-white border-0 rounded-3 overflow-hidden bg-transparent">
                             <img className="card-img" src={event.AnhNen} style={{ height: "200px", objectFit: "cover" }} />
                             <div className="card-body p-0 pt-3">
@@ -331,7 +327,7 @@ export default function Home() {
                   <Slider {...settings3}>
                     {endOfMonthEvents.map((event) => (
                       <div key={event.IDSuKien} className="p-2">
-                        <Link className="text-decoration-none" href="/User/Product-Details/" onClick={() => localStorage.setItem("IDSuKien_User_Detail", event.IDSuKien)}>
+                        <Link className="text-decoration-none" href= {`/User/Product-Details/?id_detail=${event.IDSuKien}`}>
                           <div className="card text-white border-0 rounded-3 overflow-hidden bg-transparent">
                             <img className="card-img" src={event.AnhNen} style={{ height: "200px", objectFit: "cover" }} />
                             <div className="card-body p-0 pt-3">
@@ -357,14 +353,7 @@ export default function Home() {
             <div className="container">
               <div className="row align-items-center mb-4">
                 <div className="col-md-5">
-                  <h2 className="display-5 fw-bold text-success">Meet Our<br />Crew</h2>
-                </div>
-                <div className="col-md-7">
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at
-                    ipsum vitae lacus lobortis lacinia. Donec tristique arcu massa, at
-                    pharetra tortor feugiat non. Etiam vehicula hendrerit aliquet.
-                  </p>
+                  <h2 className="display-5 fw-bold text-success">Địa điểm nổi bật</h2>
                 </div>
               </div>
 

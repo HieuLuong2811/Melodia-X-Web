@@ -8,7 +8,6 @@ export default function TopNav({title}) {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [avatars, setAvatar] = useState('');
-  
     useEffect(() => {
       const token = localStorage.getItem("authToken");
       const userId = localStorage.getItem("IDNguoiDung");
@@ -62,12 +61,12 @@ export default function TopNav({title}) {
         <div className="dropdown">
             <div className="d-flex align-items-center gap-2 p-1" data-bs-toggle="dropdown">
               <div className="w-10">
-                <img src={avatars}style={{ borderRadius : "50%", width : "2.5rem", height : "2.5rem", objectFit : "cover"}} alt="" />
+                <img src={"https://static.ticketbox.vn/avatar.png"} style={{ borderRadius : "50%", width : "2.5rem", height : "2.5rem", objectFit : "cover"}} alt="avatar" />
               </div>
-              <span className="fw-bold text-white">Tài khoản</span>
+               <span className="fw-bold text-white">Tài khoản</span>
               <i className="bi bi-arrow-down-short text-white"></i>
             </div>
-            <ul className="dropdown-menu mt-0" style={{right : "0px", top : "40px"}}>
+            <ul className="dropdown-menu mt-0" style={{right : "0px", top : "45px"}}>
                   <li><Link className="dropdown-item" href="#"><i className="bi bi-calendar-event"></i> Sự kiện của tôi</Link></li>
                   <li><Link className="dropdown-item" href="#"><i className="bi bi-person-circle"></i> Trang cá nhân</Link></li>
                   <li><hr className="dropdown-divider" /></li>

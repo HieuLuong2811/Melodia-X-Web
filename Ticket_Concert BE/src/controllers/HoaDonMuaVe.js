@@ -1,4 +1,4 @@
-import { getAllHoaDon, getHoaDonByID, createHoaDon, fetchAllHoaDonChiTiet  } from '../models/HoaDonMuaVe.js';
+import { getAllHoaDon, getHoaDonByID, createHoaDon, fetchAllHoaDonChiTiet, deleteHoaDon,getHoaDonByIDSuatDien  } from '../models/HoaDonMuaVe.js';
 import {createChiTietHoaDon} from '../models/ChiTietHoaDon.js';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -42,12 +42,37 @@ export const getHoaDonByID = async (req, res) => {
     }
 };
 
+export const getHoaDonByIDsuatdien = async (req, res) => {
+    try {
+        const hoaDon = await getHoaDonByIDSuatDien(req.params.idSuatDien);
+        if (hoaDon) res.json(hoaDon);
+        else res.status(404).json({ message: 'Không tìm thấy hóa đơn' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const deleteHoaDoncontrollers = async (req, res) => {
+    try {
+        const result = await deleteHoaDon(req.params.idHoaDon);  
+        if (result.affectedRows > 0) {
+            res.json({ message: "Xoá hoá đơn thành công" });
+        } else {
+            res.status(400).json({ message: "Không tìm thấy hoá đơn" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+
 // tạo hóa đơn và chi tiết hóa đơn
 export const createHoaDonWithDetails = async (req, res) => {
     try {
         const HoaDonData = getHoaDonMuaVeData(req.body);
         
-        const { chiTiet } = req.body; 
+        const { chiTiet } = req.body;
 
         // Tạo ID hóa đơn
         const idHoaDon = uuidv4();
@@ -65,7 +90,7 @@ export const createHoaDonWithDetails = async (req, res) => {
             await createChiTietHoaDon(idChiTietHoaDon, chiTietItem);
         }
 
-        res.status(201).json({ message: "Tạo hóa đơn và chi tiết hóa đơn thành công", idHoaDon });
+        res.status(201).json({ message: "Tạo hóa đơn và chi tiết hóa đơn thành công", idHoaDon, tongTien : HoaDonData.tongTien });
     } catch (error) {
         console.error("Lỗi tạo hóa đơn:", error);
         res.status(500).json({ message: error.message });
@@ -81,3 +106,4 @@ export const fetchAllHoaDonChiTiet  = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
