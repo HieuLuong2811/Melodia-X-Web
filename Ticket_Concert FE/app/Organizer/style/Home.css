@@ -32,7 +32,7 @@
   
   /*================ Menu trái =================*/
   #left {
-    background: linear-gradient(#13241b, #08100b);
+    background: linear-gradient(#1e3227, #050505);
     z-index: 2;
     border-right: 1px solid #4a4848;
     width: 17% !important;
@@ -90,7 +90,7 @@
     transition: background-color 0.3s;
   }
   .menu-content.selected {
-    background-color: #4f5250;
+    background-color: rgba(0,0,0,.3)!important;
     color: white;
   }
   

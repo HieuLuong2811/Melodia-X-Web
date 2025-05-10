@@ -176,8 +176,6 @@ export default function Home() {
               height: "640px",
               position: "relative",
             }}>
-            <div className="overlay position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
-
             <div className="container position-relative z-1 text-white">
               <div className="d-flex justify-content-between">
                 <div className="col-md-5">
@@ -265,7 +263,7 @@ export default function Home() {
                         <div key={suKien.IDSuKien} className="p-2">
                           <Link className="text-decoration-none" href= {`/User/Product-Details/?id_detail=${suKien.IDSuKien}`}>
                             <div className="card text-white border-0 rounded-3 overflow-hidden bg-transparent">
-                              <img className="card-img" src={suKien.AnhNen} style={{ height: "200px", objectFit: "cover" }}/>
+                              <img className="card-img " src={suKien.AnhNen} style={{ height: "200px", objectFit: "cover" }}/>
                               <div className="card-body p-0 pt-3">
                                 <h6 className="card-title fw-bold fs-5" style={{height : "45px", overflow : "hidden"}}>{suKien.TenSuKien}</h6>
                                 <p className="text t fw-bold mb-1" style={{fontSize : "17px"}}>
@@ -307,7 +305,7 @@ export default function Home() {
                           <div className="card text-white border-0 rounded-3 overflow-hidden bg-transparent">
                             <img className="card-img" src={event.AnhNen} style={{ height: "200px", objectFit: "cover" }} />
                             <div className="card-body p-0 pt-3">
-                              <h6 className="card-title fw-bold fs-5" style={{ height: "45px",overflow : "hidden"}}>{event.TenSuKien}</h6>
+                              <h6 className="card-title fw-bold fs-5" style={{ height: "50px",overflow : "hidden"}}>{event.TenSuKien}</h6>
                               <p className="text t fw-bold mb-1" style={{ fontSize: "17px" }}>
                                 Từ {event.GiaVeReNhat ? Number(event.GiaVeReNhat).toLocaleString() + "đ" : "Đang cập nhật"}
                               </p>
@@ -331,7 +329,7 @@ export default function Home() {
                           <div className="card text-white border-0 rounded-3 overflow-hidden bg-transparent">
                             <img className="card-img" src={event.AnhNen} style={{ height: "200px", objectFit: "cover" }} />
                             <div className="card-body p-0 pt-3">
-                              <h6 className="card-title fw-bold fs-5" style={{ height: "45px" }}>{event.TenSuKien}</h6>
+                              <h6 className="card-title fw-bold fs-5" style={{ height: "50px",overflow : "hidden" }}>{event.TenSuKien}</h6>
                               <p className="text t fw-bold mb-1" style={{ fontSize: "17px" }}>
                                 Từ {event.GiaVeReNhat ? Number(event.GiaVeReNhat).toLocaleString() + "đ" : "Đang cập nhật"}
                               </p>

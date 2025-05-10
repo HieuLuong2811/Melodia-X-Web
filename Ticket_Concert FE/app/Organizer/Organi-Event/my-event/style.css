@@ -4,6 +4,15 @@
     justify-content: center;
     align-items: center;
 }
+.css-hzcega-MuiTabs-list {
+    justify-content:  space-between !important;
+    display: flex !important;
+}
+
+.css-1fr578y-MuiTabs-scroller {
+    background-color: #ffffff !important;
+    border-radius:  5px !important;
+}
 
 .form {
     width: 25rem !important;
