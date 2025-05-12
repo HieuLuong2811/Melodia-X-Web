@@ -28,3 +28,7 @@ textarea.form-control  {
 .logo::before {
     content: "" !important;
 }
+
+.css-10d30g3-MuiPaper-root-MuiDialog-paper{
+    max-width: 900px !important;
+}

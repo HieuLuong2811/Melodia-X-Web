@@ -265,7 +265,7 @@ export default function Home() {
                             <div className="card text-white border-0 rounded-3 overflow-hidden bg-transparent">
                               <img className="card-img " src={suKien.AnhNen} style={{ height: "200px", objectFit: "cover" }}/>
                               <div className="card-body p-0 pt-3">
-                                <h6 className="card-title fw-bold fs-5" style={{height : "45px", overflow : "hidden"}}>{suKien.TenSuKien}</h6>
+                                <h6 className="card-title fw-bold fs-5" style={{height : "50px", overflow : "hidden"}}>{suKien.TenSuKien}</h6>
                                 <p className="text t fw-bold mb-1" style={{fontSize : "17px"}}>
                                   Từ {suKien.GiaVeReNhat? Number(suKien.GiaVeReNhat).toLocaleString() + "đ" : "Đang cập nhật"}
                                 </p>

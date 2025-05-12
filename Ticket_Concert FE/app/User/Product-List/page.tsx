@@ -105,38 +105,19 @@ const Home = () => {
       <div style={{ backgroundColor: "#1a1a1a", color: "#fff", zoom: 0.9 }}>
         <Nav />
         <Menu/>
-        <div className="container position-relative pt-3" style={{minHeight : "1000px"}}>
+        <div className="container p-0 position-relative pt-3" style={{minHeight : "1000px"}}>
             <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-                <TextField
-                  label="Tìm kiếm"
-                  variant="outlined"
-                  fullWidth
-                />
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <Button variant="outlined" color="inherit">
-                      Tải lại
-                    </Button>
-                    {/* Bộ lọc vị trí */}
-                    <Button
-                      variant="outlined"
-                      color="inherit"
-                      onClick={handleLocationClick}
-                      sx={{ textTransform: "none" }}
-                    >
-                    {filterLocation}
+                <TextField label="Tìm kiếm" sx={{bgcolor : "white", color : "white", borderRadius : 2}} variant="outlined" fullWidth/>
+                <Box sx={{ display: "flex", width : "50%", justifyContent : "end", alignItems: "center", gap: 1 }}>            
+                    <Button variant="outlined" color="inherit" onClick={handleLocationClick} sx={{ textTransform: "none" }}>
+                      {filterLocation}
                     </Button>
                     <Popover
                       open={locationOpen}
                       anchorEl={locationAnchorEl}
                       onClose={handleLocationClose}
-                      anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "left",
-                      }}
-                      PaperProps={{
-                          sx: { backgroundColor: "#1a1a1a", color: "#fff", minWidth: "200px" },
-                      }}
-                    >
+                      anchorOrigin={{vertical: "bottom", horizontal: "left"}}
+                      PaperProps={{sx: { backgroundColor: "#1a1a1a", color: "#fff", minWidth: "200px" }}}>
                     <List>
                         {locations.map((loc) => (
                         <ListItem
@@ -145,23 +126,17 @@ const Home = () => {
                             sx={{
                             "&:hover": { backgroundColor: "#333" },
                             backgroundColor: filterLocation === loc ? "#007bff" : "transparent",
-                            color: filterLocation === loc ? "#fff" : "#fff",
-                            }}
-                        >
+                            color: filterLocation === loc ? "#fff" : "#fff" }}>
                             <ListItemText primary={loc} />
                         </ListItem>
                         ))}
                     </List>
                     </Popover>
-                    {/* Bộ lọc ngày */}
-                    <Button
-                      variant="outlined"
-                      color="inherit"
-                      onClick={handleDateClick}
-                      sx={{ textTransform: "none" }}
-                    >
-                    {filterDate}
+                    
+                    <Button variant="outlined" color="inherit" onClick={handleDateClick} sx={{ textTransform: "none" }}>                 
+                      {filterDate}
                     </Button>
+
                     <Popover
                       open={dateOpen}
                       anchorEl={dateAnchorEl}
@@ -170,10 +145,7 @@ const Home = () => {
                           vertical: "bottom",
                           horizontal: "left",
                       }}
-                      PaperProps={{
-                          sx: { backgroundColor: "#1a1a1a", color: "#fff", minWidth: "200px" },
-                      }}
-                    >
+                      PaperProps={{ sx: { backgroundColor: "#1a1a1a", color: "#fff", minWidth: "200px" }}}>
                     <List>
                         <ListItem
                         onClick={() => handleDateSelect("Tất cả các ngày")}
@@ -181,8 +153,7 @@ const Home = () => {
                             "&:hover": { backgroundColor: "#333" },
                             backgroundColor: filterDate === "Tất cả các ngày" ? "#007bff" : "transparent",
                             color: filterDate === "Tất cả các ngày" ? "#fff" : "#fff",
-                        }}
-                        >
+                        }}>
                         <ListItemText primary="Tất cả các ngày" />
                         </ListItem>
                         <Divider sx={{ borderColor: "rgba(255, 255, 255, 0.2)", my: 0.5 }} />
@@ -194,8 +165,7 @@ const Home = () => {
                             "&:hover": { backgroundColor: "#333" },
                             backgroundColor: filterDate === day.toLocaleDateString("vi-VN") ? "#007bff" : "transparent",
                             color: filterDate === day.toLocaleDateString("vi-VN") ? "#fff" : "#fff",
-                            }}
-                        >
+                            }}>
                             <ListItemText primary={day.toLocaleDateString("vi-VN")} />
                         </ListItem>
                         ))}
@@ -205,36 +175,25 @@ const Home = () => {
             </Box>
             <Box>
                 {filteredEvents.length > 0 ? (
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap : 1}}>
+                <Box sx={{ display: "flex", flexWrap: "wrap"}}>
                     {filteredEvents.map((suKien) => (
-                    <Box key={suKien.IDSuKien} sx={{ p: 1, flex: "0 0 calc(25% - 8px)" }}>
-                        <Link href={`/User/Product-Details/?id_detail=${suKien.IDSuKien}`} style={{ textDecoration: "none", color: "#fff" }}>
-                        <Box sx={{ borderRadius: 2, overflow: "hidden", backgroundColor: "transparent"}}>
-                            <img src={suKien.AnhNen}
-                            alt={suKien.TenSuKien}
-                            style={{ width: "100%", height: "200px", objectFit: "cover" }}
-                            />
-                            <Box sx={{ p: 1.5 }}>
-                            <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "bold", fontSize: "1.25rem", height: "45px", overflow: "hidden" }}
-                            >
-                                {suKien.TenSuKien}
-                            </Typography>
-                            <Typography
-                                variant="body1"
-                                sx={{ fontWeight: "bold", mb: 0.5, fontSize: "1.0625rem" }}
-                            >
-                                Từ {suKien.GiaVeReNhat ? Number(suKien.GiaVeReNhat).toLocaleString() + "đ" : "Đang cập nhật"}
-                            </Typography>
-                            <Typography variant="body2" sx={{ color: "#bbb", mb: 0 }}>
-                                <i className="bi bi-calendar-event" style={{ marginRight: "0.5rem" }} />
-                                <OnlyDate date={suKien.NgayDienDauTien} />
-                            </Typography>
-                            </Box>
-                        </Box>
-                        </Link>
-                    </Box>
+                     <div key={suKien.IDSuKien} className="p-2" style={{width : "350px"}}>
+                          <Link className="text-decoration-none" href= {`/User/Product-Details/?id_detail=${suKien.IDSuKien}`}>
+                            <div className="card text-white border-0 rounded-3 overflow-hidden bg-transparent">
+                              <img className="card-img " src={suKien.AnhNen} style={{ height: "200px", objectFit: "cover" }}/>
+                              <div className="card-body p-0 pt-3">
+                                <h6 className="card-title fw-bold fs-5" style={{height : "50px", width : "340px", overflow : "hidden"}}>{suKien.TenSuKien}</h6>
+                                <p className="text t fw-bold mb-1" style={{fontSize : "17px"}}>
+                                  Từ {suKien.GiaVeReNhat? Number(suKien.GiaVeReNhat).toLocaleString() + "đ" : "Đang cập nhật"}
+                                </p>
+                                <p className="text-secondary mb-0 text-white">
+                                  <i className="bi bi-calendar-event me-2"></i> 
+                                  <OnlyDate date={suKien.NgayDienDauTien}/>
+                                </p>
+                              </div>
+                            </div>
+                          </Link>
+                        </div>
                     ))}
                 </Box>
                 ) : (

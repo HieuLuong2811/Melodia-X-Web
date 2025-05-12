@@ -11,12 +11,46 @@ import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import "../../style/Home.css";
 import "./create-event.css";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 
 const MediaUploader = dynamic(() => import('@/components/ImageUploader.tsx'), { ssr: false });
 
 const Editor = dynamic(() => import("@tinymce/tinymce-react").then((mod) => mod.Editor), {
   ssr: false,
 });
+
+export const WelcomeDialog = () => {
+  const [open, setOpen] = useState(true); 
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="welcome-dialog-title"
+      aria-describedby="welcome-dialog-description" >
+      <DialogTitle id="welcome-dialog-title" sx={{fontWeight : "bold"}}>LƯU Ý KHI ĐĂNG TẢI SỰ KIỆN!</DialogTitle>
+      <DialogContent>
+        <div className="ant-modal-body">
+          <div>1. Vui lòng 
+            <b> không hiển thị thông tin liên lạc của Ban Tổ Chức</b> (ví dụ: Số điện thoại/ Email/ Website/ Facebook/ Instagram…) 
+            <b> trên banner và trong nội dung bài đăng.</b> Chỉ sử dụng duy nhất Hotline Ticketbox - 1900.6408.
+            <br />2. Trong trường hợp Ban tổ chức <b>tạo mới hoặc cập nhật sự kiện không đúng theo quy định nêu trên, Ticketbox có quyền từ chối phê duyệt sự kiện.</b>
+            <br />3. Ticketbox sẽ liên tục kiểm tra thông tin các sự kiện đang được hiển thị trên nền tảng, 
+            <b> nếu phát hiện có sai phạm liên quan đến hình ảnh/ nội dung bài đăng, Ticketbox có quyền gỡ bỏ hoặc từ chối cung cấp dịch vụ đối với các sự kiện này,</b> dựa theo điều khoản 2.9 trong Hợp đồng dịch vụ.
+          </div>
+        </div>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Đóng
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
 
 const EventForm = () => {
 
@@ -148,8 +182,9 @@ const EventForm = () => {
 
   return (
     <>
+      <WelcomeDialog />
       <div className="container p-0" style={{width : "100%" , height : "100%"}}>
-
+        
         {/* SỬA SỰ KIỆN */}
         {isEditMode ? (
           <div>
