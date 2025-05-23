@@ -12,7 +12,6 @@ import { HoaDonMuaService } from "@/services/HoaDonMuaVe";
 import { HoaDonMua } from "@/interfaces/HoaDonMuaVe";
 import "../../../style/Home.css";
 
-// Dynamic imports cho sidebar
 const LeftSidebar = dynamic(() => import("../component/menu").then(), { ssr: false });
 const TopSidebar = dynamic(() => import("@/components/topSide-Organizer").then(), { ssr: false });
 

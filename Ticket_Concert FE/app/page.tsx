@@ -34,6 +34,26 @@ export default function Home() {
     fetchevent();
   }, []);
 
+  // const [time, setTime] = useState(0); 
+  // useEffect(() => {
+
+  //   const interval = setInterval(() => {
+  //     setTime((prevTime) => prevTime + 1); 
+  //   }, 1000);
+
+  //   return () => clearInterval(interval); 
+  // }, []);
+
+  // useEffect(() => {
+
+  //   if (time > 15) {
+  //     console.log("Time:", time);
+  //   } else {
+  //     console.log("Nhỏ");
+  //   }
+    
+  // }, [time]);
+
   // Sự kiện đặc biệt 
   const [specialEvents, setSpecialEvent] = useState<SuKien[]>([]);
 
@@ -362,10 +382,10 @@ export default function Home() {
                       <Image
                         src={crew.image}
                         alt={crew.name}
-                        width={300}
+                        width={500}
                         height={300}
                         className="img-fluid rounded"
-                        style={{ objectFit: "cover", height: "300px", width: "100%" }}
+                        style={{ objectFit: "cover" }}
                       />
                     </div>
                     <p className="mt-2 text-white">{crew.name}</p>

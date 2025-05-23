@@ -14,13 +14,13 @@ export const getAllSuatDien = async () => {
 export const getSuatDienByID = async (idSuKien) => {
     try {
         const [rows] = await pool.execute('SELECT * FROM SuatDien WHERE IDSuKien = ?', [idSuKien]);
-        return rows.length ? rows[0] : null;
+        return rows;
     } catch (error) {
         throw error;
     }
 };
 
-// Tạo suất diễn mới
+// Tạo nhiều suất diễn
 export const createSuatDien = async (idSuatDien, data) => {
     try {
         const { idSuKien, thoiGianBatDau, thoiGianKetThuc } = data;
@@ -33,6 +33,7 @@ export const createSuatDien = async (idSuatDien, data) => {
         throw error;
     }
 };
+
 
 // Cập nhật suất diễn
 export const updateSuatDien = async (idSuatDien, data) => {

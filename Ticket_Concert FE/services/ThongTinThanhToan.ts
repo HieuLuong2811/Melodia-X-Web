@@ -5,15 +5,22 @@ import axios from "axios";
 const API_URL = "http://localhost:3000/api/GiaoDichs";
 
 export const thongTinThanhToanService = {
-  getAllThongTinThanhToans: async (): Promise<ThongTinThanhToan[]> => {
-    const response = await axios.get(`${API_URL}`);
-    return response.data;
-  },
 
-  getThongTinThanhToansById: async (IDNguoiDung : string): Promise<ThongTinThanhToan> => {
+  getThongTinThanhToansById: async (IDNguoiDung: string): Promise<ThongTinThanhToan | null> => {
+  try {
     const response = await axios.get<ThongTinThanhToan>(`${API_URL}/${IDNguoiDung}`);
     return response.data;
-  },
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      console.warn("Không tìm thấy thông tin thanh toán cho người dùng:", IDNguoiDung);
+      return null; 
+    }
+
+    console.error("Lỗi khi lấy thông tin thanh toán:", error);
+    throw error;
+  }
+ },
+
 
   createThongTinThanhToans: async (data: Omit<ThongTinThanhToan, "IDThongTin">): Promise<ThongTinThanhToan> => {
     const response = await axios.post<ThongTinThanhToan>(`${API_URL}`, data);

@@ -6,6 +6,10 @@
     color: #2dc275 !important;
 }
 
+.css-10d30g3-MuiPaper-root-MuiDialog-paper {
+    max-width: 900px !important;
+}
+
 .form-control {
     width: 100% !important;
 }
@@ -27,8 +31,4 @@ textarea.form-control  {
 
 .logo::before {
     content: "" !important;
-}
-
-.css-10d30g3-MuiPaper-root-MuiDialog-paper{
-    max-width: 900px !important;
 }

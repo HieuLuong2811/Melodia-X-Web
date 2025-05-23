@@ -1,5 +1,5 @@
 export interface LoaiVe {
-    IDLoaiVe : string,
+    IDLoaiVe? : string,
     IDSuatDien : string,
     TenVe : string,
     AnhVe : string,
@@ -7,7 +7,6 @@ export interface LoaiVe {
     SoLuongVe : number,
     ThongTinVe : string,
 }
-
 
 export interface LoaiVe2 {
     IDLoaiVe : string,

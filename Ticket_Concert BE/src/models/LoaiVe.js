@@ -44,7 +44,7 @@ export const createLoaiVe = async (idLoaiVe, loaiVeData) => {
 
         const [result] = await pool.query(query, [idLoaiVe, IDSuatDien, TenVe, AnhVe, GiaVe, SoLuongVe, ThongTinVe]);
         return result.insertId;
-    } catch (error) {
+    } catch (error) {   
         throw error;
     }
 };

@@ -184,11 +184,13 @@ export const createSuKien = async (idSuKien, data) => {
 
 
 // Cập nhật sự kiện
-export const updateSuKien = async (id, suKien) => {
+export const updateSuKien = async (idSuKien, suKien) => {
     try {
-        const sql = "UPDATE SuKien SET ? WHERE IDSuKien = ?";
-        const [result] = await pool.query(sql, [suKien, id]);
-        return result.affectedRows;
+        const {idLoaiSuKien, idNguoiDung, tenSuKien, logo, anhNen, diaDiem, thongTinSuKien, logoBanToChuc, tenBanToChuc, thongTinBanToChuc, video} = suKien;
+        await pool.execute(
+            'UPDATE SuKien SET IDLoaiSuKien = ?, IDNguoiDung = ?, TenSuKien = ?, Logo = ?, AnhNen = ?, DiaDiem = ?, ThongTinSuKien = ?, LogoBanToChuc = ?, TenBanToChuc = ?, ThongTinBanToChuc = ?, Video = ?  WHERE IDSuKien = ?',
+            [idLoaiSuKien, idNguoiDung, tenSuKien, logo, anhNen, diaDiem, thongTinSuKien, logoBanToChuc, tenBanToChuc, thongTinBanToChuc, video ,idSuKien]
+        );
     } catch (error) {
         throw error;
     }

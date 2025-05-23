@@ -14,8 +14,8 @@ export const SuatDienService = {
     return response.data;
   },
 
-  createSuatDiens: async (data: Omit<SuatDien, "IDSuatDien">): Promise<SuatDien> => {
-    const response = await axiosInstance.post<SuatDien>('SuKiens', data);
+  createSuatDiens: async(data : Omit<SuatDien, 'IDSuatDien'>) : Promise<SuatDien> => {
+    const response = await axiosInstance.post<SuatDien>('SuatDiens', data);
     return response.data;
   },
 

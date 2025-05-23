@@ -12,10 +12,7 @@ export default function Menu() {
     const fetchLoaiSuKien = async () => {
       try {
         const data = await LoaisuKienService.getAllLoaiSuKiens();
-        console.log(data);
-
         setType(data);
-        // alert(data);
       } catch (error) {
         console.error("Lỗi khi lấy danh sách LoaiSuKien:", error);
       }

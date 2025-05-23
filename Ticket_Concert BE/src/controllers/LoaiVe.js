@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 const getLoaiVeData = (data) => ({
     IDSuatDien: data.IDSuatDien,
     TenVe: data.TenVe,
-    AnhVe: data.AnhVe || null,
+    AnhVe: data.AnhVe,
     GiaVe: data.GiaVe,
     SoLuongVe: data.SoLuongVe,
     ThongTinVe: data.ThongTinVe || null
@@ -48,7 +48,7 @@ export const createLoaiVeHandler = async (req, res) => {
         const idLoaiVe = uuidv4();
 
         await createLoaiVe(idLoaiVe, loaiVeData);
-        res.status(201).json({ message: 'Tạo loại vé thành công', id: idLoaiVe });
+        res.status(201).json({ IDLoaiVe: idLoaiVe, ...loaiVeData });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

@@ -34,27 +34,21 @@ const Nav = () => {
       cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("IDNguoiDung");
-        localStorage.removeItem("uploadedImage_logo");
-        localStorage.removeItem("uploadedImage_logoOrganizer");
-        localStorage.removeItem("uploadedImage_background");
-        localStorage.removeItem("IDLoaiSuKien_Organizer");
-        localStorage.removeItem("TenSuKien");
-        localStorage.removeItem("ThoiGianBatDau");
-        localStorage.removeItem("ThoiGianKetThuc");
-        localStorage.removeItem("IDSuKien_User_Detail");
-        localStorage.removeItem("IDSuKien_User");
-        localStorage.removeItem("IDSuatDien");
-        localStorage.removeItem("DiaDiem");
-        localStorage.removeItem("TenNguoiDung");
-        localStorage.removeItem("AnhNen");
+        localStorage.clear();
         setIsLoggedIn(false);
         Swal.fire("Đã đăng xuất!", "Bạn đã đăng xuất thành công.", "success");
         window.location.href = "/";
       }
     });
   };
+
+   const handleCreateEvent = () => {
+        localStorage.removeItem("uploadedMedia_logo");
+        localStorage.removeItem("uploadedMedia_background");
+        localStorage.removeItem("uploadedMedia_logoOrganizer");
+        localStorage.removeItem("IDSuKien_Organizer_Detail");
+      };
+  
   
 
   return (
@@ -102,7 +96,7 @@ const Nav = () => {
           <div className="d-flex align-items-center">
           {isLoggedIn ? (
             <div className="d-flex align-items-center justify-content-between gap-3 w-100">
-              <Link href="/Organizer/"  className="btn btn-outline-light ps-4 pe-4 pt-2 pb-2 rounded-5" target="_blank" rel="noopener noreferrer" style={{width : "150px"}} passHref>
+              <Link href="/Organizer/" onClick={() => handleCreateEvent()} className="btn btn-outline-light ps-4 pe-4 pt-2 pb-2 rounded-5" target="_blank" rel="noopener noreferrer" style={{width : "150px"}} passHref>
                 Tạo sự kiện
               </Link>
 

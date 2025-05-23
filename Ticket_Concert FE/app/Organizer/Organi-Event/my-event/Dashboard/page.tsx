@@ -163,7 +163,7 @@ export default function Statistics() {
                     <div>
                       <h5 className="card-title fs-6">Doanh thu</h5>
                       <p className="card-text fs-5">
-                        {doanhthus?.TongDoanhThu ? "Tổng : " + Number(doanhthus.TongDoanhThu).toLocaleString() : "Chưa có dữ liệu"}đ
+                        {doanhthus?.TongDoanhThu ? "Tổng : " + Number(doanhthus.TongDoanhThu).toLocaleString() : "Chưa có dữ liệu"} đ
                       </p>
                     </div>
                   </div>

@@ -154,19 +154,28 @@ const MyEvent = () => {
                                                 </li>
                                                 <li className="d-flex flex-column align-items-center">
                                                     <i className="bi bi-person-fill"></i>
-                                                    <span style={{ color: "rgb(45, 194, 117)" }}>Thành viên</span>
+                                                    <Link href="/Organizer/Organi-Event/my-event/members/"
+                                                        onClick={() => { handleClick(); localStorage.setItem( "IDSuKien_Organizer_Detail", suKien.IDSuKien );}}>
+                                                        <span style={{ color: "rgb(45, 194, 117)" }}>Thành viên</span>
+                                                    </Link>
                                                 </li>
                                                 <li className="d-flex flex-column align-items-center">
                                                     <i className="bi bi-journal-text"></i>
-                                                    <span style={{ color: "rgb(45, 194, 117)" }}>Đơn hàng</span>
+                                                    <Link href="/Organizer/Organi-Event/my-event/Order-list/"
+                                                        onClick={() => { handleClick(); localStorage.setItem( "IDSuKien_Organizer_Detail", suKien.IDSuKien );}}>
+                                                        <span style={{ color: "rgb(45, 194, 117)" }}>Đơn hàng</span>
+                                                    </Link>
                                                 </li>
-                                                <li className="d-flex flex-column align-items-center">
+                                                {/* <li className="d-flex flex-column align-items-center">
                                                     <i className="fas fa-chair fs-5 mt-1 mb-2"></i>
                                                     <span style={{ color: "rgb(45, 194, 117)" }}>Sơ đồ ghế</span>
-                                                </li>
+                                                </li> */}
                                                 <li className="d-flex flex-column align-items-center">
                                                     <i className="bi bi-pencil"></i>
-                                                    <span style={{ color: "rgb(45, 194, 117)" }}>Chỉnh sửa</span>
+                                                    <Link href="/Organizer/Organi-Event/my-event/"
+                                                        onClick={() => { handleClick(); localStorage.setItem( "IDSuKien_Organizer_Detail", suKien.IDSuKien );}}>
+                                                        <span style={{ color: "rgb(45, 194, 117)" }}>Chỉnh sửa</span>
+                                                    </Link>
                                                 </li>
                                             </ul>
                                         </div>

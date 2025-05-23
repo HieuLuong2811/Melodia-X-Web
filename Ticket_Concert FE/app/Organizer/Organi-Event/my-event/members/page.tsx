@@ -51,7 +51,7 @@ export default function MembersPage() {
     const IDSuKien = localStorage.getItem("IDSuKien_Organizer_Detail");
     if (!IDSuKien) return;
   
-    if (!formData.TenThanhVien || !formData.Email) {
+    if (!formData.TenThanhVien || !formData.Email || !formData.VaiTro) {
       Swal.fire("Lỗi!", "Vui lòng điền đầy đủ thông tin thành viên.", "warning");
       return;
     }
@@ -69,6 +69,7 @@ export default function MembersPage() {
         await ThanhVienService.CreateThanhVien({ ...formData, IDSuKien } as ThanhVien);
       }
       Swal.fire("Thành công!", `${editingMember ? "Đã cập nhật" : "Đã thêm"} thành viên.`, "success");
+      setFormData({ TenThanhVien: "", Email: "", VaiTro: "" });
       setShowModal(false);
       const updated = await ThanhVienService.GetThanhVienByID(IDSuKien);
       setMember(updated);

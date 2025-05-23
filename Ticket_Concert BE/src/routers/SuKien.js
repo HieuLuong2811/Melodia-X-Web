@@ -1,5 +1,5 @@
 import express from "express";
-import {getSuKienUser, getSuKienAdmin, getSuKienById, SoLuongEvent ,getSuKienTongVeBan, getSuKienGanNhatMua, getSuKienCoVideo, createSuKienlist, TrangThaiSuKienController, getSuKienByIdUser, updateSuKien, deleteSuKien, getSuKienChiTiet} from "../controllers/SuKien.js";
+import {getSuKienUser, getSuKienAdmin, getSuKienById, SoLuongEvent ,getSuKienTongVeBan, getSuKienGanNhatMua, getSuKienCoVideo, createSuKienlist, TrangThaiSuKienController, getSuKienByIdUser, updateSuKiens, deleteSuKien, getSuKienChiTiet} from "../controllers/SuKien.js";
 import { authenticate, authorize } from "../Middleware/Authen";
 
 const router = express.Router();
@@ -25,7 +25,7 @@ router.put("/SuKiens/:idSuKien", authenticate, (req, res, next) => {
         return next();
     }
     return res.status(403).json({ message: "Không có quyền chỉnh sửa sự kiện!" });
-}, updateSuKien);
+}, updateSuKiens);
 
 router.delete("/SuKiens/:idSuKien", authenticate, (req, res, next) => {
     if (req.user.QuyenHan === "User") {

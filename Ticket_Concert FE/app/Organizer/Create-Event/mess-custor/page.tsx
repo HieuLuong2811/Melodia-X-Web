@@ -2,6 +2,7 @@
 import React from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import axios from "axios";
+import { useSearchParams } from "next/navigation";
 import Swal from "sweetalert2"; 
 
 const TicketQRWarning = () => {
@@ -71,6 +72,10 @@ const TicketQRWarning = () => {
     }
   };
 
+  const useParams = useSearchParams();
+  const eventid = useParams?.get("eventId");
+  const isEditMode = !!eventid;
+
   // Dữ liệu giả lập QR
   const orderId = "ORD123456";
   const buyerInfo = { name: "Nguyễn Văn A", email: "nguyenvana@example.com", phone: "0987654321" };
@@ -83,7 +88,7 @@ const TicketQRWarning = () => {
     <>
     <div className="justify-content-between mb-2 d-flex align-items-center">
       <h4 className="alert-heading m-0">Lưu ý cho Ban tổ chức sự kiện!</h4>
-      <button className="btn btn-success w-25" onClick={handleCreateEvent}>Tạo sự kiện</button>
+      <button style={{ display : `${isEditMode ? "none" : "block"}`}} className="btn btn-success w-25" onClick={handleCreateEvent}>Tạo sự kiện</button>
     </div>
     <div className="alert alert-warning d-flex fs-5 justify-content-between align-items-start p-3" role="alert">   
       <div>

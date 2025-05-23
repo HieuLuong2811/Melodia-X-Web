@@ -136,7 +136,6 @@ const AccBankInformation = () => {
                     label="Số tài khoản"
                     variant="outlined"
                     fullWidth
-                    margin="normal"
                     placeholder="Nhập số tài khoản"
                   />
                 </td>

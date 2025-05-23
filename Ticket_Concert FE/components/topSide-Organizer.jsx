@@ -26,6 +26,8 @@ export default function TopNav({title}) {
         localStorage.removeItem("uploadedMedia_background");
         localStorage.removeItem("uploadedMedia_logoOrganizer");
         localStorage.removeItem("IDSuKien_Organizer_Detail");
+        localStorage.removeItem("uploadedMedia_video");
+        sessionStorage.clear();
         window.location.href = "/Organizer/";
       };
   
@@ -42,21 +44,7 @@ export default function TopNav({title}) {
         cancelButtonText: "Hủy",
       }).then((result) => {
         if (result.isConfirmed) {
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("IDNguoiDung");
-          localStorage.removeItem("uploadedMedia_logo");
-          localStorage.removeItem("uploadedMedia_background");
-          localStorage.removeItem("uploadedMedia_logoOrganizer");
-          localStorage.removeItem("IDSuKien_Organizer_Detail");
-          localStorage.removeItem("TenSuKien");
-          localStorage.removeItem("ThoiGianBatDau");
-          localStorage.removeItem("ThoiGianKetThuc");
-          localStorage.removeItem("IDSuKien_User_Detail");
-          localStorage.removeItem("IDSuKien_User");
-          localStorage.removeItem("IDSuatDien");
-          localStorage.removeItem("DiaDiem");
-          localStorage.removeItem("TenNguoiDung");
-          localStorage.removeItem("AnhNenUser");
+          localStorage.clear();
           setIsLoggedIn(false);
           Swal.fire("Đã đăng xuất!", "Bạn đã đăng xuất thành công.", "success");
           window.location.href = "/";
@@ -69,7 +57,7 @@ export default function TopNav({title}) {
       <h3 className="mb-0 text-white fw-bold">{title}</h3>
       <div className="right-section d-flex align-items-center gap-3">
         <div onClick={() => handleCreateEvent()}><button className="btn btn-outline-light">Tạo sự kiện</button></div>
-        <div className="dropdown">
+         <div className="dropdown">
             <div className="d-flex align-items-center gap-2 p-1" data-bs-toggle="dropdown">
               <div className="w-10">
                 <img src={"https://static.ticketbox.vn/avatar.png"} style={{ borderRadius : "50%", width : "2.5rem", height : "2.5rem", objectFit : "cover"}} alt="avatar" />
@@ -77,7 +65,7 @@ export default function TopNav({title}) {
                <span className="fw-bold text-white">Tài khoản</span>
               <i className="bi bi-arrow-down-short text-white"></i>
             </div>
-            <ul className="dropdown-menu mt-0" style={{right : "0px", top : "45px"}}>
+            <ul className="dropdown-menu mt-0" style={{right : "0px", top : "40px"}}>
                   <li><Link className="dropdown-item" href="#"><i className="bi bi-calendar-event"></i> Sự kiện của tôi</Link></li>
                   <li><Link className="dropdown-item" href="/User/My-Infor/"><i className="bi bi-person-circle"></i> Trang cá nhân</Link></li>
                   <li><hr className="dropdown-divider" /></li>

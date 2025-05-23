@@ -5,9 +5,7 @@ import { thongTinThanhToanService } from "@/services/ThongTinThanhToan";
 import { ThongTinThanhToan } from "@/interfaces/ThongTinThanhToan";
 
 const Payment = () => {
-  const [paymentInfo, setPaymentInfo] = useState<ThongTinThanhToan | null>(null);
   const [isEdit, setIsEdit] = useState(false);
-  const [showPopup, setShowPopup] = useState(false);
   const [idThongTin, setIdThongTin] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [tempPaymentInfo, setTempPaymentInfo] = useState<ThongTinThanhToan>({
@@ -20,7 +18,6 @@ const Payment = () => {
     LoaiHinh: "Cá nhân",
   });
 
-  // Lấy thông tin thanh toán từ API
   useEffect(() => {
     const fetchPaymentInfo = async () => {
       try {
@@ -32,7 +29,6 @@ const Payment = () => {
 
         const data = await thongTinThanhToanService.getThongTinThanhToansById(idNguoiDung);
         if (data) {
-          setPaymentInfo(data);
           setTempPaymentInfo(data);
           setIdThongTin(data.IDThongTin);
           setIsEdit(true);
@@ -62,23 +58,6 @@ const Payment = () => {
     setTempPaymentInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Mở popup để thêm hoặc sửa
-  const openPopup = (editMode: boolean = false) => {
-    if (editMode && paymentInfo) {
-      setTempPaymentInfo(paymentInfo); // Load thông tin hiện tại để sửa
-    } else {
-      setTempPaymentInfo({
-        IDThongTin: "",
-        IDNguoiDung: localStorage.getItem("IDNguoiDung") || "",
-        ChuTaiKhoan: "",
-        SoTaiKhoan: "",
-        TenNganHang: "",
-        ChiNhanh: "",
-        LoaiHinh: "Cá nhân",
-      }); // Reset để thêm mới
-    }
-    setShowPopup(true);
-  };
 
   // Lưu hoặc cập nhật thông tin thanh toán
   const handleSavePaymentInfo = async () => {
@@ -118,7 +97,6 @@ const Payment = () => {
     try {
       if (!isEdit) {
         const created = await thongTinThanhToanService.createThongTinThanhToans(payload);
-        setPaymentInfo({ ...payload, IDThongTin: created.IDThongTin });
         setIdThongTin(created.IDThongTin);
         setIsEdit(true);
         Swal.fire({
@@ -130,15 +108,14 @@ const Payment = () => {
         });
       } else if (idThongTin) {
         await thongTinThanhToanService.updateThongTinThanhToans(idThongTin, payload);
-        setPaymentInfo({ ...payload, IDThongTin: idThongTin });
         Swal.fire({
           icon: "success",
           title: "Cập nhật thành công!",
+          text: "Cập nhật thông tin thanh toán thành công.",
           timer: 1500,
           showConfirmButton: false,
         });
       }
-      setShowPopup(false);
     } catch (error) {
       console.error("Lỗi lưu thông tin:", error);
       Swal.fire({
@@ -169,7 +146,6 @@ const Payment = () => {
           Nếu bạn muốn nhận được tiền sớm hơn, vui lòng liên hệ chúng tôi qua số 1900.6408 hoặc info@Melodia-X.vn
       </p>
         
-      {/* Hiển thị thông tin readonly */}
       <div className="d-flex justify-content-between gap-3">
         <div className="w-50">
           <div className="mb-3">
@@ -177,26 +153,29 @@ const Payment = () => {
             <input
               type="text"
               className="w-100 form-control"
-              value={paymentInfo?.ChuTaiKhoan || "Chưa có thông tin"}
-              readOnly
+              name="ChuTaiKhoan"
+              value={tempPaymentInfo.ChuTaiKhoan}
+              onChange={handleInputChange}
             />
           </div>
           <div className="mb-3">
             <label className="form-label">Số tài khoản:</label>
             <input
-              type="text" // Đổi thành text để tránh lỗi định dạng số
+              type="text"
               className="w-100 form-control"
-              value={paymentInfo?.SoTaiKhoan || "Chưa có thông tin"}
-              readOnly
+              name="SoTaiKhoan"
+              value={tempPaymentInfo.SoTaiKhoan}
+              onChange={handleInputChange}
             />
           </div>
           <div className="mb-3">
             <label className="form-label">Tên ngân hàng:</label>
-            <input
+           <input
               type="text"
               className="w-100 form-control"
-              value={paymentInfo?.TenNganHang || "Chưa có thông tin"}
-              readOnly
+              name="TenNganHang"
+              value={tempPaymentInfo.TenNganHang}
+              onChange={handleInputChange}
             />
           </div>
         </div>
@@ -206,111 +185,30 @@ const Payment = () => {
             <input
               type="text"
               className="w-100 form-control"
-              value={paymentInfo?.ChiNhanh || "Chưa có thông tin"}
-              readOnly
+              name="ChiNhanh"
+              value={tempPaymentInfo.ChiNhanh}
+              onChange={handleInputChange}
             />
           </div>
           <div className="mb-5">
             <label className="form-label">Loại hình kinh doanh:</label>
-            <input
+           <input
               type="text"
               className="w-100 form-control"
-              value={paymentInfo?.LoaiHinh || "Chưa có thông tin"}
-              readOnly
+              name="LoaiHinh"
+              value={tempPaymentInfo.LoaiHinh}
+              onChange={handleInputChange}
             />
           </div>
           <div className="text-end">
-            <button
-              className="btn btn-primary me-2"
-              onClick={() => openPopup(false)}
-            >
-              Thêm
-            </button>
-            {isEdit && (
-              <button className="btn btn-success" onClick={() => openPopup(true)}>
-                Sửa
+             <button
+                className="btn btn-success w-100"
+                onClick={handleSavePaymentInfo} >
+                {isEdit ? "Cập nhật" : "Lưu"}
               </button>
-            )}
           </div>
         </div>
       </div>
-
-      {/* Popup để thêm hoặc sửa */}
-      {showPopup && (
-        <div
-          className="popup-overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-          style={{ background: "rgba(0, 0, 0, 0.5)" }}
-        >
-          <div className="popup bg-dark text-light p-4 rounded" style={{ width: "500px" }}>
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h5 className="mb-0">{isEdit ? "Sửa thông tin thanh toán" : "Thêm thông tin thanh toán"}</h5>
-              <span className="fs-5 cursor-pointer" onClick={() => setShowPopup(false)}>
-                ❌
-              </span>
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Chủ tài khoản:</label>
-              <input
-                type="text"
-                className="w-100 form-control"
-                name="ChuTaiKhoan"
-                value={tempPaymentInfo.ChuTaiKhoan}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Số tài khoản:</label>
-              <input
-                type="text" // Đổi thành text để tránh lỗi định dạng số
-                className="w-100 form-control"
-                name="SoTaiKhoan"
-                value={tempPaymentInfo.SoTaiKhoan}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Tên ngân hàng:</label>
-              <input
-                type="text"
-                className="w-100 form-control"
-                name="TenNganHang"
-                value={tempPaymentInfo.TenNganHang}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Chi nhánh:</label>
-              <input
-                type="text"
-                className="w-100 form-control"
-                name="ChiNhanh"
-                value={tempPaymentInfo.ChiNhanh}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Loại hình kinh doanh:</label>
-              <select
-                className="form-select"
-                name="LoaiHinh"
-                value={tempPaymentInfo.LoaiHinh}
-                onChange={handleInputChange}
-              >
-                <option value="Cá nhân">Cá nhân</option>
-                <option value="Doanh nghiệp">Doanh nghiệp</option>
-              </select>
-            </div>
-            <div className="text-end">
-              <button
-                className="btn btn-success w-100"
-                onClick={handleSavePaymentInfo}
-              >
-                {isEdit ? "Cập nhật" : "Lưu"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

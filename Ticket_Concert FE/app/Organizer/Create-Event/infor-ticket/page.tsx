@@ -6,8 +6,11 @@ import { useCollapse } from "react-collapsed";
 import { NumericFormat } from "react-number-format";
 import { LoaiVe } from "@/interfaces/LoaiVe";
 import { SuatDien2 } from "@/interfaces/SuatDien";
+import { useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
 import DisplayEventTime from "@/components/DisplayEventTime";
+import {SuatDienService} from "@/services/SuatDien.ts"
+import { LoaiVeService } from "@/services/LoaiVe";
 
 // Component con cho mỗi suất diễn
 const ShowtimeItem = ({
@@ -52,7 +55,7 @@ const ShowtimeItem = ({
       </div>
       <section {...getCollapseProps()} className="w-100 mt-2">
         <div className="ticket-time d-flex rounded-1 flex-column p-2 ps-3 pb-4 pe-3 gap-3 w-100">
-          <div className="text-white justify-content-between w-100 d-flex align-items-center gap-3">
+          <div onClick={() => handleToggleCollapse()} className="text-white justify-content-between w-100 d-flex align-items-center gap-3">
             <div className="icon">
               <i className="bi bi-chevron-up"></i>
             </div>
@@ -101,7 +104,7 @@ const ShowtimeItem = ({
                     className="bi bi-trash text-white bg-danger p-2 pb-1 rounded"
                     style={{ cursor: "pointer" }}
                     title="Xóa"
-                    onClick={() => deleteTicket(ticket.IDLoaiVe)}
+                    onClick={() => deleteTicket(ticket.IDLoaiVe || "")}
                   ></i>
                 </div>
               </div>
@@ -115,12 +118,25 @@ const ShowtimeItem = ({
 
 // Component chính
 const Create_ticket = () => {
+
+  const searchParams = useSearchParams();
+  const eventId = searchParams?.get("eventId");
+  const isEditMode = !!eventId;
+  
   const [showtimes, setShowtimes] = useState<SuatDien2[]>(() => {
+    if (!isEditMode) {
+      sessionStorage.removeItem("danhSachSuatDien");
+      return [];
+    }
     const savedShowtimes = sessionStorage.getItem("danhSachSuatDien");
     return savedShowtimes ? JSON.parse(savedShowtimes) : [];
   });
 
   const [tickets, setTickets] = useState<LoaiVe[]>(() => {
+    if (!isEditMode) {
+      sessionStorage.removeItem("danhSachLoaiVe");
+      return [];
+    }
     const savedTickets = sessionStorage.getItem("danhSachLoaiVe");
     return savedTickets ? JSON.parse(savedTickets) : [];
   });
@@ -142,17 +158,79 @@ const Create_ticket = () => {
     sessionStorage.setItem("danhSachLoaiVe", JSON.stringify(tickets));
   }, [showtimes, tickets]);
 
-
   // Tạo suất diễn
-  const addShowtime = () => {
+  const addShowtime = async () => {
+  if (isEditMode && eventId) {
+    try {
+      const now = new Date();
+      const defaultStart = new Date(now.getTime() + 3600000).toISOString().slice(0, 16); 
+      const defaultEnd = new Date(now.getTime() + 7200000).toISOString().slice(0, 16); 
+
+      const newShowtimePayload = {
+        IDSuKien: eventId as string,
+        ThoiGianBatDau: defaultStart,
+        ThoiGianKetThuc: defaultEnd,
+      };
+
+      await SuatDienService.createSuatDiens(newShowtimePayload);
+      Swal.fire({
+        icon: "success",
+        title: "Tạo suất diễn thành công",
+        text: "Suất diễn mới đã được thêm",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error("Lỗi tạo suất diễn:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Lỗi",
+        text: "Không thể tạo suất diễn. Vui lòng thử lại sau.",
+      });
+    }
+  } else {
+
+    const now = new Date();
+    const defaultStart = new Date(now.getTime() + 3600000).toISOString().slice(0, 16); 
+    const defaultEnd = new Date(now.getTime() + 7200000).toISOString().slice(0, 16); 
+
     const newId = `TEMP-SHOW-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const newShowtime = {
       IDSuatDien: newId,
-      ThoiGianBatDau: "",
-      ThoiGianKetThuc: "",
+      ThoiGianBatDau: defaultStart,
+      ThoiGianKetThuc: defaultEnd,
     };
     setShowtimes((prev) => [...prev, newShowtime]);
-  };
+  }
+};
+
+
+    useEffect(() => {
+    if (isEditMode) {
+      const fetchShowtimes = async () => {
+        const data = await SuatDienService.getbyIDSuKien(eventId);
+        if (Array.isArray(data)) {
+          setShowtimes(data);
+
+          const allTickets = await Promise.all(
+            data.map(async (showtimes) => {
+              const ticketlist = await LoaiVeService.getLoaiVesByIdSuatDien(showtimes.IDSuatDien);
+              return Array.isArray(ticketlist) ? ticketlist : [];
+            })
+          );
+          const merged = allTickets.flat();
+          setTickets(merged);
+        }
+        else {
+          setShowtimes([]);
+          setTickets([]);
+          sessionStorage.removeItem("danhSachSuatDien");
+          sessionStorage.removeItem("danhSachLoaiVe");
+        }
+      };
+      fetchShowtimes();
+    }
+  }, [eventId,isEditMode])
 
   // Select thời gian
   const handleShowtimeChange = (id: string, field: "ThoiGianBatDau" | "ThoiGianKetThuc", value: string) => {
@@ -233,11 +311,10 @@ const Create_ticket = () => {
     });
   };
 
-
   // Mở popup để sửa vé
   const editTicket = (ticket: LoaiVe) => {
     setNewTicket({
-      IDLoaiVe: ticket.IDLoaiVe,
+      IDLoaiVe: ticket.IDLoaiVe || "",
       TenVe: ticket.TenVe,
       GiaVe: ticket.GiaVe,
       SoLuongVe: ticket.SoLuongVe.toString(),
@@ -249,7 +326,6 @@ const Create_ticket = () => {
     setShowTicketPopup(true);
   };
 
-
   const handleTicketChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setNewTicket((prev) => ({ ...prev, [name]: value }));
@@ -260,9 +336,8 @@ const Create_ticket = () => {
     setNewTicket((prev) => ({ ...prev, GiaVe: floatValue }));
   };
 
-  
   // Thêm và sửa vé
-  const saveTicket = () => {
+  const saveTicket = async () => {
     if (!newTicket.TenVe || !newTicket.GiaVe || !newTicket.SoLuongVe) {
       Swal.fire({
         icon: "warning",
@@ -275,47 +350,92 @@ const Create_ticket = () => {
     }
 
     if (isEditing) {
-      setTickets((prev) =>
-        prev.map((ticket) =>
-          ticket.IDLoaiVe === newTicket.IDLoaiVe
-            ? {
-                ...ticket,
-                TenVe: newTicket.TenVe,
-                GiaVe: newTicket.GiaVe!,
-                SoLuongVe: parseInt(newTicket.SoLuongVe),
-                AnhVe: newTicket.AnhVe || "",
-                ThongTinVe: newTicket.ThongTinVe,
-              }
-            : ticket
-        )
-      );
-      Swal.fire({
-        icon: "success",
-        title: "Cập nhật thành công",
-        text: "Thông tin loại vé được sửa thành công",
-        timer: 1500,
-        showConfirmButton: false,
-      });
-    } else {
-      const newTicketData: LoaiVe = {
-        IDLoaiVe: `TEMP-TICKET-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        IDSuatDien: currentShowtimeId || "",
-        TenVe: newTicket.TenVe,
-        AnhVe: newTicket.AnhVe || "",
-        GiaVe: newTicket.GiaVe,
-        SoLuongVe: parseInt(newTicket.SoLuongVe),
-        ThongTinVe: newTicket.ThongTinVe
-      };
-      setTickets((prev) => [...prev, newTicketData]);
-      Swal.fire({
-        icon: "success",
-        title: "Tạo thành công",
-        text: "Tạo loại vé thành công",
-        timer: 1500,
-        showConfirmButton: false,
-      });
-    }
+      if(isEditMode){
+        const newLoaive = {
+          IDLoaiVe: newTicket.IDLoaiVe || `TEMP-TICKET-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          IDSuatDien: currentShowtimeId as string,
+          TenVe: newTicket.TenVe,
+          GiaVe: newTicket.GiaVe!,
+          SoLuongVe: parseInt(newTicket.SoLuongVe),
+          AnhVe: newTicket.AnhVe || "",
+          ThongTinVe: newTicket.ThongTinVe,
+        };
 
+        const createdLoaiVe = await LoaiVeService.createLoaiVe(newLoaive);
+        setTickets((prev) => [...prev, createdLoaiVe]);
+        Swal.fire({
+          icon: "success",
+          title: "Tạo loại vé thành công",
+          text: "Loại vé mới đã được thêm",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      }
+      else {
+        setTickets((prev) =>
+          prev.map((ticket) =>
+            ticket.IDLoaiVe === newTicket.IDLoaiVe
+              ? {
+                  ...ticket,
+                  TenVe: newTicket.TenVe,
+                  GiaVe: newTicket.GiaVe!,
+                  SoLuongVe: parseInt(newTicket.SoLuongVe),
+                  AnhVe: newTicket.AnhVe || "",
+                  ThongTinVe: newTicket.ThongTinVe,
+                }
+              : ticket
+          )
+        );
+        Swal.fire({
+          icon: "success",
+          title: "Cập nhật thành công",
+          text: "Thông tin loại vé được sửa thành công",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      }
+    } else {
+      if(isEditMode) {
+         const newLoaive = {
+          IDLoaiVe: newTicket.IDLoaiVe || `TEMP-TICKET-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          IDSuatDien: currentShowtimeId as string,
+          TenVe: newTicket.TenVe,
+          GiaVe: newTicket.GiaVe!,
+          SoLuongVe: parseInt(newTicket.SoLuongVe),
+          AnhVe: newTicket.AnhVe || "",
+          ThongTinVe: newTicket.ThongTinVe,
+        };
+
+        const create =  await LoaiVeService.createLoaiVe(newLoaive);
+        setTickets((prev) => [...prev, create]);
+        Swal.fire({
+          icon: "success",
+          title: "Tạo loại vé thành công",
+          text: "Loại vé mới đã được thêm",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      }
+      else {
+        const newTicketData: LoaiVe = {
+          IDLoaiVe: `TEMP-TICKET-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          IDSuatDien: currentShowtimeId || "",
+          TenVe: newTicket.TenVe,
+          AnhVe: newTicket.AnhVe || "",
+          GiaVe: newTicket.GiaVe,
+          SoLuongVe: parseInt(newTicket.SoLuongVe),
+          ThongTinVe: newTicket.ThongTinVe
+        };
+        setTickets((prev) => [...prev, newTicketData]);
+        Swal.fire({
+          icon: "success",
+          title: "Tạo thành công",
+          text: "Tạo loại vé thành công",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      }
+    }
     setNewTicket({ IDLoaiVe: "", TenVe: "", GiaVe: undefined, SoLuongVe: "", AnhVe: null, ThongTinVe: "" });
     setShowTicketPopup(false);
     setIsEditing(false);
@@ -331,9 +451,9 @@ const Create_ticket = () => {
   return (
     <div className="d-flex flex-column align-items-center gap-3">
       {/* Hiển thị danh sách suất diễn */}
-      {showtimes.map((showtime) => (
+      {Array.isArray(showtimes) && showtimes.map((showtime, index) => (
         <ShowtimeItem
-          key={showtime.IDSuatDien}
+          key={showtime.IDSuatDien || `showtime-${index}`}
           showtime={showtime}
           tickets={tickets}
           handleShowtimeChange={handleShowtimeChange}
@@ -393,7 +513,7 @@ const Create_ticket = () => {
                   <textarea
                     className="form-control input-full w-100 p-2 ps-3"
                     name="ThongTinVe"
-                    value={newTicket.ThongTinVe}
+                    value={newTicket.ThongTinVe || ""}
                     onChange={handleTicketChange}
                     maxLength={1000}
                     placeholder="Thông tin chi tiết vé"

@@ -46,7 +46,7 @@ export const suKienService = {
   },
 
   updateSuKien: async (IDSuKien: string, data: Partial<SuKien>): Promise<SuKien> => {
-    const response = await axiosInstance.put<SuKien>(`'SuKiens'/${IDSuKien}`, data);
+    const response = await axiosInstance.put<SuKien>(`SuKiens/${IDSuKien}`, data);
     return response.data;
   },
 

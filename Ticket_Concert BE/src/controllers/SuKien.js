@@ -4,19 +4,21 @@ import { v4 as uuidv4 } from 'uuid';
 import { createSuatDien } from '../models/SuatDien.js'; 
 import { createLoaiVe } from '../models/LoaiVe.js';
 
-const getSuKienData = (data) => [
-  data.idLoaiSuKien,
-  data.idNguoiDung,
-  data.logo,
-  data.anhNen,
-  data.tenSuKien,
-  data.diaDiem,
-  data.thongTinSuKien,
-  data.trangThaiSuKien || "Chờ xác nhận",
-  data.logoBanToChuc,
-  data.tenBanToChuc,
-  data.thongTinBanToChuc,
-];
+const getSuKienData = (data) => {
+  return{
+    idLoaiSuKien: data.IDLoaiSuKien,
+    idNguoiDung: data.IDNguoiDung,
+    tenSuKien: data.TenSuKien,
+    logo: data.Logo,
+    anhNen: data.AnhNen,
+    diaDiem: data.DiaDiem,
+    thongTinSuKien: data.ThongTinSuKien,
+    logoBanToChuc: data.LogoBanToChuc,
+    tenBanToChuc: data.TenBanToChuc,
+    thongTinBanToChuc: data.ThongTinBanToChuc,
+    video: data.Video,
+  }
+};
 
 export const SoLuongEvent = async(req, res) => {
   try {
@@ -166,11 +168,12 @@ export const getSuKienById = async (req, res) => {
         const suKienMap = {};
 
         event.forEach(row => {
-            const { IDSuKien, TenSuKien, Logo, AnhNen, DiaDiem, ThongTinSuKien, LogoBanToChuc, TenBanToChuc, ThongTinBanToChuc, Video, IDSuatDien, ThoiGianBatDau, ThoiGianKetThuc, IDLoaiVe, TenVe, GiaVe, SoLuongVe } = row;
+            const { IDSuKien,IDLoaiSuKien, TenSuKien, Logo, AnhNen, DiaDiem, ThongTinSuKien, LogoBanToChuc, TenBanToChuc, ThongTinBanToChuc, Video, IDSuatDien, ThoiGianBatDau, ThoiGianKetThuc, IDLoaiVe, TenVe, GiaVe, SoLuongVe } = row;
 
             if (!suKienMap[IDSuKien]) {
                 suKienMap[IDSuKien] = {
                     IDSuKien,
+                    IDLoaiSuKien,
                     TenSuKien,
                     Logo,
                     AnhNen,
@@ -217,9 +220,12 @@ export const getSuKienById = async (req, res) => {
 };
 
 // Cập nhật sự kiện
-export const updateSuKien = async (req, res) => {
+export const updateSuKiens = async (req, res) => {
     try {
         const suKienData = getSuKienData(req.body);
+        console.log("req.body:", req.body);
+        console.log("suKienData:", suKienData);
+
         await updateSuKien(req.params.idSuKien, suKienData);
         res.json({ message: "Cập nhật sự kiện thành công" });
     } catch (error) {
