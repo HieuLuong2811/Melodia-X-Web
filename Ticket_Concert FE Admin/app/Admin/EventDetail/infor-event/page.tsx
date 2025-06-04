@@ -6,6 +6,7 @@ import ProductDetails from "../infor-ticket/page";
 import PaymentInvoiceForm from "../infor-payment/page";
 import { useSearchParams } from 'next/navigation';
 import Statistics from "../dashboard/page";
+import EmptyData from "@/components/Emptydata";
 import "./create-event.css";
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic'
@@ -34,7 +35,6 @@ const EventForm = () => {
       const fetchSuKien = async () => {
         try {
           const data = await suKienService.getSuKienChiTiet(finalID);
-          console.log(data);
           setSuKien(data);
         } catch (error) {
           console.error("Lỗi khi lấy dữ liệu sự kiện:", error);
@@ -44,8 +44,7 @@ const EventForm = () => {
     }
   }, [searchParams]);
   
-
-
+  const [hovered, setHovered] = useState(false);
 
   const handleDuyetOrHuySuKien = (trangThai: "Đã xác nhận" | "Hủy") => {
     const IDFromURL = searchParams.get('id');
@@ -177,6 +176,44 @@ const EventForm = () => {
                   </div>
                 </div>
 
+                <div className="p-3 rounded-3 d-flex flex-wrap gap-1 justify-content-between" style={{minHeight : "380px", backgroundColor: "#23252C" }}>
+                  {/* Card Video */}
+                  <div className="flex-grow-1 p-3 rounded" style={{maxWidth : "49%" ,backgroundColor: "#2C2F38" }}>
+                    <div className="d-flex align-items-center justify-content-between">
+                      <h5 className="text-white mb-3">🎥 Video giới thiệu</h5>
+                    </div>
+                      <div className="mt-3 d-flex justify-content-center">
+                          {suKien.Video ? (
+                            <video src={suKien.Video} autoPlay muted loop playsInline/>
+                          ) : (
+                          <div className="sc-ffc90067-7 sc-cd78c11b-1 fFJbAL ePwTxf text-center">
+                            <EmptyData />
+                            <div className="sc-cd78c11b-2 cimqQp fw-bold mt-3">Không tồn tại</div>
+                          </div>
+                          )}
+                      </div>
+                  </div>
+
+                  {/* Card Ảnh sơ đồ ghế */}
+                  <div className="flex-grow-1 p-3 rounded" style={{maxWidth : "49%", backgroundColor: "#2C2F38" }}>
+                    <div className="d-flex align-items-center justify-content-between">
+                      <h5 className="text-white mb-3">🪑 Sơ đồ ghế</h5>
+                    </div>
+                      <div className="mt-3 d-flex justify-content-center"  onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} >
+                        {suKien.AnhSoDoGhe ? (
+                          <img src={suKien.AnhSoDoGhe} alt="Sơ đồ ghế sự kiện" style={{ width: "100%", height: "300px", borderRadius: "4px" }}/>
+                        ) : (
+                          <div className="sc-ffc90067-7 sc-cd78c11b-1 fFJbAL ePwTxf text-center">
+                            <EmptyData />
+                            <div className="sc-cd78c11b-2 cimqQp fw-bold mt-3">Không tồn tại</div>
+                          </div>
+                        )}                      
+                      </div>
+                  </div>
+                </div>
+                {hovered && suKien.AnhSoDoGhe && (
+                  <img src={suKien.AnhSoDoGhe} width={600} height={400} style={{zIndex: 5, padding: 4, position: "absolute", top: "150px", left: "300px", border: "2px solid #ccc", backgroundColor: "#fff" }} alt="Sơ đồ ghế"/>
+                )}
                 <div className="p-3 rounded-3" style={{ backgroundColor: "#23252C" }}>
                   <label className="text-white border-0 pb-2">Thông tin sự kiện</label>
                   <div className={`event-details ${openDetail ? 'expanded' : ''}`}>
@@ -231,8 +268,6 @@ const EventForm = () => {
             {activeTab == "dashboard" && (
                <Statistics />
             )}
-
-
           </div>
         </div>
       </div>

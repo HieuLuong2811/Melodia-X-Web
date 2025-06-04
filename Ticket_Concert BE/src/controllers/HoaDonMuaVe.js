@@ -7,7 +7,8 @@ const getHoaDonMuaVeData = (hoaDon) => ({
     tongSoVe: hoaDon.tongSoVe,
     ngayThanhToan: hoaDon.ngayThanhToan || new Date(), 
     tongTien: hoaDon.tongTien,
-    phuongThucThanhToan: hoaDon.phuongThucThanhToan
+    phuongThucThanhToan: hoaDon.phuongThucThanhToan,
+    trangThaiThanhToan: hoaDon.trangThaiThanhToan || 'Chưa thanh toán'
 });
 
 

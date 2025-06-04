@@ -22,12 +22,12 @@ export const LoaiVeService = {
     return response.data;
   },
 
-  updateLoaiVe: async (IDLoaiSuKien: string, data: Partial<LoaiVe>): Promise<LoaiVe> => {
-    const response = await axiosInstance.put<LoaiVe>(`'LoaiSuKiens'/${IDLoaiSuKien}`, data);
+  updateLoaiVe: async (IDLoaiVe: string, data: Partial<LoaiVe>): Promise<LoaiVe> => {
+    const response = await axiosInstance.put<LoaiVe>(`http://localhost:3000/api/LoaiVes/${IDLoaiVe}`, data);
     return response.data;
   },
 
-  deleteLoaiVe: async (IDLoaiSuKien: string): Promise<void> => {
-    await axiosInstance.delete(`'LoaiSuKiens'/${IDLoaiSuKien}`);
+  deleteLoaiVe: async (IDLoaiVe: string): Promise<void> => {
+    await axiosInstance.delete(`LoaiVes/${IDLoaiVe}`);
   },
 };

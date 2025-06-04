@@ -11,6 +11,8 @@ import DisplayEventTime from "@/components/DisplayEventTime";
 import { HoaDonMuaService } from "@/services/HoaDonMuaVe";
 import { HoaDonMua } from "@/interfaces/HoaDonMuaVe";
 import "../../../style/Home.css";
+import EmptyData from "@/components/emptydata";
+import Swal from "sweetalert2";
 
 const LeftSidebar = dynamic(() => import("../component/menu").then(), { ssr: false });
 const TopSidebar = dynamic(() => import("@/components/topSide-Organizer").then(), { ssr: false });
@@ -23,23 +25,17 @@ export default function OrdersAndTickets() {
   const [emailContent, setEmailContent] = useState<string>("");
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
 
-  // State cho suất diễn
   const [suatDiens, setSuatDiens] = useState<SuatDien[]>([]);
   const [selectedSuatDienId, setSelectedSuatDienId] = useState<string>("");
   const [selectedSuatDien, setSelectedSuatDien] = useState<SuatDien | null>(null);
 
-  // State cho dữ liệu từ API
   const [orders, setOrders] = useState<HoaDonMua[]>([]);
-  // const [tickets, setTickets] = useState<Ticket[]>([]);
 
-  // Lấy dữ liệu từ API khi component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
         const eventId = localStorage.getItem("IDSuKien_Organizer_Detail");
         if (!eventId) {
-          console.error("Không tìm thấy IDSukien_Organizer_Detail trong localStorage");
-          alert("Vui lòng chọn một sự kiện để xem thông tin.");
           return;
         }
 
@@ -60,7 +56,6 @@ export default function OrdersAndTickets() {
             }
           }
         }
-
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       }
@@ -93,16 +88,25 @@ export default function OrdersAndTickets() {
     );
   };
 
+  const EmailShowModel = () => {
+    if(selectedOrders.length === 0 ) {
+      Swal.fire("Lỗi!", "Hãy chọn một đơn hàng để tiến hành", "warning");
+      return;
+    }
+    else {
+      setShowEmailModal(true);
+    }
+  }
 
-  // Gửi email cho các mục đã chọn
+
   const handleSendSelectedEmails = async () => {
     if (!emailSubject || !emailContent) {
-      alert("Vui lòng nhập tiêu đề và nội dung email!");
+      Swal.fire("Lỗi!", "Vui lòng nhập tiêu đề và nội dung email!", "warning");
       return;
     }
 
     if (selectedOrders.length === 0) {
-      alert("Vui lòng chọn ít nhất một người nhận!");
+      Swal.fire("Lỗi!", "Vui lòng chọn ít nhất một người nhận!", "warning");
       return;
     }
 
@@ -127,70 +131,68 @@ export default function OrdersAndTickets() {
       });
 
       if (response.ok) {
-        alert("Emails đã được gửi thành công!");
+        Swal.fire("Thành công", "Emails đã được gửi thành công cho toàn bộ khách hàng", "success");
         setShowEmailModal(false);
         setEmailSubject("");
         setEmailContent("");
         setSelectedOrders([]);
       } else {
         const errorData = await response.json();
-        alert(`Có lỗi xảy ra khi gửi emails: ${errorData.error || "Unknown error"}`);
+        Swal.fire("Lỗi!", `Có lỗi xảy ra khi gửi emails: ${errorData.error || "Unknown error"}`, "error");
       }
     } catch (error) {
-      console.error("Error sending emails:", error);
-      alert("Có lỗi xảy ra khi gửi emails");
+      Swal.fire("Lỗi!" , `Có lỗi xảy ra khi gửi emails + ${error}`, "error",);
     }
   };
 
-  // Render bảng đơn hàng
   const renderOrdersTable = () => (
-    <table className="table table-bordered table-hover">
-      <thead>
-        <tr>
-          <th>
-            <input
-              type="checkbox"
-              checked={selectedOrders.length === orders.length && orders.length > 0}
-              onChange={handleSelectAll}
-            />
-          </th>
-          <th>Họ và tên</th>
-          <th>Email</th>
-          <th>Điện thoại</th>
-          <th>Hình thức thanh toán</th>
-          <th>Tổng vé</th>
-          <th>Tổng tiền</th>
-        </tr>
-      </thead>
-      <tbody>
-        {orders.length === 0 ? (
-          <tr>
-            <td colSpan={8} className="text-center">
-              <img src="https://via.placeholder.com/50?text=No+Data" alt="No data" className="mb-2" />
-              <p>No data</p>
-            </td>
-          </tr>
-        ) : (
-          orders.map((order, index) => (
-            <tr key={index}>
-              <td>
+    <div>
+      {orders.length === 0 ? (
+        <div className="sc-ffc90067-7 sc-cd78c11b-1 fFJbAL ePwTxf  flex-column  text-center w-100 d-flex justify-content-center">
+          <EmptyData />
+          <div className="sc-cd78c11b-2 cimqQp fw-bold mt-3">Không có sự kiện</div>
+        </div>
+      ) : (
+        <table className="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>
                 <input
                   type="checkbox"
-                  checked={selectedOrders.includes(order.Email)}
-                  onChange={() => handleSelectTicket(order.Email)}
+                  checked={selectedOrders.length === orders.length && orders.length > 0}
+                  onChange={handleSelectAll}
                 />
-              </td>
-              <td>{order.TenNguoiDung}</td>
-              <td>{order.Email}</td>
-              <td>{order.SoDienThoai}</td>
-              <td>{order.PhuongThucThanhToan}</td>
-              <td>{order.TongSoVeMua}</td>
-              <td>{order.TongTienThanhToan}</td>
+              </th>
+              <th>Họ và tên</th>
+              <th>Email</th>
+              <th>Điện thoại</th>
+              <th>Hình thức thanh toán</th>
+              <th>Tổng vé</th>
+              <th>Tổng tiền</th>
             </tr>
-          ))
-        )}
-      </tbody>
-    </table>
+          </thead>
+          <tbody>
+            {orders.map((order, index) => (
+              <tr key={index}>
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={selectedOrders.includes(order.Email)}
+                    onChange={() => handleSelectTicket(order.Email)}
+                  />
+                </td>
+                <td>{order.TenNguoiDung}</td>
+                <td>{order.Email}</td>
+                <td>{order.SoDienThoai}</td>
+                <td>{order.PhuongThucThanhToan}</td>
+                <td>{order.TongSoVeMua}</td>
+                <td>{order.TongTienThanhToan}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
   );
 
   // Render modal gửi email
@@ -205,9 +207,7 @@ export default function OrdersAndTickets() {
               <img src="/logo.png" width={50} height={50} className="me-2" alt="Logo" />
               Gửi Email Suất Diễn
             </h5>
-            <button type="button" className="btn-close"
-              onClick={() => setShowEmailModal(false)}
-            ></button>
+            <button type="button" className="btn-close" onClick={() => setShowEmailModal(false)}></button>
           </div>
           <div className="modal-body">
             <div className="mb-3">
@@ -275,7 +275,6 @@ export default function OrdersAndTickets() {
         <div className="container mt-4">
           <div className="bg-light p-3 pt-4 rounded">
 
-            {/* Phần chọn thời gian */}
             <div className="row mb-4 text-dark">
               <div className="col-md-6">
                 <div className="d-flex align-items-center gap-3">
@@ -296,12 +295,11 @@ export default function OrdersAndTickets() {
               </div>
               <div className="col-md-6 d-flex gap-2">
                 <div className="ms-auto d-flex gap-2">
-                 <button className="btn btn-success" onClick={() => setShowEmailModal(true)}>
+                 <button className="btn btn-success" onClick={() => EmailShowModel()}>
                     Gửi tất cả email
                   </button>
                 </div>
               </div>
-
               {showEmailModal && renderEmailModal()}
             </div>
 

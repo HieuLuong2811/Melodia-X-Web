@@ -6,55 +6,49 @@ import { LoaiVeService } from "@/services/LoaiVe";
 import "./Book-Tickets.css";
 import { useSearchParams } from 'next/navigation';
 
-
-
 const TicketBooking = () => {
 
   const [LoaiVes, SetLoaiVe] = useState<LoaiVe[]>([]);
   const [cart, setCart] = useState<{ IDLoaiVe: string; TenLoaiVe: string; SoLuong: number; GiaTien: number }[]>([]);
 
+  const [hovered, setHovered] = useState(false);
+
   const [tenSuKien, setTenSuKien] = useState("");
   const [diaDiem, setDiaDiem] = useState("");
   const [thoiGianBatDau, setThoiGianBatDau] = useState("");
   const [thoiGianKetThuc, setThoiGianKetThuc] = useState("");
+  const [soDoGhe, setSoDoGhe] = useState("");
 
   const searchParams = useSearchParams();
   const id_detail = searchParams.get("id_detail");
 
-  // Load danh sách vé từ API
   useEffect(() => {
-    const suatdien = sessionStorage.getItem("suatInfo");
-    if (suatdien) {
-      const IdSuatDien = JSON.parse(suatdien);
-        LoaiVeService.getSuKienByIdSuatDien(IdSuatDien.IDSuatDien).then((data) => {
-        if (data) {
-          SetLoaiVe(Array.isArray(data) ? data : [data]);
-        }
-      });        
-    }
-  }, []);
+    const suatdienRaw = sessionStorage.getItem("suatInfo");
+    const savedCart = sessionStorage.getItem("invoice");
 
-  useEffect(() => {
-      const suatdiens = sessionStorage.getItem("suatInfo");
-      if(suatdiens) {
-        const suatdien = JSON.parse(suatdiens);
+    if (suatdienRaw) {
+      try {
+        const suatdien = JSON.parse(suatdienRaw);
+
+        LoaiVeService.getLoaiVesByIdSuatDien(suatdien.IDSuatDien).then((data: LoaiVe | LoaiVe[]) => {
+          if (data) {
+            SetLoaiVe(Array.isArray(data) ? data : [data]);
+          }
+        });
+
         setTenSuKien(suatdien.TenSuKien);
         setDiaDiem(suatdien.DiaDiem);
         setThoiGianBatDau(suatdien.ThoiGianBatDau);
         setThoiGianKetThuc(suatdien.ThoiGianKetThuc);
+        setSoDoGhe(suatdien.AnhSoDoGhe);
+      } catch (err) {
+        console.error("Parse suatInfo error:", err);
       }
-    }, []);
+    }
 
-
-  useEffect(() => {
-    const savedCart = sessionStorage.getItem("invoice");
     try {
       const parsedCart = JSON.parse(savedCart || "[]");
-      if (Array.isArray(parsedCart)) {
-        setCart(parsedCart);
-      } else {
-        setCart([]);
-      }
+      setCart(Array.isArray(parsedCart) ? parsedCart : []);
     } catch (err) {
       console.error("Cart parse error:", err);
       setCart([]);
@@ -72,9 +66,9 @@ const TicketBooking = () => {
     sessionStorage.setItem("invoice", JSON.stringify(cartData));
   }, [cart]);
   
-
   // Tăng số lượng vé
   const increaseQuantity = (ticket: LoaiVe) => {
+    if (!ticket.IDLoaiVe) return; 
     setCart((prevCart) => {
       const existingTicket = prevCart.find((item) => item.IDLoaiVe === ticket.IDLoaiVe);
       if (existingTicket) {
@@ -85,7 +79,7 @@ const TicketBooking = () => {
         return [
           ...prevCart,
           {
-            IDLoaiVe: ticket.IDLoaiVe,
+            IDLoaiVe: ticket.IDLoaiVe as string,
             TenLoaiVe: ticket.TenVe,
             SoLuong: 1,
             GiaTien: ticket.GiaVe,
@@ -137,6 +131,7 @@ const TicketBooking = () => {
       ngayThanhToan: NgayThanhToan,
       tongTien: totalAmount,
       phuongThucThanhToan: "Momo", 
+      TrangThaiThanhToan: "Chưa thanh toán",
       chiTiet: cart.map((item) => ({
         idLoaiVe: item.IDLoaiVe,
         tenLoaiVe : item.TenLoaiVe,
@@ -177,7 +172,7 @@ const TicketBooking = () => {
         </nav>
         <div className="container-fluid bg-black text-light vh-100 overflow-hidden">
           <div className="row h-100 d-flex justify-content-between">
-            <div className="col-md-6 p-3 flex-grow-1 text-center">
+            <div className="col-md-6 p-3 flex-grow-1 text-center" style={{ overflowY: "auto", height: "100vh", scrollbarWidth: "none" }}>
               <div className="d-flex align-items-center justify-content-between fs-5">
                 <Link
                   href={`/User/Product-Details/?id_detail=${id_detail}`}
@@ -189,6 +184,7 @@ const TicketBooking = () => {
                     localStorage.removeItem("IDSuatDien");
                     localStorage.removeItem("DiaDiem");
                     sessionStorage.removeItem("cart")
+                    sessionStorage.removeItem("suatInfo");
                   }}>
                   <i className="bi bi-arrow-left-short text-white fs-3 me-2"></i>
                   <p className="m-0">Trở về</p>
@@ -224,7 +220,7 @@ const TicketBooking = () => {
                                 {quantity}
                               </span>
                               <button className="btn btn-success pe-3 ps-3 pt-1 pb-1"
-                                onClick={() => increaseQuantity(ticket)}> +
+                                onClick={() => increaseQuantity(ticket)} disabled={quantity >= ticket.SoLuongToiDaMotDon}> +
                               </button>
                             </div>
                           )}
@@ -275,9 +271,18 @@ const TicketBooking = () => {
                   <i className="bi bi-geo-alt"></i>
                   <span>{diaDiem}</span>
                 </p>
+                <p className="d-flex flex-column gap-2" style={{cursor : "pointer", width : "max-content"}}  onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} >
+                  <span>Ảnh sơ đồ ghế</span>
+                  <img src={soDoGhe} height={100} width={100} alt=""/>
+                </p>
               </div>
               <hr className="border-secondary" />
-
+              {hovered && (
+                <div className="over-lay w-100 bg-light">
+                    <img src={soDoGhe} width={1100} height={800} style={{ zIndex: 5, padding: 4, position: "absolute", top: "100px", left: "80px", border: "2px solid #ccc", backgroundColor: "#fff" }} alt="Sơ đồ ghế"/>
+                </div>
+                   
+              )}            
               {/* Hiển thị danh sách vé trong cart */}
               <div className="p-3">
                 <h5 className="fw-bold">Giỏ vé</h5>
@@ -300,7 +305,7 @@ const TicketBooking = () => {
                 <span className="fw-bold fs-5">{totalAmount.toLocaleString()} đ</span>
               </p>
 
-              <div className="position-fixed w-100 bottom-0 bg-secondary p-3 text-center text-white" style={{ maxWidth: "39.5rem" }}>
+              <div className="position-fixed w-100 bottom-0 bg-secondary p-3 text-center text-white" style={{ maxWidth: "39rem" }}>
                 <Link href={`/User/Checkout-Tickets/?id_detail=${id_detail}`}>
                   <button className="btn fs-4 btn-success text-white d-flex justify-content-center align-items-center gap-2 w-100 fw-bold"
                     onClick={createInvoice} disabled={cart.length === 0}>

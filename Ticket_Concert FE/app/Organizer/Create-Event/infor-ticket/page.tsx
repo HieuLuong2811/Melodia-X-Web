@@ -11,6 +11,18 @@ import Swal from "sweetalert2";
 import DisplayEventTime from "@/components/DisplayEventTime";
 import {SuatDienService} from "@/services/SuatDien.ts"
 import { LoaiVeService } from "@/services/LoaiVe";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  IconButton,
+  Box,
+  Typography,
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 // Component con cho mỗi suất diễn
 const ShowtimeItem = ({
@@ -122,8 +134,8 @@ const Create_ticket = () => {
   const searchParams = useSearchParams();
   const eventId = searchParams?.get("eventId");
   const isEditMode = !!eventId;
-  
-  const [showtimes, setShowtimes] = useState<SuatDien2[]>(() => {
+
+    const [showtimes, setShowtimes] = useState<SuatDien2[]>(() => {
     if (!isEditMode) {
       sessionStorage.removeItem("danhSachSuatDien");
       return [];
@@ -141,22 +153,50 @@ const Create_ticket = () => {
     return savedTickets ? JSON.parse(savedTickets) : [];
   });
 
+  useEffect(() => {
+  sessionStorage.setItem("danhSachSuatDien", JSON.stringify(showtimes));
+  sessionStorage.setItem("danhSachLoaiVe", JSON.stringify(tickets));
+  if (isEditMode) {
+    const fetchShowtimes = async () => {
+      const data = await SuatDienService.getbyIDSuKien(eventId);
+      if (Array.isArray(data)) {
+        setShowtimes(data);
+
+        const allTickets = await Promise.all(
+          data.map(async (showtimes) => {
+            const ticketlist = await LoaiVeService.getLoaiVesByIdSuatDien(showtimes.IDSuatDien);
+            return Array.isArray(ticketlist) ? ticketlist : [];
+          })
+        );
+        const merged = allTickets.flat();
+        setTickets(merged);
+      }
+      else {
+        setShowtimes([]);
+        setTickets([]);
+        sessionStorage.removeItem("danhSachSuatDien");
+        sessionStorage.removeItem("danhSachLoaiVe");
+      }
+    };
+    fetchShowtimes();
+  }
+}, [eventId,isEditMode, showtimes, tickets])
+  
+
   const [showTicketPopup, setShowTicketPopup] = useState(false);
   const [currentShowtimeId, setCurrentShowtimeId] = useState<string | null>(null);
+  const [loaiVes, setLoaiVes] = useState<string | null>(null);
   const [newTicket, setNewTicket] = useState({
     IDLoaiVe: "",
     TenVe: "",
     GiaVe: undefined as number | undefined,
     SoLuongVe: "",
+    SoLuongToiDaMotDon: "",
     AnhVe: null as string | null,
     ThongTinVe: "",
   });
   const [isEditing, setIsEditing] = useState(false);
 
-  useEffect(() => {
-    sessionStorage.setItem("danhSachSuatDien", JSON.stringify(showtimes));
-    sessionStorage.setItem("danhSachLoaiVe", JSON.stringify(tickets));
-  }, [showtimes, tickets]);
 
   // Tạo suất diễn
   const addShowtime = async () => {
@@ -205,32 +245,7 @@ const Create_ticket = () => {
 };
 
 
-    useEffect(() => {
-    if (isEditMode) {
-      const fetchShowtimes = async () => {
-        const data = await SuatDienService.getbyIDSuKien(eventId);
-        if (Array.isArray(data)) {
-          setShowtimes(data);
-
-          const allTickets = await Promise.all(
-            data.map(async (showtimes) => {
-              const ticketlist = await LoaiVeService.getLoaiVesByIdSuatDien(showtimes.IDSuatDien);
-              return Array.isArray(ticketlist) ? ticketlist : [];
-            })
-          );
-          const merged = allTickets.flat();
-          setTickets(merged);
-        }
-        else {
-          setShowtimes([]);
-          setTickets([]);
-          sessionStorage.removeItem("danhSachSuatDien");
-          sessionStorage.removeItem("danhSachLoaiVe");
-        }
-      };
-      fetchShowtimes();
-    }
-  }, [eventId,isEditMode])
+    
 
   // Select thời gian
   const handleShowtimeChange = (id: string, field: "ThoiGianBatDau" | "ThoiGianKetThuc", value: string) => {
@@ -284,9 +299,25 @@ const Create_ticket = () => {
   };
 
   // Xoá suất diễn
-  const deleteShowtime = (showtimeId: string) => {
-    setShowtimes((prev) => prev.filter((st) => st.IDSuatDien !== showtimeId));
-    setTickets((prev) => prev.filter((ticket) => ticket.IDSuatDien !== showtimeId));
+  const deleteShowtime = async (showtimeId: string) => {
+    if(isEditMode){
+      const result = await Swal.fire({
+      title: "Bạn có chắc chắn muốn xoá suất diễn này?",
+      text: "Thao tác này sẽ không thể hoàn tác!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Xoá",
+      cancelButtonText: "Huỷ",
+    });
+      if (result.isConfirmed) {
+        await SuatDienService.deleteSuatDiens(showtimeId);
+        Swal.fire("Đã xoá!", "Suất diễn đã được xoá.", "success");
+      }
+    } 
+    else {
+      setShowtimes((prev) => prev.filter((st) => st.IDSuatDien !== showtimeId));
+      setTickets((prev) => prev.filter((ticket) => ticket.IDSuatDien !== showtimeId));
+    }
   };
 
   // Xoá vé
@@ -311,6 +342,7 @@ const Create_ticket = () => {
     });
   };
 
+
   // Mở popup để sửa vé
   const editTicket = (ticket: LoaiVe) => {
     setNewTicket({
@@ -318,10 +350,12 @@ const Create_ticket = () => {
       TenVe: ticket.TenVe,
       GiaVe: ticket.GiaVe,
       SoLuongVe: ticket.SoLuongVe.toString(),
+      SoLuongToiDaMotDon : ticket.SoLuongToiDaMotDon.toString(),
       AnhVe: ticket.AnhVe,
       ThongTinVe: ticket.ThongTinVe,
     });
     setCurrentShowtimeId(ticket.IDSuatDien);
+    setLoaiVes(ticket.IDLoaiVe ?? null);
     setIsEditing(true);
     setShowTicketPopup(true);
   };
@@ -352,21 +386,21 @@ const Create_ticket = () => {
     if (isEditing) {
       if(isEditMode){
         const newLoaive = {
-          IDLoaiVe: newTicket.IDLoaiVe || `TEMP-TICKET-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           IDSuatDien: currentShowtimeId as string,
           TenVe: newTicket.TenVe,
           GiaVe: newTicket.GiaVe!,
           SoLuongVe: parseInt(newTicket.SoLuongVe),
+          SoLuongToiDaMotDon : parseInt(newTicket.SoLuongToiDaMotDon),
           AnhVe: newTicket.AnhVe || "",
           ThongTinVe: newTicket.ThongTinVe,
         };
 
-        const createdLoaiVe = await LoaiVeService.createLoaiVe(newLoaive);
+        const createdLoaiVe = await LoaiVeService.updateLoaiVe(loaiVes!, newLoaive);
         setTickets((prev) => [...prev, createdLoaiVe]);
         Swal.fire({
           icon: "success",
-          title: "Tạo loại vé thành công",
-          text: "Loại vé mới đã được thêm",
+          title: "Sửa thông tin loại vé thành công",
+          text: "Loại vé đã được sửa",
           timer: 1500,
           showConfirmButton: false,
         });
@@ -380,6 +414,7 @@ const Create_ticket = () => {
                   TenVe: newTicket.TenVe,
                   GiaVe: newTicket.GiaVe!,
                   SoLuongVe: parseInt(newTicket.SoLuongVe),
+                  SoLuongToiDaMotDon: parseInt(newTicket.SoLuongToiDaMotDon),
                   AnhVe: newTicket.AnhVe || "",
                   ThongTinVe: newTicket.ThongTinVe,
                 }
@@ -402,8 +437,9 @@ const Create_ticket = () => {
           TenVe: newTicket.TenVe,
           GiaVe: newTicket.GiaVe!,
           SoLuongVe: parseInt(newTicket.SoLuongVe),
+          SoLuongToiDaMotDon : parseInt(newTicket.SoLuongToiDaMotDon),
           AnhVe: newTicket.AnhVe || "",
-          ThongTinVe: newTicket.ThongTinVe,
+          ThongTinVe: newTicket.ThongTinVe || "",
         };
 
         const create =  await LoaiVeService.createLoaiVe(newLoaive);
@@ -424,7 +460,8 @@ const Create_ticket = () => {
           AnhVe: newTicket.AnhVe || "",
           GiaVe: newTicket.GiaVe,
           SoLuongVe: parseInt(newTicket.SoLuongVe),
-          ThongTinVe: newTicket.ThongTinVe
+          SoLuongToiDaMotDon : parseInt(newTicket.SoLuongToiDaMotDon),
+          ThongTinVe: newTicket.ThongTinVe || ""
         };
         setTickets((prev) => [...prev, newTicketData]);
         Swal.fire({
@@ -436,14 +473,14 @@ const Create_ticket = () => {
         });
       }
     }
-    setNewTicket({ IDLoaiVe: "", TenVe: "", GiaVe: undefined, SoLuongVe: "", AnhVe: null, ThongTinVe: "" });
+    setNewTicket({ IDLoaiVe: "", TenVe: "", GiaVe: undefined, SoLuongVe: "", SoLuongToiDaMotDon: "", AnhVe: null, ThongTinVe: "" });
     setShowTicketPopup(false);
     setIsEditing(false);
   };
 
   const openTicketPopup = (showtimeId: string) => {
     setCurrentShowtimeId(showtimeId);
-    setNewTicket({ IDLoaiVe: "", TenVe: "", GiaVe: undefined, SoLuongVe: "", AnhVe: null, ThongTinVe: "" });
+    setNewTicket({ IDLoaiVe: "", TenVe: "", GiaVe: undefined, SoLuongVe: "", SoLuongToiDaMotDon: "", AnhVe: null, ThongTinVe: "" });
     setIsEditing(false);
     setShowTicketPopup(true);
   };
@@ -472,61 +509,78 @@ const Create_ticket = () => {
         </button>
       </div>
 
-      {/* Popup tạo hoặc chỉnh sửa loại vé */}
-      {showTicketPopup && (
-        <div className="popup-overlay w-100 d-flex p-4 justify-content-between flex-column gap-4">
-          <div className="popup">
-            <div className="fo d-flex flex-column gap-4 p-4">
-              <div className="d-flex">
-                <h5 className="text-center w-100 mb-0">{isEditing ? "Chỉnh sửa loại vé" : "Tạo loại vé mới"}</h5>
-                <span className="fs-5 ps-3 pe-3" onClick={() => setShowTicketPopup(false)}>❌</span>
-              </div>
-              <div className="d-flex justify-content-between flex-column gap-2">
-                <label className="border-0">Tên vé</label>
-                <input className="form-control w-100" type="text" name="TenVe"
-                  value={newTicket.TenVe} onChange={handleTicketChange} placeholder="Tên vé"/>
-              </div>
-              <div className="d-flex justify-content-between align-items-center gap-2">
-                <div className="d-flex justify-content-between flex-column gap-2">
-                  <label className="border-0">Giá vé</label>
+     <Dialog open={showTicketPopup} className="popup-overlay" onClose={() => setShowTicketPopup(false)} fullWidth maxWidth="sm">
+        <Box className="popup" sx={{maxWidth : "700px"}} >
+          <DialogTitle sx={{ position: 'relative' }}>
+            <Typography variant="h6" align="center" sx={{ color: "#FFF" }} component="span">
+              {isEditing ? 'Chỉnh sửa loại vé' : 'Tạo loại vé mới'}
+            </Typography>
+            <IconButton aria-label="close" onClick={() => setShowTicketPopup(false)} sx={{ color: "red", position: 'absolute', right: 8, top: 8 }}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+
+          <DialogContent dividers>
+            <Box display="flex" flexDirection="column" gap={4}>
+
+              <Box>
+                <Typography variant="subtitle2" sx={{color : "#FFF" , fontSize : "15px"}} gutterBottom>
+                  <Typography component="span" sx={{marginRight : "4px"}} color="error">*</Typography> 
+                  Tên vé
+                </Typography>
+                <TextField name="TenVe" value={newTicket.TenVe} onChange={handleTicketChange} variant="outlined" fullWidth sx={{ backgroundColor: "#FFF", borderRadius: "4px" }}/>
+              </Box>
+
+              <Box display="flex" gap={2}>
+                <Box flex={1}>
+                  <Typography variant="subtitle2" sx={{color : "#FFF" , fontSize : "15px"}} gutterBottom>
+                    <Typography component="span" sx={{marginRight : "4px"}} color="error">*</Typography> 
+                    Giá vé
+                  </Typography>
                   <NumericFormat
-                    className="form-control number"
-                    value={newTicket.GiaVe}
-                    thousandSeparator="."
-                    decimalSeparator=","
-                    allowNegative={false}
-                    onValueChange={handlePriceChange}
-                    placeholder="Nhập giá tiền"
-                  />
-                </div>
-                <div className="d-flex justify-content-between flex-column gap-2">
-                  <label className="border-0">Số lượng vé</label>
-                  <input className="form-control number" min={0} type="number" name="SoLuongVe"
-                    value={newTicket.SoLuongVe} onChange={handleTicketChange} placeholder="Số lượng vé"/>
-                </div>
-              </div>
-              <div className="d-flex justify-content-between gap-4">
-                <div className="text-center" style={{ width: "23%" }}>
-                </div>
-                <div className="col-md-9">
-                  <label className="text-white border-0 pb-3">Thông tin chi tiết vé</label>
-                  <textarea
-                    className="form-control input-full w-100 p-2 ps-3"
-                    name="ThongTinVe"
-                    value={newTicket.ThongTinVe || ""}
-                    onChange={handleTicketChange}
-                    maxLength={1000}
-                    placeholder="Thông tin chi tiết vé"
-                  />
-                </div>
-              </div>
-              <button className="ant-btn p-2 form-control text-center w-100" onClick={saveTicket}>
-                <span className="w-100">{isEditing ? "Cập nhật" : "Lưu"}</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+                    customInput={TextField} label="" value={newTicket.GiaVe} thousandSeparator="." decimalSeparator=","
+                    allowNegative={false} onValueChange={handlePriceChange} variant="outlined" fullWidth
+                    sx={{ backgroundColor: "#FFF", borderRadius: "4px" }}/>
+                </Box>
+
+                <Box flex={1}>
+                  <Typography variant="subtitle2" sx={{color : "#FFF" , fontSize : "15px"}} gutterBottom>
+                    <Typography component="span" sx={{marginRight : "4px"}} color="error">*</Typography> 
+                     Số lượng vé
+                  </Typography>
+                  <TextField
+                    type="number" name="SoLuongVe" value={newTicket.SoLuongVe} onChange={handleTicketChange} variant="outlined" inputProps={{ min: 0 }} fullWidth
+                    sx={{ backgroundColor: "#FFF", borderRadius: "4px" }} />
+                </Box>
+
+                <Box flex={1}>
+                  <Typography variant="subtitle2" sx={{color : "#FFF" , fontSize : "15px"}} gutterBottom>
+                    <Typography component="span" sx={{marginRight : "4px"}} color="error">*</Typography>
+                     Số vé tối đa trong đơn hàng
+                  </Typography>
+                  <TextField type="number" name="SoLuongToiDaMotDon"
+                    value={newTicket.SoLuongToiDaMotDon} onChange={handleTicketChange} 
+                    variant="outlined" inputProps={{ min: 0 }} fullWidth sx={{ backgroundColor: "#FFF", borderRadius: "4px" }}/>
+                </Box>
+              </Box>
+
+              <Box>
+                <Typography variant="subtitle2" sx={{color : "#FFF" , fontSize : "15px"}} gutterBottom>Thông tin chi tiết vé</Typography>
+                <TextField name="ThongTinVe" value={newTicket.ThongTinVe || ''} onChange={handleTicketChange}
+                  variant="outlined" multiline rows={4} fullWidth inputProps={{ maxLength: 1000 }}
+                  sx={{ backgroundColor: "#FFF", borderRadius: "4px" }}/>
+              </Box>
+
+            </Box>
+          </DialogContent>
+
+          <DialogActions>
+            <Button fullWidth sx={{ backgroundColor: "#2dc275" }} variant="contained" onClick={saveTicket}>
+              {isEditing ? 'Cập nhật' : 'Lưu'}
+            </Button>
+          </DialogActions>
+        </Box>
+      </Dialog>
     </div>
   );
 };

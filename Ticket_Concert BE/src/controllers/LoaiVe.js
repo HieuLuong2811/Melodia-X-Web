@@ -8,6 +8,7 @@ const getLoaiVeData = (data) => ({
     AnhVe: data.AnhVe,
     GiaVe: data.GiaVe,
     SoLuongVe: data.SoLuongVe,
+    SoLuongToiDaMotDon : data.SoLuongToiDaMotDon,
     ThongTinVe: data.ThongTinVe || null
 });
 

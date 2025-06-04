@@ -11,7 +11,8 @@ export interface SuKien {
     LogoBanToChuc: string; 
     TenBanToChuc: string; 
     ThongTinBanToChuc: string;
-    Video : string
+    Video : string,
+    AnhSoDoGhe : string
   }
 
   export interface SuKienNormal {

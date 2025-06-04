@@ -9,9 +9,16 @@
     display: flex !important;
 }
 
+.css-oh8dcl-MuiButtonBase-root-MuiTab-root.Mui-selected {
+    color: #fff !important;
+    background-color: #2dc275 !important;
+    text-decoration: none !important;
+}
+
+
 .css-1fr578y-MuiTabs-scroller {
     background-color: #ffffff !important;
-    border-radius:  5px !important;
+    border-radius:  10px !important;
 }
 
 .form {

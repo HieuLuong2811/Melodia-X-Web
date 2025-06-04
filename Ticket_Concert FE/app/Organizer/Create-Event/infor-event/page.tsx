@@ -11,7 +11,7 @@ import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import "../../style/Home.css";
 import "./create-event.css";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box } from '@mui/material';
 
 const MediaUploader = dynamic(() => import('@/components/ImageUploader.tsx'), { ssr: false });
 
@@ -31,23 +31,26 @@ export const WelcomeDialog = () => {
       onClose={handleClose}
       aria-labelledby="welcome-dialog-title"
       aria-describedby="welcome-dialog-description" >
-      <DialogTitle id="welcome-dialog-title" sx={{fontWeight : "bold"}}>LƯU Ý KHI ĐĂNG TẢI SỰ KIỆN!</DialogTitle>
-      <DialogContent>
-        <div className="ant-modal-body">
-          <div>1. Vui lòng 
-            <b> không hiển thị thông tin liên lạc của Ban Tổ Chức</b> (ví dụ: Số điện thoại/ Email/ Website/ Facebook/ Instagram…) 
-            <b> trên banner và trong nội dung bài đăng.</b> Chỉ sử dụng duy nhất Hotline Ticketbox - 1900.6408.
-            <br />2. Trong trường hợp Ban tổ chức <b>tạo mới hoặc cập nhật sự kiện không đúng theo quy định nêu trên, Ticketbox có quyền từ chối phê duyệt sự kiện.</b>
-            <br />3. Ticketbox sẽ liên tục kiểm tra thông tin các sự kiện đang được hiển thị trên nền tảng, 
-            <b> nếu phát hiện có sai phạm liên quan đến hình ảnh/ nội dung bài đăng, Ticketbox có quyền gỡ bỏ hoặc từ chối cung cấp dịch vụ đối với các sự kiện này,</b> dựa theo điều khoản 2.9 trong Hợp đồng dịch vụ.
+      <Box sx={{backgroundColor : "#FFF"}}>
+        <DialogTitle id="welcome-dialog-title" sx={{fontWeight : "bold"}}>LƯU Ý KHI ĐĂNG TẢI SỰ KIỆN!</DialogTitle>
+        <DialogContent>
+          <div className="ant-modal-body">
+            <div>1. Vui lòng 
+              <b> không hiển thị thông tin liên lạc của Ban Tổ Chức</b> (ví dụ: Số điện thoại/ Email/ Website/ Facebook/ Instagram…) 
+              <b> trên banner và trong nội dung bài đăng.</b> Chỉ sử dụng duy nhất Hotline Ticketbox - 1900.6408.
+              <br />2. Trong trường hợp Ban tổ chức <b>tạo mới hoặc cập nhật sự kiện không đúng theo quy định nêu trên, Ticketbox có quyền từ chối phê duyệt sự kiện.</b>
+              <br />3. Ticketbox sẽ liên tục kiểm tra thông tin các sự kiện đang được hiển thị trên nền tảng, 
+              <b> nếu phát hiện có sai phạm liên quan đến hình ảnh/ nội dung bài đăng, Ticketbox có quyền gỡ bỏ hoặc từ chối cung cấp dịch vụ đối với các sự kiện này,</b> dựa theo điều khoản 2.9 trong Hợp đồng dịch vụ.
+            </div>
           </div>
-        </div>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Đóng
-        </Button>
-      </DialogActions>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Đóng
+          </Button>
+        </DialogActions>
+      </Box>
+    
     </Dialog>
   );
 }
@@ -81,6 +84,10 @@ const EventForm = () => {
             localStorage.setItem("uploadedMedia_video", response.Video);
             setVideoVisible(true);
           }
+           if(response?.AnhSoDoGhe) {
+            localStorage.setItem("uploadedMedia_soDoGhe", response.AnhSoDoGhe);
+            setSoDoGheVisible(true);
+          }
           setTenBanToChuc(response.TenBanToChuc || "");
           setThongTinBanToChuc(response.ThongTinBanToChuc || "")
         } catch (error) {
@@ -108,13 +115,16 @@ const EventForm = () => {
   const [background, setBackground] = useState<string | null>(null);
   const [logoOganizer, setLogoOganizer] = useState<string | null>(null);
   const [video, setVideo] = useState<string | null>(null); 
+  const [soDoGhe, setSoDoGhe] = useState<string | null>(null);
 
   const [tenSuKien, setTenSuKien] = useState("");
   const [diaDiem, setDiaDiem] = useState("");
   const [thongTinSuKien, setContent] = useState("");
   const [tenBanToChuc, setTenBanToChuc] = useState("");
   const [thongTinBanToChuc, setThongTinBanToChuc] = useState("");
+
   const [videoVisible, setVideoVisible] = useState(false);
+  const [soDoGheVisible, setSoDoGheVisible] = useState(false);
 
   const [LoaiSuKiens, SetLoaiSuKiens] = useState<LoaiSuKien[]>([]);
   const [selectedLoaiSuKien, SetselectedLoaiSuKien] = useState<string | null>(null);
@@ -147,6 +157,7 @@ const EventForm = () => {
         TenBanToChuc: tenBanToChuc,
         ThongTinBanToChuc: thongTinBanToChuc,
         Video: video || localStorage.getItem("uploadedMedia_video") || "", 
+        AnhSoDoGhe: localStorage.getItem("uploadedMedia_soDoGhe") || ""
       }
       if (!tenSuKien || !diaDiem || !eventData.IDLoaiSuKien) {
         Swal.fire({
@@ -186,6 +197,7 @@ const EventForm = () => {
       TenBanToChuc: tenBanToChuc,
       ThongTinBanToChuc: thongTinBanToChuc,
       Video: video || localStorage.getItem("uploadedMedia_video") || "", 
+      AnhSoDoGhe: localStorage.getItem("uploadedMedia_soDoGhe") || ""
     };
 
     if (!tenSuKien || !diaDiem || !eventData.IDLoaiSuKien) {
@@ -282,25 +294,53 @@ const EventForm = () => {
                           {background && ( <img src={background} alt="background sự kiện" style={{ width: "100px", height: "100px" }}/>)}
                         </div>
                       </div>
-                      <div className="p-3 rounded-3" style={{ backgroundColor: "#23252C" }}>
-                          <div className="d-flex gap-4 ">
-                            <div className="d-flex gap-2 fs-5 align-items-center">
-                              <input onChange={() => setVideoVisible(true)} type="radio" name="hasVideo" value="yes" checked={videoVisible === true} /> 
-                              <span>Có video</span>
-                            </div>
-                            <div className="d-flex gap-2 fs-5 align-items-center">
-                              <input onChange={() => setVideoVisible(false)} onClick={() => localStorage.removeItem("uploadedMedia_video")} type="radio" name="hasVideo" value="no" checked={videoVisible === false} /> 
-                              <span>Không có video</span>
+
+                      <div className="p-3 rounded-3 d-flex flex-wrap gap-1 justify-content-between" style={{minHeight : "380px", backgroundColor: "#23252C" }}>
+                        {/* Card Video */}
+                        <div className="flex-grow-1 p-3 rounded" style={{maxWidth : "49%" ,backgroundColor: "#2C2F38" }}>
+                          <div className="d-flex align-items-center justify-content-between">
+                            <h5 className="text-white mb-3">🎥 Video giới thiệu</h5>
+                            <div className="form-check form-switch">
+                              <label className="form-check-label text-white" htmlFor="videoToggle">
+                                {videoVisible ? "Hiển thị" : "Ẩn"}
+                              </label>
+                               <input className="form-check-input" type="checkbox" id="videoToggle" checked={videoVisible} 
+                                onChange={(e) => setVideoVisible(e.target.checked)}/>
                             </div>
                           </div>
-                          {/* Video */}
-                          {videoVisible && (
-                            <div className="mt-4" >
+                          { videoVisible && (
+                            <div className="mt-3 d-flex justify-content-center">
                               <MediaUploader type="video" mediaType="video" onUploadSuccess={setVideo}/>
-                              {video && (<video src={video} autoPlay muted loop playsInline style={{ width: "200px", height: "100px" }}/>)}
-                          </div>
+                              { video && (
+                                <video src={video} autoPlay muted loop playsInline/>
+                              )}
+                            </div>
                           )}
+                        </div>
+
+                        {/* Card Ảnh sơ đồ ghế */}
+                        <div className="flex-grow-1 p-3 rounded" style={{maxWidth : "49%", backgroundColor: "#2C2F38" }}>
+                          <div className="d-flex align-items-center justify-content-between">
+                            <h5 className="text-white mb-3">🪑 Sơ đồ ghế</h5>
+                              <div className="form-check form-switch">
+                                <label className="form-check-label text-white" htmlFor="soDoGheToggle">
+                                  {soDoGheVisible ? "Hiển thị" : "Ẩn"}
+                                </label>
+                                <input className="form-check-input" type="checkbox" id="soDoGheToggle" checked={soDoGheVisible} 
+                                onChange={(e) => setSoDoGheVisible(e.target.checked)}/>
+                              </div>
+                          </div>
+                          { soDoGheVisible && (
+                            <div className="mt-3 d-flex justify-content-center">
+                              <MediaUploader type="soDoGhe" mediaType="image" onUploadSuccess={setSoDoGhe}/>
+                              { soDoGhe && (
+                                <img src={soDoGhe} alt="Sơ đồ ghế sự kiện" style={{ width: "100px", height: "300px", borderRadius: "4px" }}/>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
+
 
                       <div className="p-3 rounded-3" style={{ backgroundColor: "#23252C" }}>
                         <div>

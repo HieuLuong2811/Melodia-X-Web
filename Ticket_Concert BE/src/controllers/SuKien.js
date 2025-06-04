@@ -3,6 +3,7 @@ import { getSuKienListUser,getSuKienListAdmin, CountSuKien, DuyetSuKien, getSuKi
 import { v4 as uuidv4 } from 'uuid';
 import { createSuatDien } from '../models/SuatDien.js'; 
 import { createLoaiVe } from '../models/LoaiVe.js';
+import pool from '../config/db.js';
 
 const getSuKienData = (data) => {
   return{
@@ -17,6 +18,7 @@ const getSuKienData = (data) => {
     tenBanToChuc: data.TenBanToChuc,
     thongTinBanToChuc: data.ThongTinBanToChuc,
     video: data.Video,
+    anhSoDoGhe: data.AnhSoDoGhe
   }
 };
 
@@ -37,10 +39,13 @@ export const createSuKienlist = async (req, res) => {
     danhSachLoaiVe,
   } = req.body;
 
+  const connection = await pool.getConnection(); 
+  await connection.beginTransaction(); 
+
   try {
-    // Tạo sự kiện 
     const suKien = danhSachSuKien[0];
     const IDSuKien = uuidv4();
+
     const suKienData = {
       idLoaiSuKien: suKien.IDLoaiSuKien,
       idNguoiDung: suKien.IDNguoiDung,
@@ -53,11 +58,12 @@ export const createSuKienlist = async (req, res) => {
       logoBanToChuc: suKien.LogoBanToChuc,
       tenBanToChuc: suKien.TenBanToChuc,
       thongTinBanToChuc: suKien.ThongTinBanToChuc,
-      video : suKien.Video,
+      video: suKien.Video,
+      anhSoDoGhe: suKien.AnhSoDoGhe,
     };
-    await createSuKien(IDSuKien, suKienData); 
 
-    // 2. Tạo các suất diễn
+    await createSuKien(IDSuKien, suKienData, connection);
+
     const suatDienResults = await Promise.all(
       danhSachSuatDien.map(async (suat) => {
         const IDSuatDien = uuidv4();
@@ -66,12 +72,10 @@ export const createSuKienlist = async (req, res) => {
           thoiGianBatDau: suat.ThoiGianBatDau,
           thoiGianKetThuc: suat.ThoiGianKetThuc,
         };
-        await createSuatDien(IDSuatDien, suatDienData);
+        await createSuatDien(IDSuatDien, suatDienData, connection);
         return {
           tempIDSuatDien: suat.IDSuatDien,
-          IDSuatDien, 
-          ThoiGianBatDau: suat.ThoiGianBatDau,
-          ThoiGianKetThuc: suat.ThoiGianKetThuc,
+          IDSuatDien,
         };
       })
     );
@@ -88,18 +92,24 @@ export const createSuKienlist = async (req, res) => {
           AnhVe: ve.AnhVe || null,
           GiaVe: ve.GiaVe,
           SoLuongVe: ve.SoLuongVe,
+          SoLuongToiDaMotDon: ve.SoLuongToiDaMotDon,
           ThongTinVe: ve.ThongTinVe || null,
-          TrangThai: ve.TrangThai || 'Còn vé'
         };
-        await createLoaiVe(IDLoaiVe, loaiVeData);
+        await createLoaiVe(IDLoaiVe, loaiVeData, connection);
       })
     );
+
+    await connection.commit(); 
+    connection.release();
 
     res.status(201).json({
       message: 'Tạo sự kiện thành công',
       IDSuKien,
     });
   } catch (error) {
+    await connection.rollback(); 
+    connection.release();
+
     console.error('Lỗi khi tạo sự kiện:', error);
     res.status(500).json({
       message: 'Lỗi khi tạo sự kiện',
@@ -108,7 +118,6 @@ export const createSuKienlist = async (req, res) => {
   }
 };
 
-export default createSuKien ;
 
 export const getSuKienTongVeBan = async (req, res) => {
   try {
@@ -156,7 +165,7 @@ export const getSuKienAdmin = async (req, res) => {
   }
 };
 
-export const getSuKienById = async (req, res) => {
+export const getSuKienByIdFromDB = async (req, res) => {
     try {
         const event = await getSuKienById(req.params.idSuKien)
 
@@ -168,7 +177,7 @@ export const getSuKienById = async (req, res) => {
         const suKienMap = {};
 
         event.forEach(row => {
-            const { IDSuKien,IDLoaiSuKien, TenSuKien, Logo, AnhNen, DiaDiem, ThongTinSuKien, LogoBanToChuc, TenBanToChuc, ThongTinBanToChuc, Video, IDSuatDien, ThoiGianBatDau, ThoiGianKetThuc, IDLoaiVe, TenVe, GiaVe, SoLuongVe } = row;
+            const { IDSuKien,IDLoaiSuKien, TenSuKien, Logo, AnhNen, DiaDiem, ThongTinSuKien, LogoBanToChuc, TenBanToChuc, ThongTinBanToChuc, Video, AnhSoDoGhe, IDSuatDien, ThoiGianBatDau, ThoiGianKetThuc, IDLoaiVe, TenVe, GiaVe, SoLuongVe } = row;
 
             if (!suKienMap[IDSuKien]) {
                 suKienMap[IDSuKien] = {
@@ -183,6 +192,7 @@ export const getSuKienById = async (req, res) => {
                     TenBanToChuc,
                     ThongTinBanToChuc,
                     Video,
+                    AnhSoDoGhe,
                     suatDiens: {}
                 };
             }

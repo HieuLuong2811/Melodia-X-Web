@@ -56,7 +56,6 @@ const Checkout = () => {
     setAnhNen(storedAnhNen);
 
     const savedCart = sessionStorage.getItem("invoice");
-
     if (!savedCart) {
       router.push('/');
       return;
@@ -68,18 +67,16 @@ const Checkout = () => {
       return;
     }
     setCart(parsedCart);
-  }, []);
 
-  useEffect(() => {
     const suatdiens = sessionStorage.getItem("suatInfo");
     if(suatdiens) {
-      const suatdien = JSON.parse(suatdiens);
-      setTenSuKien(suatdien.TenSuKien);
-      setDiaDiem(suatdien.DiaDiem);
-      setThoiGianBatDau(suatdien.ThoiGianBatDau);
-      setThoiGianKetThuc(suatdien.ThoiGianKetThuc);
-      setAnhNen(suatdien.AnhNen);
-    }
+          const suatdien = JSON.parse(suatdiens);
+          setTenSuKien(suatdien.TenSuKien);
+          setDiaDiem(suatdien.DiaDiem);
+          setThoiGianBatDau(suatdien.ThoiGianBatDau);
+          setThoiGianKetThuc(suatdien.ThoiGianKetThuc);
+          setAnhNen(suatdien.AnhNen);
+        }
   }, []);
 
   const handleTimeout = () => {
@@ -140,10 +137,13 @@ const Checkout = () => {
         if (momoRes.status === 200 && momoRes.data.payUrl) {
           window.location.href = momoRes.data.payUrl;
         } else {
-          console.error("MoMo không trả về link:", momoRes.data);
-          throw new Error("Không nhận được link thanh toán MoMo.");
+          await axios.delete(`http://localhost:3000/api/HoaDons/${hoaDon.idHoaDon}`, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("authToken")}`
+            }
+          });
         }
-
       }
     } catch (error) {
       Swal.fire({
@@ -154,7 +154,6 @@ const Checkout = () => {
     }
   };
   
-
   return (
     <>
       <link

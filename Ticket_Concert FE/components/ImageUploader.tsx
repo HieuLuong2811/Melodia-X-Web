@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import "./image.css";
 
 interface MediaUploaderProps {
-  type: "logo" | "background" | "logoOrganizer" | "video";
+  type: "logo" | "background" | "logoOrganizer" | "video" | "soDoGhe";
   expectedSize?: { width: number; height: number }; 
   mediaType: "image" | "video"; 
   onUploadSuccess: (url: string) => void;
@@ -111,21 +111,21 @@ const MediaUploader: React.FC<MediaUploaderProps> = ({ type, expectedSize, media
   };
 
   return (
-    <div className="text-center" style={{ width: type === "background" ? "73%" : "26%", height: "max-content" }}>
+    <div className="text-center" style={{ width: type === "background" ? "73%" : type === "video" ? "50%" : type === "soDoGhe" ? "50%" : "26%", height: "max-content" }}>
       <label htmlFor={`${type}Upload`}
         className={`logo w-100 rounded-3 d-flex flex-column align-items-center justify-content-center cursor-pointer p-2 text-white ${type}-upload`}>
         {preview ? (
           mediaType === "video" ? (
             <video src={preview} autoPlay muted loop playsInline style={{ height: "100%", width: "100%" }}/>
           ) : (
-            <img src={preview} alt={`Media ${type}`} style={{ height: "100%", width: "100%" }} />
+            <img src={preview} alt={`Media ${type}`} style={{display : "none" ,height: "100%", width: "100%" }} />
           )
         ) : (
           <>
             <FaUpload size={40} className="text-success object-cover" />
             <p className="mt-3">
               Thêm {mediaType === "video" ? "video" : "ảnh"}{" "}
-              {type === "logo" ? "logo sự kiện" : type === "background" ? "nền" : type === "logoOrganizer" ? "logo ban tổ chức" : "quảng bá"}
+              {type === "logo" ? "logo sự kiện" : type === "background" ? "nền" : type === "logoOrganizer" ? "logo ban tổ chức" : type === "soDoGhe" ? "Sơ đồ ghế" : "Ảnh quảng bá"}
             </p>
             {mediaType === "image" && expectedSize && (
               <small>({expectedSize.width}x{expectedSize.height})</small>

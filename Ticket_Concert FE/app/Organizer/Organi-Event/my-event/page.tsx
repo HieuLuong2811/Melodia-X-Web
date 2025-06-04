@@ -103,7 +103,7 @@ const MyEvent = () => {
                                         variant="scrollable"
                                         scrollButtons="auto">
                                         {statusOptions.map((status, index) => (
-                                            <Tab sx={{padding : "10px", borderRadius : "10px"}} key={index} label={status} value={status}/>
+                                            <Tab sx={{padding : "10px", fontWeight : "bold", borderRadius : "10px"}} key={index} label={status} value={status}/>
                                         ))}
                                     </Tabs>
                                 </div>
@@ -172,8 +172,8 @@ const MyEvent = () => {
                                                 </li> */}
                                                 <li className="d-flex flex-column align-items-center">
                                                     <i className="bi bi-pencil"></i>
-                                                    <Link href="/Organizer/Organi-Event/my-event/"
-                                                        onClick={() => { handleClick(); localStorage.setItem( "IDSuKien_Organizer_Detail", suKien.IDSuKien );}}>
+                                                    <Link href= {`/Organizer/?eventId=${suKien.IDSuKien}`}
+                                                        onClick={() => { handleClick(); localStorage.setItem("IDSuKien_Organizer_Detail", suKien.IDSuKien );}}>
                                                         <span style={{ color: "rgb(45, 194, 117)" }}>Chỉnh sửa</span>
                                                     </Link>
                                                 </li>

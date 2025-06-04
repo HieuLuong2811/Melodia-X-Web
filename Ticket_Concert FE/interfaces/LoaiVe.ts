@@ -5,7 +5,8 @@ export interface LoaiVe {
     AnhVe : string,
     GiaVe : number,
     SoLuongVe : number,
-    ThongTinVe : string,
+    SoLuongToiDaMotDon : number,
+    ThongTinVe : string
 }
 
 export interface LoaiVe2 {

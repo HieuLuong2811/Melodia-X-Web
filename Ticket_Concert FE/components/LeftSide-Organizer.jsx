@@ -26,21 +26,8 @@ export default function LeftSidebar() {
       cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("IDNguoiDung");
-        localStorage.removeItem("uploadedImage_logo");
-        localStorage.removeItem("uploadedImage_logoOrganizer");
-        localStorage.removeItem("uploadedImage_background");
-        localStorage.removeItem("IDLoaiSuKien_Organizer");
-        localStorage.removeItem("TenSuKien");
-        localStorage.removeItem("ThoiGianBatDau");
-        localStorage.removeItem("ThoiGianKetThuc");
-        localStorage.removeItem("IDSuKien_User_Detail");
-        localStorage.removeItem("IDSuKien_User");
-        localStorage.removeItem("IDSuatDien");
-        localStorage.removeItem("DiaDiem");
-        localStorage.removeItem("TenNguoiDung");
-        localStorage.removeItem("AnhNen");
+        localStorage.clear();
+        sessionStorage.clear();
         setIsLoggedIn(false);
         Swal.fire("Đã đăng xuất!", "Bạn đã đăng xuất thành công.", "success");
         window.location.href = "/";
@@ -48,10 +35,17 @@ export default function LeftSidebar() {
     });
   };
 
+  const homeOrganizer = () => {
+    localStorage.removeItem("uploadedMedia_soDoGhe");
+    localStorage.removeItem("uploadedMedia_background");
+    localStorage.removeItem("uploadedMedia_logo");
+    localStorage.removeItem("uploadedMedia_logoOrganizer");
+  }
+
   return (
     <div id="left" className="d-flex flex-column justify-content-between w-18 top-0 start-0">
       <div className="container-fluid d-flex flex-column h-100 p-0">
-        <Link href="/Organizer" className="button d-flex align-items-center mb-2 p-3" id="logo">
+        <Link href="/Organizer" onClick={homeOrganizer} className="button d-flex align-items-center mb-2 p-3" id="logo">
           <img src="/logo.png" className="d-block cursor-pointer p-1 ps-1 pe-1" alt="Logo" />
           <h3 className="mb-0 ms-1 text-white">Organizer MelodiaX</h3>
         </Link>

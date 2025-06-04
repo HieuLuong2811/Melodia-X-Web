@@ -155,12 +155,13 @@ export default function Product_details() {
                                     <Link href={`/User/Book-Tickets?id_detail=${suKien?.IDSuKien}`} className="text-decoration-none text-white"
                                         onClick={() => {
                                             const suatInfo = {
-                                            IDSuatDien: suat.IDSuatDien,
-                                            TenSuKien: suKien.TenSuKien,
-                                            DiaDiem: suKien.DiaDiem,
-                                            ThoiGianBatDau: suat.ThoiGianBatDau,
-                                            ThoiGianKetThuc: suat.ThoiGianKetThuc,
-                                            AnhNen: suKien.AnhNen,
+                                                IDSuatDien: suat.IDSuatDien,
+                                                TenSuKien: suKien.TenSuKien,
+                                                DiaDiem: suKien.DiaDiem,
+                                                ThoiGianBatDau: suat.ThoiGianBatDau,
+                                                ThoiGianKetThuc: suat.ThoiGianKetThuc,
+                                                AnhNen: suKien.AnhNen,
+                                                AnhSoDoGhe: suKien.AnhSoDoGhe
                                             };
                                             sessionStorage.setItem("suatInfo", JSON.stringify(suatInfo));
                                         }}>

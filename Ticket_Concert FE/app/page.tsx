@@ -167,23 +167,8 @@ export default function Home() {
       ],
     };
 
-  // const slides = [
-  //   { img: "TieuDe_3.jpg", video: "https://salt.tkbcdn.com/ts/ds/94/db/bd/e8d16ddb92f6da62316b231fb9718d6c.mp4" },
-  //   { img: "TieuDe_4.jpg", video: "https://salt.tkbcdn.com/ts/ds/94/db/bd/e8d16ddb92f6da62316b231fb9718d6c.mp4" },
-  //   { img: "TieuDe_5.jpg", video: "https://salt.tkbcdn.com/ts/ds/94/db/bd/e8d16ddb92f6da62316b231fb9718d6c.mp4" },
-  //   { img: "TieuDe_6.jpg", video: "https://salt.tkbcdn.com/ts/ds/94/db/bd/e8d16ddb92f6da62316b231fb9718d6c.mp4" },
-  // ];
-
   if (!mounted) return null; 
 
-  // const specialEvents = [
-  //   { id: 1, title: "Vàng Ơi Là Vàng!", image: "https://ticketbox.vn/_next/image?url=https%3A%2F%2Fimages.tkbcdn.com%2F2%2F360%2F479%2Fts%2Fds%2F45%2Fbc%2Fc7%2Ff5fa05b6963c6f3f7ba0908540c369d0.jpg&w=640&q=75" },
-  //   { id: 2, title: "The Next Icon", image: "https://ticketbox.vn/_next/image?url=https%3A%2F%2Fimages.tkbcdn.com%2F2%2F360%2F479%2Fts%2Fds%2F4e%2F93%2F30%2F6f3c83ffbc74baa67e18a2ef0ecf63e8.jpg&w=640&q=75" },
-  //   { id: 3, title: "Fancine Liên Bỉnh Phát", image: "https://ticketbox.vn/_next/image?url=https%3A%2F%2Fimages.tkbcdn.com%2F2%2F360%2F479%2Fts%2Fds%2Fcc%2F41%2Feb%2Fc78ae0e04222c1ab3e726eafe08232c2.jpg&w=640&q=75" },
-  //   { id: 4, title: "Những Kẻ Mộng Mơ", image: "https://ticketbox.vn/_next/image?url=https%3A%2F%2Fimages.tkbcdn.com%2F2%2F360%2F479%2Fts%2Fds%2F2a%2F9e%2F57%2Fbeb7172537b8cdccf0dfe263a6e8946b.jpg&w=640&q=75" },
-  //   { id: 5, title: "Giai Điệu Hoàng Hôn", image: "https://ticketbox.vn/_next/image?url=https%3A%2F%2Fimages.tkbcdn.com%2F2%2F360%2F479%2Fts%2Fds%2Fb3%2Fcc%2F0e%2F47812e3a22b4c9874a1847f580b22a89.jpg&w=640&q=75" },
-  // ];
-  
   return (
     <>
       <div style={{zoom : "0.9"}}>

@@ -10,6 +10,21 @@
     max-width: 900px !important;
 }
 
+.logo-upload, .background-upload {
+    height: 430px !important;
+    background-color: #64646d !important;
+  }
+
+.video-upload, .soDoGhe-upload {
+  height: 200px !important;
+  background-color: #64646d !important;
+}
+
+.logoOrganizer-upload {
+height: 250px !important; 
+background-color: #64646d !important;
+}
+
 .form-control {
     width: 100% !important;
 }

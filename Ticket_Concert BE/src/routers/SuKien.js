@@ -1,5 +1,5 @@
 import express from "express";
-import {getSuKienUser, getSuKienAdmin, getSuKienById, SoLuongEvent ,getSuKienTongVeBan, getSuKienGanNhatMua, getSuKienCoVideo, createSuKienlist, TrangThaiSuKienController, getSuKienByIdUser, updateSuKiens, deleteSuKien, getSuKienChiTiet} from "../controllers/SuKien.js";
+import {getSuKienUser, getSuKienAdmin, getSuKienByIdFromDB, SoLuongEvent ,getSuKienTongVeBan, getSuKienGanNhatMua, getSuKienCoVideo, createSuKienlist, TrangThaiSuKienController, getSuKienByIdUser, updateSuKiens, deleteSuKien, getSuKienChiTiet} from "../controllers/SuKien.js";
 import { authenticate, authorize } from "../Middleware/Authen";
 
 const router = express.Router();
@@ -14,7 +14,7 @@ router.get("/Admin/SuKiens/:idSuKien", authenticate, authorize(["Admin"]), getSu
 
 router.put("/Admin/DuyetSuKien/:idSuKien", authenticate, authorize(["Admin"]), TrangThaiSuKienController);
 
-router.get("/SuKiens/:idSuKien", getSuKienById);
+router.get("/SuKiens/:idSuKien", getSuKienByIdFromDB);
 router.get("/SuKiensUser/:idNguoiDung", getSuKienByIdUser);
 
 

@@ -7,7 +7,8 @@ const getHoaDonMuaVeData = (hoaDon) => {
         hoaDon.tongSoVe,
         hoaDon.ngayThanhToan || null,
         hoaDon.tongTien,
-        hoaDon.phuongThucThanhToan
+        hoaDon.phuongThucThanhToan,
+        hoaDon.trangThaiThanhToan || 'Chưa thanh toán'
     ];
 };
 
@@ -28,8 +29,8 @@ export const createHoaDon = async (idHoaDon,hoaDon ) => {
     const HoaDonData = getHoaDonMuaVeData(hoaDon);
 
     const [result] = await pool.query(
-        `INSERT INTO HoaDonMuaVe (IDHoaDon, IDNguoiDung, TongSoVe, NgayThanhToan, TongTien, PhuongThucThanhToan)
-        VALUES (?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO HoaDonMuaVe (IDHoaDon, IDNguoiDung, TongSoVe, NgayThanhToan, TongTien, PhuongThucThanhToan, TrangThaiThanhToan)
+        VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [idHoaDon, ...HoaDonData]
     );
 
@@ -87,7 +88,7 @@ export const getHoaDonByIDSuatDien = async(idSuatDien) => {
         JOIN ChiTietHoaDon CTHD ON HD.IDHoaDon = CTHD.IDHoaDon
         JOIN LoaiVe LV ON CTHD.IDLoaiVe = LV.IDLoaiVe
         JOIN SuatDien SD ON LV.IDSuatDien = SD.IDSuatDien
-        WHERE SD.IDSuatDien = 'a2e75f4d-9a27-42cf-ba6f-4fba04622ce1'  
+        WHERE SD.IDSuatDien = ? 
         GROUP BY ND.TenNguoiDung, ND.Email, ND.SoDienThoai, HD.PhuongThucThanhToan;`, [idSuatDien]);
     return result;
 }

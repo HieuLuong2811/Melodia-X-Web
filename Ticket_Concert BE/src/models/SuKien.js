@@ -77,7 +77,7 @@ export const getSuKienDatalist = async (type) => {
             sql = `
                 SELECT IDSuKien, Video, AnhNen 
                 FROM SuKien 
-                WHERE Video IS NOT NULL AND TrangThaiSuKien = 'Đã xác nhận'
+                WHERE Video IS NOT NULL AND TRIM(Video) <> '' AND TrangThaiSuKien = 'Đã xác nhận'
                 LIMIT 6;
             `;
             break;
@@ -104,9 +104,6 @@ export const getSuKienDatalist = async (type) => {
     }
 };
 
-
-
-
 export const getSuKienChiTietById = async (idSuKien) => {
     const sql = `
         SELECT 
@@ -123,7 +120,8 @@ export const getSuKienChiTietById = async (idSuKien) => {
             sk.LogoBanToChuc,
             sk.TenBanToChuc,
             sk.ThongTinBanToChuc,
-            sk.Video
+            sk.Video,
+            sk.AnhSoDoGhe
         FROM SuKien sk
         JOIN LoaiSuKien lsk ON sk.IDLoaiSuKien = lsk.IDLoaiSuKien
         WHERE sk.IDSuKien = ?`;
@@ -157,7 +155,7 @@ export const getSuKienByIdUser = async (idNguoiDung) => {
 };
 
 
-export const createSuKien = async (idSuKien, data) => {
+export const createSuKien = async (idSuKien, data, connection) => {
     const values = [
         idSuKien,
         data.idLoaiSuKien,
@@ -171,14 +169,14 @@ export const createSuKien = async (idSuKien, data) => {
         data.logoBanToChuc,
         data.tenBanToChuc,
         data.thongTinBanToChuc,
-        data.video
+        data.video,
+        data.anhSoDoGhe
     ];
-    const [result] = await pool.query(
+    const query =
         `INSERT INTO SuKien 
-        (IDSuKien, IDLoaiSuKien, IDNguoiDung, Logo, AnhNen, TenSuKien, DiaDiem, ThongTinSuKien, TrangThaiSuKien, LogoBanToChuc, TenBanToChuc, ThongTinBanToChuc, Video)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
-        values
-    );
+        (IDSuKien, IDLoaiSuKien, IDNguoiDung, Logo, AnhNen, TenSuKien, DiaDiem, ThongTinSuKien, TrangThaiSuKien, LogoBanToChuc, TenBanToChuc, ThongTinBanToChuc, Video, AnhSoDoGhe)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    await connection.query(query, values);
     return idSuKien;
 };
 
@@ -186,10 +184,10 @@ export const createSuKien = async (idSuKien, data) => {
 // Cập nhật sự kiện
 export const updateSuKien = async (idSuKien, suKien) => {
     try {
-        const {idLoaiSuKien, idNguoiDung, tenSuKien, logo, anhNen, diaDiem, thongTinSuKien, logoBanToChuc, tenBanToChuc, thongTinBanToChuc, video} = suKien;
+        const {idLoaiSuKien, idNguoiDung, tenSuKien, logo, anhNen, diaDiem, thongTinSuKien, logoBanToChuc, tenBanToChuc, thongTinBanToChuc, video, anhSoDoGhe} = suKien;
         await pool.execute(
-            'UPDATE SuKien SET IDLoaiSuKien = ?, IDNguoiDung = ?, TenSuKien = ?, Logo = ?, AnhNen = ?, DiaDiem = ?, ThongTinSuKien = ?, LogoBanToChuc = ?, TenBanToChuc = ?, ThongTinBanToChuc = ?, Video = ?  WHERE IDSuKien = ?',
-            [idLoaiSuKien, idNguoiDung, tenSuKien, logo, anhNen, diaDiem, thongTinSuKien, logoBanToChuc, tenBanToChuc, thongTinBanToChuc, video ,idSuKien]
+            'UPDATE SuKien SET IDLoaiSuKien = ?, IDNguoiDung = ?, TenSuKien = ?, Logo = ?, AnhNen = ?, DiaDiem = ?, ThongTinSuKien = ?, LogoBanToChuc = ?, TenBanToChuc = ?, ThongTinBanToChuc = ?, Video = ?, AnhSoDoGhe = ? WHERE IDSuKien = ?',
+            [idLoaiSuKien, idNguoiDung, tenSuKien, logo, anhNen, diaDiem, thongTinSuKien, logoBanToChuc, tenBanToChuc, thongTinBanToChuc, video, anhSoDoGhe ,idSuKien]
         );
     } catch (error) {
         throw error;

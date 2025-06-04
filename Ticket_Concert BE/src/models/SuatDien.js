@@ -21,13 +21,12 @@ export const getSuatDienByID = async (idSuKien) => {
 };
 
 // Tạo nhiều suất diễn
-export const createSuatDien = async (idSuatDien, data) => {
+export const createSuatDien = async (idSuatDien, data, connection) => {
     try {
         const { idSuKien, thoiGianBatDau, thoiGianKetThuc } = data;
-        await pool.execute(
-            'INSERT INTO SuatDien (IDSuatDien, IDSuKien, ThoiGianBatDau, ThoiGianKetThuc) VALUES (?, ?, ?, ?)',
-            [idSuatDien, idSuKien, thoiGianBatDau, thoiGianKetThuc]
-        );
+        const query =
+            'INSERT INTO SuatDien (IDSuatDien, IDSuKien, ThoiGianBatDau, ThoiGianKetThuc) VALUES (?, ?, ?, ?)';
+        await connection.query(query, [idSuatDien, idSuKien, thoiGianBatDau, thoiGianKetThuc]);       
         return idSuatDien;
     } catch (error) {
         throw error;

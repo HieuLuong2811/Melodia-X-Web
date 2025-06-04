@@ -20,11 +20,11 @@ export const SuatDienService = {
   },
 
   updateSuatDiens: async (IDSuatDien: string, data: Partial<SuatDien>): Promise<SuatDien> => {
-    const response = await axiosInstance.put<SuatDien>(`SuKiens/${IDSuatDien}`, data);
+    const response = await axiosInstance.put<SuatDien>(`SuatDiens/${IDSuatDien}`, data);
     return response.data;
   },
 
   deleteSuatDiens: async (IDSuatDien: string): Promise<void> => {
-    await axiosInstance.delete(`SuKiens/${IDSuatDien}`);
+    await axiosInstance.delete(`SuatDiens/${IDSuatDien}`);
   },
 };

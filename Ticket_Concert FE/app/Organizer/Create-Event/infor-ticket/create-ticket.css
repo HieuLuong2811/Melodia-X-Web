@@ -31,13 +31,9 @@ button.form-control:hover {
 }
 
 .popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
-    z-index: 11;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.5) !important;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -46,11 +42,15 @@ button.form-control:hover {
   /* Popup căn giữa màn hình */
   .popup {
     backdrop-filter: blur(30px);
-    background-color: rgba(81, 81, 88, .3);
+    background-color: rgba(81, 81, 88, .3) !important;
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
   }
   
+  .MuiPaper-root {
+    background-color: rgba(81, 81, 88, .3) !important;
+    max-width: 700px !important;
+  }
   .popup .fo {
     background-color: #6464674d;
   }
