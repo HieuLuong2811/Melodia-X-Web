@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-const Footer = () => {
+
+export default function Footer() {
     return (
       <>
         {/* Bootstrap & Flag Icon CSS CDN */}
@@ -20,12 +21,25 @@ const Footer = () => {
         <div className="footer-top d-flex justify-content-between">
           <div className="footer-column">
             <h5>Hotline</h5>
-            <p>Thứ 2 - Thứ 6 (8:30 - 18:30)</p>
-            <a href="tel:19006408">1900.6408</a>
-            <p>Email</p>
-            <a href="mailto:support@ticketbox.vn">support@ticketbox.vn</a>
-            <p>Văn phòng</p>
-            <address>52 Út Tịch, Phường 4, Quận Tân Bình, TP. Hồ Chí Minh</address>
+            <div className="d-flex align-items-center mb-3">
+              <i className="bi bi-telephone-fill me-2"></i>
+              <div>
+                <p className="mb-0">Thứ 2 - Thứ 6 (8:30 - 18:30)</p>
+                <a href="tel:19006408">1900.6408</a>
+              </div>
+            </div>
+
+            <h5>Email</h5>
+            <div className="d-flex align-items-center mb-3">
+              <i className="bi bi-envelope-fill me-2"></i>
+              <a href="mailto:support@ticketbox.vn">support@ticketbox.vn</a>
+            </div>
+
+            <h5>Văn phòng</h5>
+            <div className="d-flex align-items-center mb-3">
+              <i className="bi bi-geo-alt-fill me-2"></i>
+              <p className="mb-0">52 Út Tịch, Phường 4, Quận Tân Bình, TP. Hồ Chí Minh</p>
+            </div>
           </div>
   
           <div className="footer-column">
@@ -76,6 +90,4 @@ const Footer = () => {
       </>
     );
   };
-   
-  export default Footer;
-  
+     

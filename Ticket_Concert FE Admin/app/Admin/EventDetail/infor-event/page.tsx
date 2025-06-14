@@ -6,10 +6,9 @@ import ProductDetails from "../infor-ticket/page";
 import PaymentInvoiceForm from "../infor-payment/page";
 import { useSearchParams } from 'next/navigation';
 import Statistics from "../dashboard/page";
-import EmptyData from "@/components/Emptydata";
-import "./create-event.css";
+import dynamic from 'next/dynamic';
+const EmptyData = dynamic(() => import('@/components/emptydata'));import "./create-event.css";
 import { useRouter } from 'next/navigation';
-import dynamic from 'next/dynamic'
 const LeftSide = dynamic(() => import('@/components/LeftSide-Admin'), { ssr: false })
 const TopSize = dynamic(() => import('@/components/topSize-Admin.jsx'), { ssr: false })
 import EventDetails from "./EventDetails";

@@ -175,7 +175,7 @@ const TicketBooking = () => {
             <div className="col-md-6 p-3 flex-grow-1 text-center" style={{ overflowY: "auto", height: "100vh", scrollbarWidth: "none" }}>
               <div className="d-flex align-items-center justify-content-between fs-5">
                 <Link
-                  href={`/User/Product-Details/?id_detail=${id_detail}`}
+                  href={`/User/Event-Details/?id_detail=${id_detail}`}
                   className="text d-flex align-items-center text-decoration-none"
                   onClick={() => {
                     localStorage.removeItem("TenSuKien");
@@ -271,17 +271,21 @@ const TicketBooking = () => {
                   <i className="bi bi-geo-alt"></i>
                   <span>{diaDiem}</span>
                 </p>
-                <p className="d-flex flex-column gap-2" style={{cursor : "pointer", width : "max-content"}}  onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} >
-                  <span>Ảnh sơ đồ ghế</span>
-                  <img src={soDoGhe} height={100} width={100} alt=""/>
-                </p>
+                {soDoGhe ? (
+                  <p className="d-flex flex-column gap-2" style={{cursor : "pointer", width : "max-content"}}  onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} >
+                    <span>Ảnh sơ đồ ghế</span>
+                    <img src={soDoGhe} height={100} width={100} alt=""/>
+                  </p>
+                ) : (
+                  <div>Không có sơ đồ ghế</div>
+                )}
+   
               </div>
               <hr className="border-secondary" />
               {hovered && (
                 <div className="over-lay w-100 bg-light">
                     <img src={soDoGhe} width={1100} height={800} style={{ zIndex: 5, padding: 4, position: "absolute", top: "100px", left: "80px", border: "2px solid #ccc", backgroundColor: "#fff" }} alt="Sơ đồ ghế"/>
                 </div>
-                   
               )}            
               {/* Hiển thị danh sách vé trong cart */}
               <div className="p-3">

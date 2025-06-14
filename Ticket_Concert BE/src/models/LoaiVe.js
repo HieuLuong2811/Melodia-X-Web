@@ -40,7 +40,6 @@ export const createLoaiVe = async (idLoaiVe, loaiVeData, connection) => {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const { IDSuatDien, TenVe, AnhVe, GiaVe, SoLuongVe, SoLuongToiDaMotDon, ThongTinVe } = loaiVeData;
-
         await connection.query(query, [idLoaiVe, IDSuatDien, TenVe, AnhVe, GiaVe, SoLuongVe, SoLuongToiDaMotDon, ThongTinVe]);              
         return idLoaiVe;
     } catch (error) {   

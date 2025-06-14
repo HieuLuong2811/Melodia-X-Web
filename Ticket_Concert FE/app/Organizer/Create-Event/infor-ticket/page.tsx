@@ -245,8 +245,6 @@ const Create_ticket = () => {
 };
 
 
-    
-
   // Select thời gian
   const handleShowtimeChange = (id: string, field: "ThoiGianBatDau" | "ThoiGianKetThuc", value: string) => {
     const currentShowtime = showtimes.find((st) => st.IDSuatDien === id);
@@ -432,7 +430,6 @@ const Create_ticket = () => {
     } else {
       if(isEditMode) {
          const newLoaive = {
-          IDLoaiVe: newTicket.IDLoaiVe || `TEMP-TICKET-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           IDSuatDien: currentShowtimeId as string,
           TenVe: newTicket.TenVe,
           GiaVe: newTicket.GiaVe!,

@@ -5,7 +5,7 @@ import React from "react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
-export default function TopNav({title}) {
+const TopNav = ({ title }) => {
 
   const router = useRouter();
 
@@ -28,7 +28,7 @@ export default function TopNav({title}) {
         localStorage.removeItem("IDSuKien_Organizer_Detail");
         localStorage.removeItem("uploadedMedia_video");
         sessionStorage.clear();
-        window.location.href = "/Organizer/";
+        window.location.href = "/Organizer/Create-Event/infor-event/";
       };
   
 
@@ -66,7 +66,7 @@ export default function TopNav({title}) {
               <i className="bi bi-arrow-down-short text-white"></i>
             </div>
             <ul className="dropdown-menu mt-0" style={{right : "0px", top : "40px"}}>
-                  <li><Link className="dropdown-item" href="#"><i className="bi bi-calendar-event"></i> Sự kiện của tôi</Link></li>
+                  <li><Link className="dropdown-item" href="/Organizer/Organi-Event/my-event"><i className="bi bi-calendar-event"></i> Sự kiện của tôi</Link></li>
                   <li><Link className="dropdown-item" href="/User/My-Infor/"><i className="bi bi-person-circle"></i> Trang cá nhân</Link></li>
                   <li><hr className="dropdown-divider" /></li>
                   <li>
@@ -80,3 +80,5 @@ export default function TopNav({title}) {
     </div>
   );
 }
+
+export default TopNav;

@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaUpload } from "react-icons/fa";
 import Swal from "sweetalert2";
-import "./image.css";
 
 interface MediaUploaderProps {
   type: "logo" | "background" | "logoOrganizer" | "video" | "soDoGhe";

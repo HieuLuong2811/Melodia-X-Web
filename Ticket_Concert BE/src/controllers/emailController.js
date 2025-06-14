@@ -1,10 +1,12 @@
-import transporter from '../config/email.js';
+import transporter from "../config/email.js";
+
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const sendEmails = async (req, res) => {
   const { emails, subject, content, startDate, endDate } = req.body;
 
   if (!emails || !subject || !content) {
-    return res.status(400).json({ error: 'Missing required fields' });
+    return res.status(400).json({ error: "Missing required fields" });
   }
 
   const htmlTemplate = `
@@ -37,22 +39,23 @@ const sendEmails = async (req, res) => {
   `;
 
   try {
-    const mailPromises = emails.map((email) =>
-      transporter.sendMail({
+    for (const [email] of emails.entries()) {
+      await transporter.sendMail({
         from: process.env.EMAIL_USER,
         to: email,
         subject: subject,
         html: htmlTemplate,
-      })
-    );
+      });
 
-    await Promise.all(mailPromises);
-    res.status(200).json({ message: 'Emails sent successfully' });
+      await delay(3000);
+    }
+    res.status(200).json({ message: "Emails được gửi thành công" });
   } catch (error) {
-    console.error('Error sending emails:', error);
-    res.status(500).json({ error: 'Failed to send emails', details: error.message });
+    console.error("Lỗi khi gửi email:", error);
+    res
+      .status(500)
+      .json({ error: "Lỗi khi gửi email", details: error.message });
   }
 };
-
 
 export default sendEmails;

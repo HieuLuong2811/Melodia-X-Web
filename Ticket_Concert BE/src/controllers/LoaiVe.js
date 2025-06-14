@@ -1,5 +1,6 @@
 import { getAllLoaiVe, getLoaiVeByID, getLoaiVeByIDSuatDien, getVeDaMuaByUserId, createLoaiVe, updateLoaiVe, deleteLoaiVe } from '../models/LoaiVe.js';
 import { v4 as uuidv4 } from 'uuid';
+import pool from '../config/db.js';
 
 // Hàm lấy dữ liệu từ request body
 const getLoaiVeData = (data) => ({
@@ -45,12 +46,22 @@ export const getLoaiVeByIDSuatDien = async (req, res) => {
 // Thêm loại vé mới
 export const createLoaiVeHandler = async (req, res) => {
     try {
+        const connection = await pool.getConnection(); 
+        await connection.beginTransaction(); 
+
         const loaiVeData = getLoaiVeData(req.body);
         const idLoaiVe = uuidv4();
 
-        await createLoaiVe(idLoaiVe, loaiVeData);
+      
+        await createLoaiVe(idLoaiVe, loaiVeData, connection);
+
+        await connection.commit(); 
+        connection.release();
+
         res.status(201).json({ IDLoaiVe: idLoaiVe, ...loaiVeData });
     } catch (error) {
+        await connection.rollback(); 
+        connection.release();
         res.status(500).json({ message: error.message });
     }
 };

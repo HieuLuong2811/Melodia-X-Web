@@ -45,7 +45,7 @@ export default function LeftSidebar() {
   return (
     <div id="left" className="d-flex flex-column justify-content-between w-18 top-0 start-0">
       <div className="container-fluid d-flex flex-column h-100 p-0">
-        <Link href="/Organizer" onClick={homeOrganizer} className="button d-flex align-items-center mb-2 p-3" id="logo">
+        <Link href="/Organizer/Create-Event/infor-event/" onClick={homeOrganizer} className="button d-flex align-items-center mb-2 p-3" id="logo">
           <img src="/logo.png" className="d-block cursor-pointer p-1 ps-1 pe-1" alt="Logo" />
           <h3 className="mb-0 ms-1 text-white">Organizer MelodiaX</h3>
         </Link>

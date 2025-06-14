@@ -4,13 +4,13 @@ import axios from "axios";
 import { SoLuongVe, DoanhThu } from '../interfaces/DashBoard';
 
 export const dashboardService = {
-  getdoanhthu: async (IDSuKien: string): Promise<DoanhThu> => {
-    const response = await axios.get<DoanhThu>(`http://localhost:3000/api/doanhthu/${IDSuKien}`);
+  getdoanhthu: async (IDSuatDien: string): Promise<DoanhThu> => {
+    const response = await axios.get<DoanhThu>(`http://localhost:3000/api/doanhthu/${IDSuatDien}`);
     return response.data;
   },
 
-  getVeDaBan: async (IDSuKien : string): Promise<SoLuongVe> => {
-    const response = await axios.get<SoLuongVe>(`http://localhost:3000/api/soluongve/${IDSuKien}`);
+  getVeDaBan: async (IDSuatDien : string): Promise<SoLuongVe> => {
+    const response = await axios.get<SoLuongVe>(`http://localhost:3000/api/soluongve/${IDSuatDien}`);
     return response.data;
   },
 

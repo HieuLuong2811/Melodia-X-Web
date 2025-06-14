@@ -5,8 +5,8 @@ import TopSidebar from "@/components/topSide-Organizer.jsx";
 import "./style.css";
 import "../../style/Home.css";
 import "slick-carousel/slick/slick.css";
-import EmptyData from "@/components/emptydata";
-import "slick-carousel/slick/slick-theme.css";
+import dynamic from 'next/dynamic';
+const EmptyData = dynamic(() => import('@/components/emptydata'));import "slick-carousel/slick/slick-theme.css";
 import { suKienService } from "@/services/SuKien";
 import { SuKien } from "@/interfaces/SuKien";
 import Link from "next/link";
@@ -149,32 +149,28 @@ const MyEvent = () => {
                                                     <i className="bi bi-peace-fill"></i>
                                                     <Link href="/Organizer/Organi-Event/my-event/Dashboard/"
                                                         onClick={() => { handleClick(); localStorage.setItem( "IDSuKien_Organizer_Detail", suKien.IDSuKien );}}>
-                                                        <span style={{ color: "rgb(45, 194, 117)" }}>Tổng quan</span>
+                                                        <span >Tổng quan</span>
                                                     </Link>
                                                 </li>
                                                 <li className="d-flex flex-column align-items-center">
                                                     <i className="bi bi-person-fill"></i>
                                                     <Link href="/Organizer/Organi-Event/my-event/members/"
                                                         onClick={() => { handleClick(); localStorage.setItem( "IDSuKien_Organizer_Detail", suKien.IDSuKien );}}>
-                                                        <span style={{ color: "rgb(45, 194, 117)" }}>Thành viên</span>
+                                                        <span >Thành viên</span>
                                                     </Link>
                                                 </li>
                                                 <li className="d-flex flex-column align-items-center">
                                                     <i className="bi bi-journal-text"></i>
                                                     <Link href="/Organizer/Organi-Event/my-event/Order-list/"
                                                         onClick={() => { handleClick(); localStorage.setItem( "IDSuKien_Organizer_Detail", suKien.IDSuKien );}}>
-                                                        <span style={{ color: "rgb(45, 194, 117)" }}>Đơn hàng</span>
+                                                        <span >Đơn hàng</span>
                                                     </Link>
                                                 </li>
-                                                {/* <li className="d-flex flex-column align-items-center">
-                                                    <i className="fas fa-chair fs-5 mt-1 mb-2"></i>
-                                                    <span style={{ color: "rgb(45, 194, 117)" }}>Sơ đồ ghế</span>
-                                                </li> */}
                                                 <li className="d-flex flex-column align-items-center">
                                                     <i className="bi bi-pencil"></i>
-                                                    <Link href= {`/Organizer/?eventId=${suKien.IDSuKien}`}
+                                                    <Link href= {`/Organizer/Create-Event/infor-event/?eventId=${suKien.IDSuKien}`}
                                                         onClick={() => { handleClick(); localStorage.setItem("IDSuKien_Organizer_Detail", suKien.IDSuKien );}}>
-                                                        <span style={{ color: "rgb(45, 194, 117)" }}>Chỉnh sửa</span>
+                                                        <span >Chỉnh sửa</span>
                                                     </Link>
                                                 </li>
                                             </ul>

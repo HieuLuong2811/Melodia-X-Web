@@ -29,7 +29,7 @@ export default function LeftSidebar() {
       title: "Cài đặt sự kiện",
       items: [
         { href: "/Organizer/Organi-Event/my-event/members", icon: "fa-user", label: "Thành viên" },
-        { href: `/Organizer/?eventId=${eventId}`, icon: "fa-pen", label: "Chỉnh sửa" },
+        { href: `/Organizer/Create-Event/infor-event/?eventId=${eventId}`, icon: "fa-pen", label: "Chỉnh sửa" },
       ],
     },
   ];

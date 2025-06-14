@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import Menu from "@/components/Menu";
 import Link from "next/link";
-import EmptyData from "@/components/emptydata.tsx";
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
+const EmptyData = dynamic(() => import('@/components/emptydata'));
 const Footer = dynamic(() => import('@/components/Footer.jsx'), { ssr: false });
 const Nav = dynamic(() => import('@/components/Navbar.jsx'), { ssr: false });
 import {suKienService} from "@/services/SuKien.ts";
@@ -178,7 +178,7 @@ const Home = () => {
                 <Box sx={{ display: "flex", flexWrap: "wrap"}}>
                     {filteredEvents.map((suKien) => (
                      <div key={suKien.IDSuKien} className="p-2" style={{width : "350px"}}>
-                          <Link className="text-decoration-none" href= {`/User/Product-Details/?id_detail=${suKien.IDSuKien}`}>
+                          <Link className="text-decoration-none" href= {`/User/Event-Details/?id_detail=${suKien.IDSuKien}`}>
                             <div className="card text-white border-0 rounded-3 overflow-hidden bg-transparent">
                               <img className="card-img " src={suKien.AnhNen} style={{ height: "200px", objectFit: "cover" }}/>
                               <div className="card-body p-0 pt-3">

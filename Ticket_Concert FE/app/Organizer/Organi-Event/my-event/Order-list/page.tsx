@@ -1,4 +1,3 @@
-// pages/OrdersAndTickets.tsx
 "use client";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
@@ -11,9 +10,7 @@ import DisplayEventTime from "@/components/DisplayEventTime";
 import { HoaDonMuaService } from "@/services/HoaDonMuaVe";
 import { HoaDonMua } from "@/interfaces/HoaDonMuaVe";
 import "../../../style/Home.css";
-import EmptyData from "@/components/emptydata";
-import Swal from "sweetalert2";
-
+const EmptyData = dynamic(() => import('@/components/emptydata'));import Swal from "sweetalert2";
 const LeftSidebar = dynamic(() => import("../component/menu").then(), { ssr: false });
 const TopSidebar = dynamic(() => import("@/components/topSide-Organizer").then(), { ssr: false });
 
@@ -45,10 +42,8 @@ export default function OrdersAndTickets() {
           setSuatDiens(suatDienArray);
 
           if (suatDienArray.length > 0) {
-            setSelectedSuatDienId(suatDienArray[0].IDSuatDien);
-            setSelectedSuatDien(suatDienArray[0]);
             try {
-              const ordersData = await HoaDonMuaService.getHoaDonByIDSuatDien(suatDienArray[0].IDSuatDien);
+              const ordersData = await HoaDonMuaService.getHoaDonByIDSuatDien(selectedSuatDienId || suatDienArray[0].IDSuatDien);
               setOrders(ordersData);
             } catch (error) {
               console.error("Lỗi khi lấy đơn hàng:", error);
@@ -61,7 +56,7 @@ export default function OrdersAndTickets() {
       }
     };
     fetchData();
-  }, []);
+  }, [selectedSuatDienId]);
 
   // Xử lý thay đổi suất diễn
   const handleSelectChange = (event: SelectChangeEvent<string>) => {
@@ -150,7 +145,7 @@ export default function OrdersAndTickets() {
       {orders.length === 0 ? (
         <div className="sc-ffc90067-7 sc-cd78c11b-1 fFJbAL ePwTxf  flex-column  text-center w-100 d-flex justify-content-center">
           <EmptyData />
-          <div className="sc-cd78c11b-2 cimqQp fw-bold mt-3">Không có sự kiện</div>
+          <div className="text-dark fs-5 fw-bold mt-3">Chưa có đơn hàng</div>
         </div>
       ) : (
         <table className="table table-bordered table-hover">
@@ -280,7 +275,11 @@ export default function OrdersAndTickets() {
                 <div className="d-flex align-items-center gap-3">
                   <h5 className="mb-0 fw-bold">Danh sách buổi biểu diễn</h5>
                   <div className="d-flex gap-2">
-                    <Select id="suatDienSelect" value={selectedSuatDienId} onChange={handleSelectChange}>
+                    <Select id="suatDienSelect"  sx={{ color: 'black', width : "300px", border: '1px solid white', borderRadius: '5px',
+                      '.MuiOutlinedInput-notchedOutline': { borderColor: 'black' },
+                      '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'black' },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'black' },
+                    }} value={selectedSuatDienId} onChange={handleSelectChange}>
                       {suatDiens.map((suatDien) => (
                         <MenuItem key={suatDien.IDSuatDien} value={suatDien.IDSuatDien}>
                           <DisplayEventTime

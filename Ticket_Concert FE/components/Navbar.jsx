@@ -43,11 +43,11 @@ const Nav = () => {
   };
 
    const handleCreateEvent = () => {
-        localStorage.removeItem("uploadedMedia_logo");
-        localStorage.removeItem("uploadedMedia_background");
-        localStorage.removeItem("uploadedMedia_logoOrganizer");
-        localStorage.removeItem("IDSuKien_Organizer_Detail");
-      };
+    localStorage.removeItem("uploadedMedia_logo");
+    localStorage.removeItem("uploadedMedia_background");
+    localStorage.removeItem("uploadedMedia_logoOrganizer");
+    localStorage.removeItem("IDSuKien_Organizer_Detail");
+  };
   
   
 
@@ -96,7 +96,7 @@ const Nav = () => {
           <div className="d-flex align-items-center">
           {isLoggedIn ? (
             <div className="d-flex align-items-center justify-content-between gap-3 w-100">
-              <Link href="/Organizer/" onClick={() => handleCreateEvent()} className="btn btn-outline-light ps-4 pe-4 pt-2 pb-2 rounded-5" target="_blank" rel="noopener noreferrer" style={{width : "150px"}} passHref>
+              <Link href="/Organizer/Create-Event/infor-event/" onClick={() => handleCreateEvent()} className="btn btn-outline-light ps-4 pe-4 pt-2 pb-2 rounded-5" target="_blank" rel="noopener noreferrer" style={{width : "150px"}} passHref>
                 Tạo sự kiện
               </Link>
 

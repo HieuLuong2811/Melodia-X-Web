@@ -2,17 +2,18 @@
 import React from "react";
 
 export default function EmptyData() {
-  return (
-    <svg
-    width="100%"
-    height="260"
-    viewBox="0 0 260 260"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg">
-    <mask
-        id="ticket-empty_svg__a"
-        maskUnits="userSpaceOnUse"
-        x="0"
+    return (
+        <svg
+            width="100%"
+            height="260"
+            viewBox="0 0 260 260"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <mask
+                id="ticket-empty_svg__a"
+                maskUnits="userSpaceOnUse"
+                x="0"
         y="0"
         width="260"
         height="260"

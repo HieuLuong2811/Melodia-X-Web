@@ -162,7 +162,7 @@ export default function MembersPage() {
               )}
             </div>
 
-            <Dialog open={showModal} sx={{zIndex : 2}} onClose={() => setShowModal(false)} maxWidth="md" fullWidth>
+            <Dialog open={showModal} sx={{zIndex : 5}} onClose={() => setShowModal(false)} maxWidth="md" fullWidth>
               <DialogTitle>
                 {editingMember ? "Sửa thành viên" : "Thêm thành viên"}
               </DialogTitle>

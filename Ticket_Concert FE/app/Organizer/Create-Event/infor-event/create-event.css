@@ -47,3 +47,18 @@ textarea.form-control  {
 .logo::before {
     content: "" !important;
 }
+
+img{
+    display: none !important; 
+}
+
+video {
+  display: none !important;
+}
+
+.text-center img, .text-center video {
+    display: block !important;
+}
+
+  
+  

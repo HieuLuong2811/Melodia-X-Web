@@ -1,6 +1,6 @@
 import pool from '../config/db.js';
 
-export const getDoanhThuBySuKien = async (idSuKien) => {
+export const getDoanhThuBySuKien = async (idSuatDien) => {
     const sql = `
         SELECT 
             SUM(hd.TongTien) AS TongDoanhThu
@@ -9,14 +9,14 @@ export const getDoanhThuBySuKien = async (idSuKien) => {
         JOIN LoaiVe lv ON cthd.IDLoaiVe = lv.IDLoaiVe
         JOIN SuatDien sd ON lv.IDSuatDien = sd.IDSuatDien
         JOIN SuKien sk ON sd.IDSuKien = sk.IDSuKien
-        WHERE sk.IDSuKien = ?
+        WHERE sd.IDSuatDien = ?
         GROUP BY sk.IDSuKien, sk.TenSuKien;
     `;
-    const [rows] = await pool.query(sql, [idSuKien]);
+    const [rows] = await pool.query(sql, [idSuatDien]);
     return rows[0] || null;
 };
 
-export const getSoLuongVeDaBanBySuKien = async (idSuKien) => {
+export const getSoLuongVeDaBanBySuKien = async (idSuatDien) => {
     const sql = `
       SELECT 
             SUM(cthd.SoLuong) AS TongVeDaBan
@@ -24,9 +24,9 @@ export const getSoLuongVeDaBanBySuKien = async (idSuKien) => {
         JOIN LoaiVe lv ON cthd.IDLoaiVe = lv.IDLoaiVe
         JOIN SuatDien sd ON lv.IDSuatDien = sd.IDSuatDien
         JOIN SuKien sk ON sd.IDSuKien = sk.IDSuKien
-        WHERE sk.IDSuKien = ?
+        WHERE sd.IDSuatDien = ?
         GROUP BY sk.IDSuKien, sk.TenSuKien;
     `;
-    const [rows] = await pool.query(sql, [idSuKien]);
+    const [rows] = await pool.query(sql, [idSuatDien]);
     return rows[0] || null;
 };

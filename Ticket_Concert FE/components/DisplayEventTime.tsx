@@ -28,7 +28,7 @@ export const OnlyDate: React.FC<onlydate> = ({date}) => {
 }
 
 
-const DisplayEventTime: React.FC<DisplayEventTimeProps> = ({ start, end }) => {
+export const DisplayEventTime: React.FC<DisplayEventTimeProps> = ({ start, end }) => {
   const startDate = new Date(start);
   const endDate = new Date(end);
 
@@ -58,4 +58,3 @@ const DisplayEventTime: React.FC<DisplayEventTimeProps> = ({ start, end }) => {
   );
 };
 
-export default DisplayEventTime;

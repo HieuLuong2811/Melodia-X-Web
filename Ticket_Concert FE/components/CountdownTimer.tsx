@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
-const CountdownTimer = ({ onTimeout }: { onTimeout: () => void }) => {
-  const [countdown, setCountdown] = useState<number>(900); 
+export default function CountdownTimer({ onTimeout }: { onTimeout: () => void }) {
+  const [countdown, setCountdown] = useState<number>(900);
 
   useEffect(() => {
     let initialCountdown = 900;
@@ -49,4 +49,3 @@ const CountdownTimer = ({ onTimeout }: { onTimeout: () => void }) => {
   );
 };
 
-export default CountdownTimer;

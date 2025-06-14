@@ -5,8 +5,8 @@ import { getDoanhThuBySuKien, getSoLuongVeDaBanBySuKien } from '../models/dashbo
 
 export const DoanhThu = async (req, res) => {
   try {
-    const { idsukien } = req.params;
-    const doanhThu = await getDoanhThuBySuKien(idsukien);
+    const { idSuatDien } = req.params;
+    const doanhThu = await getDoanhThuBySuKien(idSuatDien);
     res.json(doanhThu);
   } catch (error) {
     res.status(500).json({ message: "Lỗi khi lấy doanh thu sự kiện", error: error.message });
@@ -15,8 +15,8 @@ export const DoanhThu = async (req, res) => {
 
 export const SoLuongVe = async (req, res) => {
   try {
-    const { idsukien } = req.params;
-    const soLuong = await getSoLuongVeDaBanBySuKien(idsukien);
+    const { idSuatDien } = req.params;
+    const soLuong = await getSoLuongVeDaBanBySuKien(idSuatDien);
     res.json(soLuong);
   } catch (error) {
     res.status(500).json({ message: "Lỗi khi lấy số lượng vé đã bán", error: error.message });

@@ -13,8 +13,8 @@ router.get('/event-types',authenticate, authorize(["Admin"]), dashboardControlle
 router.get('/recent-events',authenticate, authorize(["Admin"]), dashboardController.getRecentEvents);
 router.get('/AccHoatDong',authenticate, authorize(["Admin"]), countacc);
  
-router.get('/doanhthu/:idsukien', DoanhThu);
-router.get('/soluongve/:idsukien', SoLuongVe);
+router.get('/doanhthu/:idSuatDien', DoanhThu);
+router.get('/soluongve/:idSuatDien', SoLuongVe);
 
 
 export default router;
