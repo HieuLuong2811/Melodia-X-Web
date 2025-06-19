@@ -4,6 +4,8 @@ import DisplayEventTime from "@/components/DisplayEventTime";
 import { suKienService } from "@/services/SuKien";
 import { useCollapse } from "react-collapsed";
 import { SuKienDetails, SuatDien, LoaiVe } from "@/interfaces/SuKien";
+import EmptyData from "@/components/Emptydata";
+import { useSearchParams } from "next/navigation";
 
 const ShowtimeItem = ({ suat }: { suat: SuatDien }) => {
   const [isExpanded, setExpanded] = useState(false);
@@ -62,6 +64,10 @@ const ShowtimeItem = ({ suat }: { suat: SuatDien }) => {
 
 // Component chính
 export default function ProductDetails() {
+
+  const searchParams = useSearchParams();
+  const IDFromURL = searchParams.get('id');
+
   const [suKien, setSuKien] = useState<SuKienDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -69,18 +75,29 @@ export default function ProductDetails() {
   useEffect(() => {
     const fetchSuKien = async () => {
       try {
-        const idSuKien = localStorage.getItem("IDSuKien");
-        if (!idSuKien) {
-          setError("Không tìm thấy ID sự kiện trong localStorage.");
+        if(IDFromURL) {
+          const data = await suKienService.getSuKienById(IDFromURL);
+          if (data) {
+            setSuKien(data);
+          } else {
+            setError("Không tìm thấy sự kiện.");
+          }
           setLoading(false);
           return;
         }
-
-        const data = await suKienService.getSuKienById(idSuKien);
-        if (data) {
-          setSuKien(data);
-        } else {
-          setError("Không tìm thấy sự kiện.");
+        else {
+          const idSuKien = localStorage.getItem("IDSuKien");
+          if (!idSuKien) {
+            setError("Không tìm thấy ID sự kiện trong localStorage.");
+            setLoading(false);
+            return;
+          }
+          const data = await suKienService.getSuKienById(idSuKien);
+          if (data) {
+            setSuKien(data);
+          } else {
+            setError("Không tìm thấy sự kiện.");
+          }
         }
       } catch (err) {
         setError("Lỗi khi tải thông tin sự kiện.");
@@ -123,7 +140,10 @@ export default function ProductDetails() {
                     <ShowtimeItem key={suat.IDSuatDien} suat={suat} />
                   ))
                 ) : (
-                  <p className="p-3 m-0">Chưa có suất diễn nào.</p>
+                  <div>
+                    <EmptyData />
+                    <p className="text-center">Chưa có suất diễn nào cho sự kiện này.</p>
+                  </div>
                 )}
               </div>
             </div>

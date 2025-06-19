@@ -9,7 +9,7 @@ import TopSidebar from "@/components/topSide-Organizer";
 import "./dashboard.css";
 import "../../../style/Home.css";
 import { SoLuongVe, DoanhThu } from "@/interfaces/DashBoard";
-import DisplayEventTime from "@/components/DisplayEventTime";
+import {DisplayEventTime} from "@/components/DisplayEventTime";
 import { LoaiVeService } from "@/services/LoaiVe";
 import { SuatDien } from "@/interfaces/SuatDien";
 import { SuatDienService } from "@/services/SuatDien";
@@ -43,6 +43,7 @@ export default function Statistics() {
     ThoiGianBatDau: string;
     ThoiGianKetThuc: string;
   } | null>(null);
+  
 
   const [loaiVe, setLoaiVe] = useState<LoaiVe[]>([]);
 
@@ -243,7 +244,7 @@ export default function Statistics() {
       <div className="d-flex">
         <LeftSidebar />
         <div id="right" className="overflow-auto w-100" style={{ background: "linear-gradient(rgb(15, 46, 29), rgb(30 10 30))" }}>
-          <TopSidebar title="Sự kiện của tôi" />
+          <TopSidebar title="Chưa chọn suất diễn"/>
           <div className="container d-flex flex-column gap-5 py-4 px-3" style={{ minHeight: "100vh" }}>
 
             {/* Header Select */}

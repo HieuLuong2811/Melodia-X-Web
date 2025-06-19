@@ -162,7 +162,7 @@ const TicketBooking = () => {
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
       />
-      <div style={{height : "100%"}}>
+      <div style={{height : "100%", zoom : "0.9"}}>
         <nav className="navbar navbar-expand-lg navbar-light pt-3 pb-3 position-sticky top-0 z-3">
           <div className="container justify-content-center">        
             <Link href="/">

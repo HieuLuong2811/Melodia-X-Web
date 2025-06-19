@@ -6,7 +6,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { SuatDien } from "@/interfaces/SuatDien";
 import { SuatDienService } from "@/services/SuatDien";
-import DisplayEventTime from "@/components/DisplayEventTime";
+import {DisplayEventTime} from "@/components/DisplayEventTime";
 import { HoaDonMuaService } from "@/services/HoaDonMuaVe";
 import { HoaDonMua } from "@/interfaces/HoaDonMuaVe";
 import "../../../style/Home.css";
@@ -16,7 +16,6 @@ const TopSidebar = dynamic(() => import("@/components/topSide-Organizer").then()
 
 export default function OrdersAndTickets() {
 
-
   const [showEmailModal, setShowEmailModal] = useState<boolean>(false);
   const [emailSubject, setEmailSubject] = useState<string>("");
   const [emailContent, setEmailContent] = useState<string>("");
@@ -25,6 +24,7 @@ export default function OrdersAndTickets() {
   const [suatDiens, setSuatDiens] = useState<SuatDien[]>([]);
   const [selectedSuatDienId, setSelectedSuatDienId] = useState<string>("");
   const [selectedSuatDien, setSelectedSuatDien] = useState<SuatDien | null>(null);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   const [orders, setOrders] = useState<HoaDonMua[]>([]);
 
@@ -41,7 +41,7 @@ export default function OrdersAndTickets() {
           const suatDienArray = Array.isArray(suatDienData) ? suatDienData : [suatDienData];
           setSuatDiens(suatDienArray);
 
-          if (suatDienArray.length > 0) {
+          if (suatDienArray.length > 1) {
             try {
               const ordersData = await HoaDonMuaService.getHoaDonByIDSuatDien(selectedSuatDienId || suatDienArray[0].IDSuatDien);
               setOrders(ordersData);
@@ -49,6 +49,11 @@ export default function OrdersAndTickets() {
               console.error("Lỗi khi lấy đơn hàng:", error);
               setOrders([]);
             }
+          }
+          else {
+             setSelectedSuatDienId(suatDienArray[0].IDSuatDien);
+             const ordersData = await HoaDonMuaService.getHoaDonByIDSuatDien(suatDienArray[0].IDSuatDien);
+             setOrders(ordersData);
           }
         }
       } catch (error) {
@@ -105,7 +110,9 @@ export default function OrdersAndTickets() {
       return;
     }
 
+    setIsSendingEmail(true); 
     await sendEmails(selectedOrders);
+    setIsSendingEmail(false); 
   };
 
   // Hàm gửi email chung
@@ -252,9 +259,19 @@ export default function OrdersAndTickets() {
             <button type="button" className="btn btn-secondary" onClick={() => setShowEmailModal(false)}>
               Hủy
             </button>
-            <button type="button" className="btn btn-primary"
-              onClick={() => handleSendSelectedEmails}>
-              Gửi đi
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleSendSelectedEmails}
+              disabled={isSendingEmail} >
+              {isSendingEmail ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Đang gửi...
+                </>
+              ) : (
+                "Gửi đi"
+              )}
             </button>
           </div>
         </div>

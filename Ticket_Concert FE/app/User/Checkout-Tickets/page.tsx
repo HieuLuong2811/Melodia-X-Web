@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 const CountdownTimer = dynamic(() => import("@/components/CountdownTimer"), {
   ssr: false, 
 });
@@ -33,6 +32,8 @@ const Checkout = () => {
   const [diaDiem, setDiaDiem] = useState("");
   const [thoiGianBatDau, setThoiGianBatDau] = useState("");
   const [thoiGianKetThuc, setThoiGianKetThuc] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [user, setuser] = useState<NguoiDung | null>(null);
 
@@ -79,16 +80,16 @@ const Checkout = () => {
           setThoiGianKetThuc(suatdien.ThoiGianKetThuc);
           setAnhNen(suatdien.AnhNen);
         }
-  }, []);
+    }, []);
 
-  const handleTimeout = () => {
-  sessionStorage.removeItem("invoice");
-  sessionStorage.removeItem("countdownTime");
+    const handleTimeout = () => {
+    sessionStorage.removeItem("invoice");
+    sessionStorage.removeItem("countdownTime");
 
-  setTimeout(() => {
-    router.push('/');
-  }, 0); 
-};
+    setTimeout(() => {
+      router.push('/');
+    }, 0); 
+  };
 
 
   const handleTabClick = () => {
@@ -111,7 +112,27 @@ const Checkout = () => {
     })
   };
 
+  const handleout = () => {
+    Swal.fire({
+      title: "Huỷ đơn hàng",
+      text: "Bạn có chắc chắn sẽ huỷ đơn hàng này?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Đồng ý",
+      cancelButtonText: "Không",
+      reverseButtons : true,
+    }).then((result) => {
+      if(result.isConfirmed){
+        sessionStorage.removeItem("cart");
+        sessionStorage.removeItem("countdownTime");
+        sessionStorage.removeItem("timeLeft");
+        router.push('/');
+      }
+    })
+  }
+
   const handleCreateOrder = async () => {
+    setIsLoading(true);
     try {
       const cart = JSON.parse(sessionStorage.getItem("invoice") || "[]");
   
@@ -125,11 +146,6 @@ const Checkout = () => {
       if (createOrderRes.status === 201) {
         const hoaDon = createOrderRes.data; 
         sessionStorage.setItem("invoice", JSON.stringify(hoaDon));
-        console.log("Sending to MoMo:", {
-          orderId: hoaDon.idHoaDon,
-          amount: hoaDon.tongTien,
-          orderInfo: "Thanh toán vé sự kiện"
-        }); 
   
         // Gửi đến API MoMo để tạo link thanh toán
         const momoRes = await axios.post("http://localhost:3000/api/momo", {
@@ -142,6 +158,31 @@ const Checkout = () => {
        
         if (momoRes.status === 200 && momoRes.data.payUrl) {
           window.location.href = momoRes.data.payUrl;
+          try {
+            await fetch("http://localhost:3000/api/pay-ticket-pass", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email : user?.Email || "",
+                tenNguoiDung: user?.TenNguoiDung || "",
+                maHoaDon: hoaDon.idHoaDon,
+                tenSuKien: tenSuKien,
+                ticketDetails : cart.chiTiet.map((item: CartItem) => ({
+                  maVe: item.idLoaiVe,
+                  tenVe: item.tenLoaiVe,
+                  soLuong: item.soLuong,
+                  giaTien: item.giaTien,
+                })),
+                totalAmount: hoaDon.tongTien,
+                startDate: thoiGianBatDau ? new Date(thoiGianBatDau).toISOString() : "",
+                endDate: thoiGianKetThuc ? new Date(thoiGianKetThuc).toISOString() : "",
+              }),
+            });
+          } catch (error) {
+            Swal.fire("Lỗi!" , `Có lỗi xảy ra khi gửi emails + ${error}`, "error",);
+          }
         } else {
           await axios.delete(`http://localhost:3000/api/HoaDons/${hoaDon.idHoaDon}`, {
             headers: {
@@ -149,6 +190,12 @@ const Checkout = () => {
               Authorization: `Bearer ${localStorage.getItem("authToken")}`
             }
           });
+          Swal.fire({
+            icon: "error",
+            title: "Lỗi",
+            text: "Lỗi khi tạo đơn hàng. Vui lòng thử lại.",
+          });
+          window.location.href = "/User/Book-Tickets/?id_detail=" + id_detail;
         }
       }
     } catch (error) {
@@ -157,6 +204,8 @@ const Checkout = () => {
         title: "Lỗi" + error,
         text: "Lỗi khi tạo đơn hàng. Vui lòng thử lại.",
       });
+
+      setIsLoading(false);
     }
   };
   
@@ -166,16 +215,12 @@ const Checkout = () => {
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
       />
-      <div style={{zoom : "0.9"}}> 
+      <div className="bg-black" style={{zoom : "0.9", height : "100%"}}> 
         <nav className="navbar navbar-expand-lg navbar-light pt-3 pb-3 position-sticky top-0 z-3">
           <div className="container justify-content-center">
-            <Link href="/" onClick={() => {
-                sessionStorage.removeItem("cart");
-                sessionStorage.removeItem("countdownTime");
-                sessionStorage.removeItem("timeLeft");
-              }}>
+            <div onClick={handleout}>
               <img src="/logo_User.png" style={{ height: "60px" }} alt="Logo" />
-            </Link>
+            </div>
           </div>
         </nav>
         <div className="w-100 d-flex justify-content-center align-items-center bg-secondary gap-3 pt-1 pb-1"  style={{cursor : "pointer"}}>
@@ -299,8 +344,8 @@ const Checkout = () => {
               </div>
               <div className="text-center mt-4">
                 <span className="text-secondary">Vui lòng trả lời tất cả các câu hỏi để tiếp tục</span>
-                <button className="btn btn-success mt-2 w-100" onClick={() => handleCreateOrder()}>
-                  Tiếp tục »
+                <button className="btn btn-success mt-2 w-100" onClick={() => handleCreateOrder()} disabled={isLoading}>
+                  {isLoading ? "Đang xử lý..." : "Tiếp tục »" }
                 </button>
               </div>
             </div>

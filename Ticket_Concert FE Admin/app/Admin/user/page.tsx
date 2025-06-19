@@ -13,7 +13,6 @@ const UserPage = () => {
   const [users, setUsers] = useState<NguoiDung[]>([]);
   const [searchName, setSearchName] = useState('');
   const [searchStatus, setSearchStatus] = useState('');
-  const [searchId, setSearchId] = useState('');
 
   useEffect(() => {
     userService.getAllUsers().then((data) => setUsers(data));
@@ -22,12 +21,10 @@ const UserPage = () => {
   const filteredUsers = users.filter(user => {
     const tenNguoiDung = user.TenNguoiDung?.toLowerCase() || "";
     const trangThai = user.TrangThai?.toLowerCase() || "";
-    const userId = user.IDNguoiDung?.toLowerCase() || "";
 
     return (
       (tenNguoiDung.includes(searchName.toLowerCase())) &&
-      (searchStatus ? trangThai === searchStatus.toLowerCase() : true) &&
-      (searchId ? userId.includes(searchId.toLowerCase()) : true)
+      (searchStatus ? trangThai === searchStatus.toLowerCase() : true)
     );
   });
 
@@ -53,8 +50,6 @@ const UserPage = () => {
                 <div className="between d-flex gap-3">
                   <TextField label="Tìm kiếm tên" fullWidth variant="outlined" value={searchName}
                     onChange={(e) => setSearchName(e.target.value)} />
-                  <TextField label="Tìm kiếm ID người dùng" fullWidth variant="outlined" value={searchId}
-                    onChange={(e) => setSearchId(e.target.value)} />
                   <FormControl fullWidth>
                     <InputLabel>Trạng thái</InputLabel>
                     <Select value={searchStatus} label="Trạng thái"
@@ -86,7 +81,9 @@ const UserPage = () => {
                         filteredUsers.map((user) => (
                           <tr key={user.IDNguoiDung}>
                             <td className="d-flex align-items-center gap-2">
-                              <img src={"https://sigmawire.net/i/03/uXfhW2.png"} alt="Hình ảnh" className="rounded-circle" width="50" height="50" />
+                              <div style={{backgroundColor : "rgb(38 175 102)"}}  className="rounded-circle z-1">
+                                <img src={"https://static.ticketbox.vn/avatar.png"} alt="Hình ảnh" className="rounded-circle bg-transparent" width="50" height="50" />
+                              </div>
                               {user.TenNguoiDung}
                             </td>
                             <td>{user.Email}</td>

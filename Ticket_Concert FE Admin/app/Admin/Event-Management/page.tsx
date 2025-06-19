@@ -117,9 +117,9 @@ const OrderManagement = () => {
                       <FormControl className="col-md-8" variant="outlined">
                         <TextField label="Trạng thái sự kiện" fullWidth variant="outlined" value={SuKien.TrangThaiSuKien}/>
                       </FormControl>
-                      <Button variant="contained" color="primary" startIcon={<InfoIcon />} onClick={() => {
+                      <Button variant="contained" color="primary" style={{cursor : SuKien.TrangThaiSuKien === "Hủy" ? "none" : "pointer"}} startIcon={<InfoIcon />} onClick={() => {
                           router.push(`/Admin/EventDetail/infor-event/?id=${SuKien.IDSuKien}`);
-                          localStorage.setItem("IDNguoiDung-Detail",SuKien.IDNguoiDung)}}>
+                          localStorage.setItem("IDNguoiDung-Detail",SuKien.IDNguoiDung)}} disabled={SuKien.TrangThaiSuKien === "Hủy"}>
                           Xem chi tiết
                         </Button>
                     </div>

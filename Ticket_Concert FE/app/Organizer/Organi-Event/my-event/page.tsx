@@ -86,7 +86,7 @@ const MyEvent = () => {
             <div className="d-flex">
                 <LeftSidebar />
                 <div id="right" className="my-event bg-black overflow-auto w-100">
-                    <TopSidebar title="Sự kiện của tôi" />
+                    <TopSidebar title="Sự kiện của tôi"/>
                     <div className="d-flex w-100 m-0">
                         <div className="container-fluid text-white min-vh-100 pt-2 p-4"
                             style={{ background: "linear-gradient(rgb(19, 36, 27), rgb(37 15 33))"}}>

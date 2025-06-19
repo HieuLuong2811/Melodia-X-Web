@@ -8,32 +8,6 @@ import { TextField, Button } from "@mui/material";
 
 const AccountInformation = () => {
 
-  // const [dsVe, setDsVe] = useState<LoaiVe[] | null>(null);
-
-
-  // useEffect(() => {
-  //   const userData = localStorage.getItem("IDNguoiDung");
-  //   if (userData) {
-  //     LoaiVeService.getVeDaMuaByUserId(userData)
-  //       .then((data) => {
-  //         if (Array.isArray(data)) {
-  //           setDsVe(data);
-  //         } else {
-  //           setDsVe([]); 
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error("Lỗi khi lấy danh sách vé:", error);
-  //         setDsVe([]); 
-  //       });
-  //   }
-  // }, []);
-
-  // if (!dsVe) {
-  //   return <p>Đang tải sự kiện...</p>;
-  //   }   
-  
-
   return (
     <>
       <LeftSide />
@@ -64,7 +38,6 @@ const AccountInformation = () => {
                                 margin="normal"
                                 placeholder="Nhập họ tên"
                                 name="tenNguoiDung"
-                                // defaultValue={user?.tenNguoiDung}
                                 />
                             </td>
                             </tr>
@@ -80,7 +53,6 @@ const AccountInformation = () => {
                                 margin="normal"
                                 placeholder="Nhập email"
                                 name="email"
-                                // defaultValue={user?.email}
                                 />
                             </td>
                             </tr>
@@ -96,7 +68,6 @@ const AccountInformation = () => {
                                 margin="normal"
                                 placeholder="Nhập số điện thoại"
                                 name="soDienThoai"
-                                // defaultValue={user?.soDienThoai}
                                 />
                             </td>
                             </tr>

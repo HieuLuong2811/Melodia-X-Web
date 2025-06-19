@@ -84,14 +84,22 @@ export const createMoMoPayment = (req, res) => {
   momoRequest.end();
 };
 
-export const handleMomoIPN = (req, res) => {
+export const handleMomoIPN = async (req, res) => {
   const { resultCode, orderId, message } = req.body;
 
   if (resultCode === 0) {
     console.log('Thanh toán thành công cho order:', orderId);
   } else {
     console.log('Thanh toán thất bại:', message);
-  }
 
-  res.status(200).json({ message: 'IPN received' });
+      const chiTietList = await getChiTietHoaDonByIdHoaDon(orderId);
+      for (const item of chiTietList) {
+        await congLaiSoLuongVe(item.idLoaiVe, item.soLuong);
+      }
+
+      console.log(`✅ Đã cộng lại vé cho order: ${orderId}`);
+    }
+
+    res.status(200).json({ message: 'IPN xử lý xong' });
+
 };

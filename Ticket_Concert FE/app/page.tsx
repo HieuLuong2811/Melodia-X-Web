@@ -19,77 +19,27 @@ const Slider = dynamic(() => import("react-slick"), { ssr: false });
 export default function Home() {
   
   const [mounted, setMounted] = useState(false);
-
-  // Sự kiện tiêu đề
   const [titleEvent, settitleEvent] = useState<SuKien[]>([]);
-
-  useEffect(() => {
-    const fetchevent = async () => {
-      const data = await suKienService.getTitleEvent();
-      
-      settitleEvent(data);
-    }
-    fetchevent();
-  }, []);
-
-  // const [time, setTime] = useState(0); 
-  // useEffect(() => {
-
-  //   const interval = setInterval(() => {
-  //     setTime((prevTime) => prevTime + 1); 
-  //   }, 1000);
-
-  //   return () => clearInterval(interval); 
-  // }, []);
-
-  // useEffect(() => {
-
-  //   if (time > 15) {
-  //     console.log("Time:", time);
-  //   } else {
-  //     console.log("Nhỏ");
-  //   }
-    
-  // }, [time]);
-
-  // Sự kiện đặc biệt 
   const [specialEvents, setSpecialEvent] = useState<SuKien[]>([]);
-
-  useEffect(() => {
-    const fetchevent = async () => {
-      const data = await suKienService.getSuKienTongVeBan();
-      
-      setSpecialEvent(data);
-    }
-    fetchevent();
-  }, []);
-
-   // Sự kiện xu hướng 
-   const [trendingEvents, settrendingEvents] = useState<SuKien[]>([]);
-
-   useEffect(() => {
-     const fetchevent = async () => {
-       const data = await suKienService.getSuKienGanNhatMua();
-       
-       settrendingEvents(data);
-     }
-     fetchevent();
-   }, []);
-
+  const [trendingEvents, settrendingEvents] = useState<SuKien[]>([]);
   const [suKiens, setSuKiens] = useState<SuKienNormal[]>([]);
 
-   useEffect(() => {
-          const fetchSuKiens = async () => {
-            const data = await suKienService.getAllSuKiens();
-            setSuKiens(data);
-          };
-          
-          fetchSuKiens();
-      }, []);
-  
-  
   useEffect(() => {
-    setMounted(true);
+      sessionStorage.clear();
+      const fetchSuKiens = async () => {
+        const data1 = await suKienService.getAllSuKiens();
+        const data2 = await suKienService.getSuKienGanNhatMua();
+        const data3 = await suKienService.getSuKienTongVeBan();
+        const data4 = await suKienService.getTitleEvent();
+
+        setSuKiens(data1);
+        settrendingEvents(data2);
+        setSpecialEvent(data3);
+        settitleEvent(data4);
+      };
+      
+      fetchSuKiens();
+      setMounted(true);
   }, []);
 
   const baseSettings = {
@@ -324,7 +274,7 @@ export default function Home() {
                             <div className="card text-white border-0 rounded-3 overflow-hidden bg-transparent">
                               <img className="card-img " src={suKien.AnhNen} style={{ height: "200px", objectFit: "cover" }}/>
                               <div className="card-body p-0 pt-3">
-                                <h6 className="card-title fw-bold fs-5" style={{height : "50px", overflow : "hidden"}}>{suKien.TenSuKien}</h6>
+                                <h6 className="card-title fw-bold" style={{fontSize: "17px", height: "46px", overflow: "hidden", lineHeight: "1.4", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical"}}>{suKien.TenSuKien}</h6>
                                 <p className="text t fw-bold mb-1" style={{fontSize : "17px"}}>
                                   Từ {suKien.GiaVeReNhat? Number(suKien.GiaVeReNhat).toLocaleString() + "đ" : "Đang cập nhật"}
                                 </p>
@@ -364,7 +314,7 @@ export default function Home() {
                         style={{ objectFit: "cover", cursor: "pointer" }}
                       />
                     </div>
-                    <p className="mt-2 text-white">{crew.name}</p>
+                    <p className="mt-2 fs-5 text-white fw-bold">{crew.name}</p>
                   </div>
                 ))}
               </div>

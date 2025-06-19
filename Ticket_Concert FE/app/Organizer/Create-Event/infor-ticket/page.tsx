@@ -8,7 +8,7 @@ import { LoaiVe } from "@/interfaces/LoaiVe";
 import { SuatDien2 } from "@/interfaces/SuatDien";
 import { useSearchParams } from "next/navigation";
 import Swal from "sweetalert2";
-import DisplayEventTime from "@/components/DisplayEventTime";
+import {DisplayEventTime} from "@/components/DisplayEventTime";
 import {SuatDienService} from "@/services/SuatDien.ts"
 import { LoaiVeService } from "@/services/LoaiVe";
 import {

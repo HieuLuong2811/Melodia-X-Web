@@ -1,7 +1,8 @@
 import express from "express"
 const router = express.Router();
-import sendEmails from "../controllers/emailController"
+import {sendEmails,payticketpass}  from "../controllers/emailController"
 
 router.post("/send-emails", sendEmails);
+router.post("/pay-ticket-pass", payticketpass);
 
 export default router;

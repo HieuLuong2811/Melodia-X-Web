@@ -7,7 +7,8 @@ import PaymentInvoiceForm from "../infor-payment/page";
 import { useSearchParams } from 'next/navigation';
 import Statistics from "../dashboard/page";
 import dynamic from 'next/dynamic';
-const EmptyData = dynamic(() => import('@/components/emptydata'));import "./create-event.css";
+const EmptyData = dynamic(() => import('@/components/Emptydata'));
+import "./create-event.css";
 import { useRouter } from 'next/navigation';
 const LeftSide = dynamic(() => import('@/components/LeftSide-Admin'), { ssr: false })
 const TopSize = dynamic(() => import('@/components/topSize-Admin.jsx'), { ssr: false })

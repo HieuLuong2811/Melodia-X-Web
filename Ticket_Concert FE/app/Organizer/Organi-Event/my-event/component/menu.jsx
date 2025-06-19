@@ -41,7 +41,7 @@ export default function LeftSidebar() {
        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
        />
     <div id="left" className="d-flex flex-column w-18 top-0 start-0 text-white bg-dark p-3">
-      <Link href="/Organizer" className="d-flex align-items-center mb-4" id="logo">
+      <Link href="/Organizer/Create-Event/infor-event/" className="d-flex align-items-center mb-4" id="logo">
         <img src="/logo.png" className="d-block cursor-pointer p-1" alt="Logo" width={32} />
         <h3 className="mb-0">Organizer MelodiaX</h3>
       </Link>

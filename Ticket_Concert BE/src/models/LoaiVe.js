@@ -93,4 +93,32 @@ export const getVeDaMuaByUserId = async (idNguoiDung) => {
     `, [idNguoiDung]);
   
     return rows;
-  };
+};
+
+export const checkAndUpdateSoLuongVe = async (idLoaiVe, soLuong, connection = pool) => {
+    const [result] = await connection.query(`
+        UPDATE LoaiVe 
+        SET SoLuongVe = SoLuongVe - ? 
+        WHERE IDLoaiVe = ? AND SoLuongVe >= ?`, [soLuong, idLoaiVe, soLuong]
+    );
+
+    if (result.affectedRows === 0) {
+        throw new Error(`Không đủ số lượng vé cho IDLoaiVe: ${idLoaiVe}`);
+    }
+
+    return result;
+};
+
+export const returnLoaiVe = async (idLoaiVe, soLuong, connection = pool) => {
+    const [result] = await connection.query(`
+        UPDATE LoaiVe 
+        SET SoLuongVe = SoLuongVe + ? 
+        WHERE IDLoaiVe = ?`, [soLuong, idLoaiVe]
+    );
+
+    if (result.affectedRows === 0) {
+        throw new Error(`Không tìm thấy loại vé với ID: ${idLoaiVe}`);
+    }
+
+    return result;
+};

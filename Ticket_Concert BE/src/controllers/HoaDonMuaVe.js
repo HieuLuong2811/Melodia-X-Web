@@ -1,5 +1,7 @@
 import { getAllHoaDon, getHoaDonByID, createHoaDon, fetchAllHoaDonChiTiet, deleteHoaDon,getHoaDonByIDSuatDien  } from '../models/HoaDonMuaVe.js';
 import {createChiTietHoaDon} from '../models/ChiTietHoaDon.js';
+import pool from '../config/db.js';
+import { checkAndUpdateSoLuongVe } from '../models/LoaiVe.js';
 import { v4 as uuidv4 } from 'uuid';
 
 const getHoaDonMuaVeData = (hoaDon) => ({
@@ -66,35 +68,42 @@ export const deleteHoaDoncontrollers = async (req, res) => {
     }
 };
 
-
-
 // tạo hóa đơn và chi tiết hóa đơn
 export const createHoaDonWithDetails = async (req, res) => {
+    const connection = await pool.getConnection();
     try {
+        await connection.beginTransaction();
+
         const HoaDonData = getHoaDonMuaVeData(req.body);
-        
         const { chiTiet } = req.body;
-
-        // Tạo ID hóa đơn
         const idHoaDon = uuidv4();
-        
-        // Tạo hóa đơn mới
-        await createHoaDon(idHoaDon, HoaDonData);
 
-        // Tạo danh sách chi tiết hóa đơn
+        await createHoaDon(idHoaDon, HoaDonData, connection);
+
         const chiTietHoaDonList = getChiTietHoaDonData(chiTiet, idHoaDon);
 
-
-        // Thêm chi tiết hóa đơn vào DB
         for (const chiTietItem of chiTietHoaDonList) {
             const idChiTietHoaDon = uuidv4();
-            await createChiTietHoaDon(idChiTietHoaDon, chiTietItem);
+            const { idLoaiVe, soLuong } = chiTietItem;
+
+            await checkAndUpdateSoLuongVe(idLoaiVe, soLuong, connection);
+
+            await createChiTietHoaDon(idChiTietHoaDon, chiTietItem, connection);
         }
 
-        res.status(201).json({ message: "Tạo hóa đơn và chi tiết hóa đơn thành công", idHoaDon, tongTien : HoaDonData.tongTien });
+        await connection.commit();
+        res.status(201).json({ message: "Tạo hóa đơn và chi tiết hóa đơn thành công", idHoaDon, tongTien: HoaDonData.tongTien });
     } catch (error) {
-        console.error("Lỗi tạo hóa đơn:", error);
+        await connection.rollback();
+        
+        for (const chiTietItem of chiTietHoaDonList) {
+            const { idLoaiVe, soLuong } = chiTietItem;
+            await returnLoaiVe(idLoaiVe, soLuong, connection);
+        }
+
         res.status(500).json({ message: error.message });
+    } finally {
+        connection.release();
     }
 };
 
