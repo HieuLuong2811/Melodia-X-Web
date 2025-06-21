@@ -20,6 +20,7 @@ import dashboardAdmin from './routers/dashboardRoutes.js'
 import paymentRouter from './routers/payment.js';
 import ThongTinThanhToanRouter from './routers/ThongTinThanhToan.js';
 import ThanhVienRouter from './routers/ThanhVien.js';
+import ThongBaoRouter from './routers/ThongBao.js';
 
 // Cấu hình middleware
 app.use(cors());
@@ -41,6 +42,7 @@ app.use('/api', emailRoutes);
 app.use('/api', paymentRouter);
 app.use('/api', dashboardAdmin);
 app.use('/api', ThongTinThanhToanRouter);
+app.use('/api', ThongBaoRouter);
 
 const PORT = process.env.PORT;
 

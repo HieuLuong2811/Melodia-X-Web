@@ -1,20 +1,20 @@
 // routes/dashboardRoutes.js
 import express from 'express';
-import { DoanhThu, SoLuongVe, countacc} from '../controllers/dashboardController';
-import dashboardController from '../controllers/dashboardController';
-import {authenticate, authorize} from "../Middleware/Authen"
+import { DoanhThuCtrl, SoLuongVeCtrl, SoLuongVeTonKhoCtrl, countaccCtrl} from '../controllers/dashboardController.js';
+import dashboardController from '../controllers/dashboardController.js';
+import {authenticate, authorize} from "../Middleware/Authen.js"
 
 const router = express.Router();
 
-router.get('/stats',authenticate, authorize(["Admin"]), dashboardController.getStats);
-router.get('/revenue',authenticate, authorize(["Admin"]), dashboardController.getRevenueStats);
-// router.get('/tickets',authenticate, authorize(["Admin"]), dashboardController.getTicketStats);
-router.get('/event-types',authenticate, authorize(["Admin"]), dashboardController.getEventStats);
-router.get('/recent-events',authenticate, authorize(["Admin"]), dashboardController.getRecentEvents);
-router.get('/AccHoatDong',authenticate, authorize(["Admin"]), countacc);
+router.get('/stats',authenticate, authorize(["Admin"]), dashboardController.getStatsCtrl);
+router.get('/revenue',authenticate, authorize(["Admin"]), dashboardController.getRevenueStatsCtrl);
+router.get('/event-types',authenticate, authorize(["Admin"]), dashboardController.getEventStatsCtrl);
+router.get('/recent-events',authenticate, authorize(["Admin"]), dashboardController.getRecentEventsCtrl);
+router.get('/AccHoatDong',authenticate, authorize(["Admin"]), countaccCtrl);
  
-router.get('/doanhthu/:idSuatDien', DoanhThu);
-router.get('/soluongve/:idSuatDien', SoLuongVe);
+router.get('/doanhthu/:idSuatDien', DoanhThuCtrl);
+router.get('/soluongve/:idSuatDien', SoLuongVeCtrl);
+router.get('/soluongvetonkho/:idSuatDien', SoLuongVeTonKhoCtrl);
 
 
 export default router;

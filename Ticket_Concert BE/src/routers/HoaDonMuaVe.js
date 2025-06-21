@@ -1,12 +1,5 @@
 import express from 'express';
-import {
-    getAllHoaDon,
-    getHoaDonByID,
-    createHoaDonWithDetails,
-    fetchAllHoaDonChiTiet,
-    deleteHoaDoncontrollers,
-    getHoaDonByIDsuatdien
-} from '../controllers/HoaDonMuaVe.js';
+import HoaDonMuaVeController from '../controllers/HoaDonMuaVe.js';
 import {authenticate, authorize} from "../Middleware/Authen.js"
 
 const router = express.Router();
@@ -16,15 +9,13 @@ router.get('/HoaDons', authenticate, (req, res, next) => {
         next();
     }
     return res.status()
-}, getAllHoaDon);
+}, getAllHoaDonCtrl);
 
 
-router.get('/HoaDons/details', fetchAllHoaDonChiTiet);
-router.get('/HoaDons/:idHoaDon', getHoaDonByID);
-router.get('/HoaDonsBySuatDien/:idSuatDien', getHoaDonByIDsuatdien);
-router.post('/HoaDons/', createHoaDonWithDetails);
-router.delete('/HoaDons/:idHoaDon', deleteHoaDoncontrollers);
-// router.post("/HoaDons/temp", createTempHoaDon);         
-// router.post("/payment/momo-ipn", handleMoMoIPN);
+router.get('/HoaDons/details', HoaDonMuaVeController.fetchAllHoaDonChiTietCtrl);
+router.get('/HoaDons/:idHoaDon', HoaDonMuaVeController.getHoaDonByIDCtrl);
+router.get('/HoaDonsBySuatDien/:idSuatDien', HoaDonMuaVeController.getHoaDonByIDsuatdienCtrl);
+router.post('/HoaDons/', HoaDonMuaVeController.createHoaDonWithDetailsCtrl);
+router.delete('/HoaDons/:idHoaDon', HoaDonMuaVeController.deleteHoaDonCtrl);
 
 export default router;

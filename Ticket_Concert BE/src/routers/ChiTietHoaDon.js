@@ -1,10 +1,10 @@
 import express from 'express';
-import { getChiTietHoaDon, getChiTietHoaDonByID, createChiTietHoaDon } from '../controllers/ChiTietHoaDon.js';
+import ChiTietHoaDonController from '../controllers/ChiTietHoaDon.js';
 
 const router = express.Router();
 
-router.get('/ChiTietHoaDons', getChiTietHoaDon);
-router.get('/ChiTietHoaDons/:idChiTietHoaDons', getChiTietHoaDonByID);
-router.post('/ChiTietHoaDons', createChiTietHoaDon);
+router.get('/ChiTietHoaDons', ChiTietHoaDonController.getChiTietHoaDonCtrl);
+router.get('/ChiTietHoaDons/:idChiTietHoaDons', ChiTietHoaDonController.getChiTietHoaDonByIDCtrl);
+router.post('/ChiTietHoaDons', ChiTietHoaDonController.createChiTietHoaDonCtrl);
 
 export default router;

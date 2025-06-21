@@ -101,13 +101,12 @@ const UserPage = () => {
                               </span>
                             </td>
                             <td>
-                              <button
+                              <button disabled={user.QuyenHan === "Admin"}
                                 className={`btn btn-sm d-flex align-items-center gap-2 ${user.TrangThai === "Hoạt động" ? "btn-danger" : "btn-success"}`}
                                 onClick={async () => {
                                   const newStatus = user.TrangThai === "Hoạt động" ? "Khoá" : "Hoạt động";
                                   try {
                                     await userService.lockOrUnlockUser(user.IDNguoiDung, { TrangThai: newStatus });
-                                    console.log(user.TrangThai);
 
                                     setUsers((prevUsers) =>
                                       prevUsers.map((u) =>

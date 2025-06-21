@@ -36,6 +36,7 @@ export default function Statistics() {
   const [tongVe, setTongVe] = useState<SoLuongVe | null>(null);
   const [totalDoanhThu, setTotalDoanhThu] = useState<number>(0);
   const [totalVeBan, setTotalVeBan] = useState<number>(0);
+  const [loaiVeTonKho, setLoaiVeTonKho] = useState<number>(0);
 
   const [suatDiens, setSuatDiens] = useState<SuatDien[]>([]);
   const [selectedSuatDienId, setSelectedSuatDienId] = useState<{
@@ -65,15 +66,19 @@ export default function Statistics() {
 
             const doanhthu = await dashboardService.getdoanhthu(selectedSuatDienId.IDSuatDien);
             const luongve = await dashboardService.getVeDaBan(selectedSuatDienId.IDSuatDien);
+            const soluongvetonkho = await dashboardService.getVeTonKho(selectedSuatDienId.IDSuatDien);
 
             setDoanhthus(doanhthu);
             setTongVe(luongve);
+            setLoaiVeTonKho(Number(soluongvetonkho?.TongVeTonKho) || 0);
 
             const doanhThuValue = Number(doanhthu?.TongDoanhThu) || 0;
             const veBanValue = Number(luongve?.TongVeDaBan) || 0;
+            const veTonKhoValue = Number(soluongvetonkho?.TongVeTonKho) || 0;
 
             setTotalDoanhThu(doanhThuValue);
             setTotalVeBan(veBanValue);
+            setLoaiVeTonKho(veTonKhoValue);
 
             const IDSuatDien = selectedSuatDienId?.IDSuatDien || suatDienArray[0].IDSuatDien;
             const LoaiVes = await LoaiVeService.getLoaiVesByIdSuatDien(IDSuatDien);
@@ -290,7 +295,7 @@ export default function Statistics() {
                 },{
                   title: "Số vé tồn kho",
                   icon: "bi-ticket",
-                  value: "Chưa có dữ liệu", 
+                  value: loaiVeTonKho ? `${Number(loaiVeTonKho)} vé` : "Chưa có dữ liệu", 
                 }].map((item, i) => (
                   <div key={i} className="col-md-4">
                     <div className="card text-white h-100 p-3 rounded shadow-sm">

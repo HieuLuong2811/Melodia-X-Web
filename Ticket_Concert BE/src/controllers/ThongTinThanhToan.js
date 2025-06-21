@@ -10,52 +10,58 @@ const getThongTinThanhToanData = (data) => ({
     loaiHinh: data.LoaiHinh
 });
 
-export const getThongTinThanhToan = async (req, res) => {
-    try {
-        const thongTinList = await getAllThongTinThanhToan();
-        res.json(thongTinList);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
+const ThongTinThanhToanController = {
 
-export const getThongTinThanhToanByID = async (req, res) => {
-    try {
-        const thongTin = await getThongTinThanhToanByID(req.params.idNguoiDung);
-        if (thongTin) res.json(thongTin);
-        else res.status(404).json({ message: 'Không tìm thấy thông tin thanh toán' });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
+    getThongTinThanhToanCtrl: async (req, res) => {
+        try {
+            const thongTinList = await getAllThongTinThanhToan();
+            res.status(200).json(thongTinList);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
 
-export const createThongTinThanhToan = async (req, res) => {
-    try {
-        const thongTinData = getThongTinThanhToanData(req.body);
-        const idThongTin = uuidv4();
+    getThongTinThanhToanByIDCtrl: async (req, res) => {
+        try {
+            const thongTin = await getThongTinThanhToanByID(req.params.idNguoiDung);
+            if (thongTin) res.status(200).json(thongTin);
+            else res.status(404).json({ message: 'Không tìm thấy thông tin thanh toán' });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
 
-        const id = await createThongTinThanhToan(idThongTin, thongTinData);
-        res.status(201).json({ message: 'Thêm thông tin thanh toán thành công', id });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
+    createThongTinThanhToanCtrl: async (req, res) => {
+        try {
+            const thongTinData = getThongTinThanhToanData(req.body);
+            const idThongTin = uuidv4();
 
-export const updateThongTinThanhToan = async (req, res) => {
-    try {
-        const thongTinData = getThongTinThanhToanData(req.body);
-        await updateThongTinThanhToan(req.params.idThongTin, thongTinData);
-        res.json({ message: 'Cập nhật thông tin thanh toán thành công' });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
+            const id = await createThongTinThanhToan(idThongTin, thongTinData);
+            res.status(201).json({ message: 'Thêm thông tin thanh toán thành công', id });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
 
-export const deleteThongTinThanhToan = async (req, res) => {
-    try {
-        await deleteThongTinThanhToan(req.params.idThongTin);
-        res.json({ message: 'Xóa thông tin thanh toán thành công' });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
+    updateThongTinThanhToanCtrl: async (req, res) => {
+        try {
+            const thongTinData = getThongTinThanhToanData(req.body);
+            await updateThongTinThanhToan(req.params.idThongTin, thongTinData);
+            res.status(200).json({ message: 'Cập nhật thông tin thanh toán thành công' });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+
+    deleteThongTinThanhToanCtrl: async (req, res) => {
+        try {
+            await deleteThongTinThanhToan(req.params.idThongTin);
+            res.status(200).json({ message: 'Xóa thông tin thanh toán thành công' });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+}
+
+export default ThongTinThanhToanController;
+

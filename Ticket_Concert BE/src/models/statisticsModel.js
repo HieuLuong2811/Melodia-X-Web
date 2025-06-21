@@ -1,4 +1,4 @@
-import pool from '../config/db';
+import pool from '../config/db.js';
 
 // Thẻ số liệu (Stat Cards)
 export const getStats = async () => {
@@ -41,18 +41,6 @@ export const getRevenueStats = async () => {
   `);
   return rows;
 };
-
-// // Tình trạng vé toàn hệ thống (Ticket Stats)
-// export const getTicketStats = async () => {
-//   const [rows] = await pool.query(`
-//     SELECT 
-//       TrangThai AS status,
-//       SUM(SoLuongVe) AS value
-//     FROM LoaiVe
-//     GROUP BY TrangThai;
-//   `);
-//   return rows;
-// };
 
 // Sự kiện theo loại (Event Stats)
 export const getEventStats = async () => {

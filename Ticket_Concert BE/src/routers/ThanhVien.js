@@ -1,13 +1,13 @@
 import express from "express";
-import {getThanhVienByID, createThanhVien, updateThanhVien, deleteThanhVien} from '../controllers/ThanhVien';
-import { authenticate, authorize } from "../Middleware/Authen";
+import ThanhVienController from '../controllers/ThanhVien.js';
+import {authenticate, authorize} from "../Middleware/Authen.js"
 
 
 const router = express.Router();
 
-router.get("/ThanhViens/:idSuKien", authenticate, authorize(["User"]), getThanhVienByID);
-router.post("/ThanhViens", authenticate, authorize(["User"]), createThanhVien);
-router.put("/ThanhViens/:idThanhVien", authenticate, authorize(["User"]), updateThanhVien);
-router.delete("/ThanhViens/:idThanhVien", authenticate, authorize(["User"]), deleteThanhVien);
+router.get("/ThanhViens/:idSuKien", authenticate, authorize(["User"]), ThanhVienController.getThanhVienByIDCtrl);
+router.post("/ThanhViens", authenticate, authorize(["User"]), ThanhVienController.createThanhVienCtrl);
+router.put("/ThanhViens/:idThanhVien", authenticate, authorize(["User"]), ThanhVienController.updateThanhVienCtrl);
+router.delete("/ThanhViens/:idThanhVien", authenticate, authorize(["User"]), ThanhVienController.deleteThanhVienCtrl);
 
 export default router;

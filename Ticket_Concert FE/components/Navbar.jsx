@@ -1,16 +1,19 @@
 "use client";
-import React , {useState, useEffect} from "react";
+import React , {useState, useEffect, use} from "react";
 import Link from "next/link";
 import Swal from "sweetalert2";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+
 
 const Nav = () => {
 
-  const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const suggestions = ["Jisoo", "NTPMM", "Noo Phước Thịnh", "Chị đẹp"];
   const [avatars, setAvatar] = useState('');
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -74,24 +77,25 @@ const Nav = () => {
             <img src="/logo_User.png" alt="Logo"/>
           </Link>
           
-          <div className="form-group">
-            <div className="input-icon position-relative d-flex dqshek align-items-center p-1">
-              <input type="text" className="form-control w-100" placeholder="Bạn tìm gì hôm nay?"
-              onFocus={() => setIsOpen(true)} onBlur={() => setTimeout(() => setIsOpen(false), 200)} onChange={(e) => setSearchTerm(e.target.value)}/>
-
-              {isOpen && searchTerm && (
-                <div className={`dropdown-menu show ${styles.dropdownCustom}`}>
-                  {suggestions
-                    .filter((item) => item.toLowerCase().includes(searchTerm.toLowerCase()))
-                    .map((item, index) => (
-                      <button key={index} className="dropdown-item">
-                        {item}
-                      </button>
-                    ))}
-                </div>
-              )}
-            </div>
-          </div>
+          <Autocomplete
+            freeSolo
+            options={suggestions}
+            onChange={(event, value) => {
+              if (value) {
+                router.push(`/search?query=${value}`);
+              }
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Bạn tìm gì hôm nay?"
+                variant="outlined"
+                size="small"
+                sx={{ backgroundColor: "white", borderRadius: "5px", width: 400, height: 40, border: "none" }}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            )}
+          />
 
           <div className="d-flex align-items-center">
           {isLoggedIn ? (

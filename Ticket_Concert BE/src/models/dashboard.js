@@ -30,3 +30,16 @@ export const getSoLuongVeDaBanBySuKien = async (idSuatDien) => {
     const [rows] = await pool.query(sql, [idSuatDien]);
     return rows[0] || null;
 };
+
+export const getSoLuongVeTonKho = async (idSuatDien) => {
+    const sql = `
+        SELECT 
+            SUM(lv.SoLuongVe) AS TongVeTonKho
+        FROM LoaiVe lv
+        JOIN SuatDien sd ON lv.IDSuatDien = sd.IDSuatDien
+        WHERE sd.IDSuatDien = ?
+        GROUP BY sd.IDSuatDien;
+    `;
+    const [rows] = await pool.query(sql, [idSuatDien]);
+    return rows[0] || null;
+};

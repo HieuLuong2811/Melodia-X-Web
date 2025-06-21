@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 const getHoaDonMuaVeData = (hoaDon) => ({
     idNguoiDung: hoaDon.idNguoiDung,
     tongSoVe: hoaDon.tongSoVe,
-    ngayThanhToan: hoaDon.ngayThanhToan || new Date(), 
+    ngayThanhToan: new Date(), 
     tongTien: hoaDon.tongTien,
     phuongThucThanhToan: hoaDon.phuongThucThanhToan,
     trangThaiThanhToan: hoaDon.trangThaiThanhToan || 'Chưa thanh toán'
@@ -24,96 +24,99 @@ const getChiTietHoaDonData = (chiTietList, idHoaDon) => {
     }));
 };
 
-// Lấy danh sách tất cả hóa đơn
-export const getAllHoaDon = async (req, res) => {
-    try {
-        const hoaDonList = await getAllHoaDon();
-        res.json(hoaDonList);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-// Lấy hóa đơn theo ID
-export const getHoaDonByID = async (req, res) => {
-    try {
-        const hoaDon = await getHoaDonByID(req.params.idHoaDon);
-        if (hoaDon) res.json(hoaDon);
-        else res.status(404).json({ message: 'Không tìm thấy hóa đơn' });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-export const getHoaDonByIDsuatdien = async (req, res) => {
-    try {
-        const hoaDon = await getHoaDonByIDSuatDien(req.params.idSuatDien);
-        if (hoaDon) res.json(hoaDon);
-        else res.status(404).json({ message: 'Không tìm thấy hóa đơn' });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-export const deleteHoaDoncontrollers = async (req, res) => {
-    try {
-        const result = await deleteHoaDon(req.params.idHoaDon);  
-        if (result.affectedRows > 0) {
-            res.json({ message: "Xoá hoá đơn thành công" });
-        } else {
-            res.status(400).json({ message: "Không tìm thấy hoá đơn" });
+const HoaDonMuaVeController = {
+    // Lấy danh sách tất cả hóa đơn
+    getAllHoaDonCtrl: async (req, res) => {
+        try {
+            const hoaDonList = await getAllHoaDon();
+            res.json(hoaDonList);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
         }
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
+    },
 
-// tạo hóa đơn và chi tiết hóa đơn
-export const createHoaDonWithDetails = async (req, res) => {
-    const connection = await pool.getConnection();
-    try {
-        await connection.beginTransaction();
-
-        const HoaDonData = getHoaDonMuaVeData(req.body);
-        const { chiTiet } = req.body;
-        const idHoaDon = uuidv4();
-
-        await createHoaDon(idHoaDon, HoaDonData, connection);
-
-        const chiTietHoaDonList = getChiTietHoaDonData(chiTiet, idHoaDon);
-
-        for (const chiTietItem of chiTietHoaDonList) {
-            const idChiTietHoaDon = uuidv4();
-            const { idLoaiVe, soLuong } = chiTietItem;
-
-            await checkAndUpdateSoLuongVe(idLoaiVe, soLuong, connection);
-
-            await createChiTietHoaDon(idChiTietHoaDon, chiTietItem, connection);
+    // Lấy hóa đơn theo ID
+    getHoaDonByIDCtrl: async (req, res) => {
+        try {
+            const hoaDon = await getHoaDonByID(req.params.idHoaDon);
+            if (hoaDon) res.json(hoaDon);
+            else res.status(404).json({ message: 'Không tìm thấy hóa đơn' });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
         }
+    },
 
-        await connection.commit();
-        res.status(201).json({ message: "Tạo hóa đơn và chi tiết hóa đơn thành công", idHoaDon, tongTien: HoaDonData.tongTien });
-    } catch (error) {
-        await connection.rollback();
-        
-        for (const chiTietItem of chiTietHoaDonList) {
-            const { idLoaiVe, soLuong } = chiTietItem;
-            await returnLoaiVe(idLoaiVe, soLuong, connection);
+    getHoaDonByIDsuatdienCtrl: async (req, res) => {
+        try {
+            const hoaDon = await getHoaDonByIDSuatDien(req.params.idSuatDien);
+            if (hoaDon) res.json(hoaDon);
+            else res.status(404).json({ message: 'Không tìm thấy hóa đơn' });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
         }
+    },
 
-        res.status(500).json({ message: error.message });
-    } finally {
-        connection.release();
-    }
+    deleteHoaDonCtrl: async (req, res) => {
+        try {
+            const result = await deleteHoaDon(req.params.idHoaDon);  
+            if (result.affectedRows > 0) {
+                res.json({ message: "Xoá hoá đơn thành công" });
+            } else {
+                res.status(400).json({ message: "Không tìm thấy hoá đơn" });
+            }
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    },
+
+    // tạo hóa đơn và chi tiết hóa đơn
+    createHoaDonWithDetailsCtrl: async (req, res) => {
+        const connection = await pool.getConnection();
+        try {
+            await connection.beginTransaction();
+
+            const HoaDonData = getHoaDonMuaVeData(req.body);
+            const { chiTiet } = req.body;
+            const idHoaDon = uuidv4();
+
+            await createHoaDon(idHoaDon, HoaDonData, connection);
+
+            const chiTietHoaDonList = getChiTietHoaDonData(chiTiet, idHoaDon);
+
+            for (const chiTietItem of chiTietHoaDonList) {
+                const idChiTietHoaDon = uuidv4();
+                const { idLoaiVe, soLuong } = chiTietItem;
+
+                await checkAndUpdateSoLuongVe(idLoaiVe, soLuong, connection);
+
+                await createChiTietHoaDon(idChiTietHoaDon, chiTietItem, connection);
+            }
+
+            await connection.commit();
+            res.status(201).json({ message: "Tạo hóa đơn và chi tiết hóa đơn thành công", idHoaDon, tongTien: HoaDonData.tongTien });
+        } catch (error) {
+            await connection.rollback();
+            
+            for (const chiTietItem of chiTietHoaDonList) {
+                const { idLoaiVe, soLuong } = chiTietItem;
+                await returnLoaiVe(idLoaiVe, soLuong, connection);
+            }
+
+            res.status(500).json({ message: error.message });
+        } finally {
+            connection.release();
+        }
+    },
+
+    fetchAllHoaDonChiTietCtrl: async (req, res) => {
+        try {
+            const result = await fetchAllHoaDonChiTiet();
+            res.json(result);
+        } catch (error) {
+            console.error("Lỗi khi lấy hóa đơn chi tiết:", error);
+            res.status(500).json({ message: error.message });
+        }
+    },
 };
 
-export const fetchAllHoaDonChiTiet  = async (req, res) => {
-    try {
-        const result = await fetchAllHoaDonChiTiet();
-        res.json(result);
-    } catch (error) {
-        console.error("Lỗi khi lấy hóa đơn chi tiết:", error);
-        res.status(500).json({ message: error.message });
-    }
-};
-
+export default HoaDonMuaVeController;

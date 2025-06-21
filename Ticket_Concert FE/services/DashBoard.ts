@@ -1,7 +1,7 @@
 // services/DashBoard.ts
 "use client";
 import axios from "axios";
-import { SoLuongVe, DoanhThu } from '../interfaces/DashBoard';
+import { SoLuongVe, DoanhThu, VeTonKho } from '../interfaces/DashBoard';
 
 export const dashboardService = {
   getdoanhthu: async (IDSuatDien: string): Promise<DoanhThu> => {
@@ -14,8 +14,8 @@ export const dashboardService = {
     return response.data;
   },
 
-  // getVeTonKho: async (IDSuKien: string): Promise<VeTonKho> => {
-  //   const response = await axios.get<VeTonKho>(`http://localhost:3000/api/ve-ton-kho/${IDSuKien}`);
-  //   return response.data;
-  // },
+  getVeTonKho: async (IDSuatDien: string): Promise<VeTonKho> => {
+    const response = await axios.get<VeTonKho>(`http://localhost:3000/api/soluongvetonkho/${IDSuatDien}`);
+    return response.data;
+  },
 };

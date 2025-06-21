@@ -1,9 +1,8 @@
 // controllers/dashboardController.js
-import { getStats, getRevenueStats, getEventStats, getRecentEvents, account } from '../models/statisticsModel';
+import { getStats, getRevenueStats, getEventStats, getRecentEvents, account } from '../models/statisticsModel.js';
+import { getDoanhThuBySuKien, getSoLuongVeDaBanBySuKien,getSoLuongVeTonKho } from '../models/dashboard.js';
 
-import { getDoanhThuBySuKien, getSoLuongVeDaBanBySuKien } from '../models/dashboard.js';
-
-export const DoanhThu = async (req, res) => {
+export const DoanhThuCtrl = async (req, res) => {
   try {
     const { idSuatDien } = req.params;
     const doanhThu = await getDoanhThuBySuKien(idSuatDien);
@@ -13,7 +12,7 @@ export const DoanhThu = async (req, res) => {
   }
 };
 
-export const SoLuongVe = async (req, res) => {
+export const SoLuongVeCtrl = async (req, res) => {
   try {
     const { idSuatDien } = req.params;
     const soLuong = await getSoLuongVeDaBanBySuKien(idSuatDien);
@@ -23,17 +22,27 @@ export const SoLuongVe = async (req, res) => {
   }
 };
 
-export const countacc = async (req, res) => {
+export const SoLuongVeTonKhoCtrl = async (req, res) => {
+  try {
+    const { idSuatDien } = req.params;
+    const soLuong = await getSoLuongVeTonKho(idSuatDien);
+    res.json(soLuong);
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi khi lấy số lượng vé tồn kho", error: error.message });
+  }
+};
+
+export const countaccCtrl = async (req, res) => {
   try {
     const soLuong = await account();
     res.json(soLuong);
   } catch (error) {
-    res.status(500).json({ message: "Lỗi khi lấy số lượng vé đã bán", error: error.message });
+    res.status(500).json({ message: "Lỗi khi lấy số lượng tài khoản", error: error.message });
   }
 }; 
 
 const dashboardController = {
-  getStats: async (req, res) => {
+  getStatsCtrl: async (req, res) => {
     try {
       const stats = await getStats();
       res.json(stats);
@@ -43,7 +52,7 @@ const dashboardController = {
     }
   },
 
-  getRevenueStats: async (req, res) => {
+  getRevenueStatsCtrl: async (req, res) => {
     try {
       const revenueData = await getRevenueStats();
       const labels = revenueData.map(row => row.month);
@@ -58,23 +67,7 @@ const dashboardController = {
     }
   },
 
-  // getTicketStats: async (req, res) => {
-  //   try {
-  //     const ticketData = await getTicketStats();
-  //     const labels = ticketData.map(row => row.status);
-  //     const data = ticketData.map(row => parseInt(row.value));
-  //     const backgroundColor = ['#ff7f50', '#00c49f', '#ffbb28']; 
-  //     res.json({
-  //       labels,
-  //       datasets: [{ label: 'Tình trạng vé', data, backgroundColor }],
-  //     });
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(500).json({ error: 'Lỗi khi lấy tình trạng vé' });
-  //   }
-  // },
-
-  getEventStats: async (req, res) => {
+  getEventStatsCtrl: async (req, res) => {
     try {
       const eventData = await getEventStats();
       const labels = eventData.map(row => row.type);
@@ -89,7 +82,7 @@ const dashboardController = {
     }
   },
 
-  getRecentEvents: async (req, res) => {
+  getRecentEventsCtrl: async (req, res) => {
     try {
       const events = await getRecentEvents();
       const formattedEvents = events.map(event => ({
