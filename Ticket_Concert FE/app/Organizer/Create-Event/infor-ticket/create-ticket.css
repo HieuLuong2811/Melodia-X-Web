@@ -47,7 +47,7 @@ button.form-control:hover {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
   }
   
-  .MuiPaper-root {
+  .popup-overlay .MuiPaper-root {
     background-color: rgba(81, 81, 88, .3) !important;
     max-width: 700px !important;
   }

@@ -8,6 +8,9 @@ a {
   text-decoration: none !important;
 }
 
+.dropdown-toggle::after {
+  display: none !important;
+}
 
 .hero-section .overlay {
   z-index: 0;
@@ -132,10 +135,6 @@ a {
 
 .dropdown:hover .dropdown-menu{
   display: block;
-}
-
-.dropdown-toggle::after {
-  vertical-align: 0.2em;
 }
 
 .dropdown-menu {

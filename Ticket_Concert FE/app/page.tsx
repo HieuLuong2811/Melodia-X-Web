@@ -12,7 +12,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const Footer = dynamic(() => import('@/components/Footer'), { ssr: false });
-const Nav = dynamic(() => import('@/components/Navbar.jsx'), { ssr: false });
+const Nav = dynamic(() => import('@/components/Navbar'), { ssr: false });
 
 const Slider = dynamic(() => import("react-slick"), { ssr: false });
 

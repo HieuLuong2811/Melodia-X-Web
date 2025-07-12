@@ -11,7 +11,7 @@ import { DisplayEventTime } from "@/components/DisplayEventTime";
 import EventDetails from "./EventDetails.tsx";
 
 const Footer = dynamic(() => import("@/components/Footer.jsx"), { ssr: false });
-const Nav = dynamic(() => import("@/components/Navbar.jsx"), { ssr: false });
+const Nav = dynamic(() => import("@/components/Navbar"), { ssr: false });
 
 export default function Product_details() {
   const MemoizedNav = useMemo(() => <Nav />, []);
@@ -63,10 +63,6 @@ export default function Product_details() {
 
   return (
     <>
-      <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
-      />
       <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"

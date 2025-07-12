@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import axios from "axios";
 import Swal from "sweetalert2";
 import {
   TextField,
@@ -14,6 +13,7 @@ import {
 import { styled } from "@mui/system";
 import { IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import {LoginService} from "@/services/Login";
 import Link from "next/link";
 
 
@@ -59,35 +59,56 @@ const LoginForm = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/api/login", {
-        Email: email,
-        MatKhau: password,
-      });
-
-      if (response.status === 200) {
-        const { userId, token, avatar, trangThai } = response.data;
-
-        if (trangThai === "Khoá") {
-          Swal.fire({
-            icon: "error",
-            title: "Tài khoản bị khóa",
-            text: "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.",
-          });
-          return;
-        }
-
+      const response = await LoginService.Login(email, password);
+      const { userId, token, avatar, TrangThai } = response;
+      
+      if (TrangThai === "Khoá") {
+        Swal.fire({
+          icon: "error",
+          title: "Tài khoản của bạn đã bị khóa",
+          html: `
+            Vui lòng liên hệ quản trị viên qua email: 
+            <b>admin@gmail.com</b><br/>
+            Hoặc gọi bộ phận CSKH: <b>1900 6570</b>
+          `,
+          footer: "Chúng tôi xin lỗi vì sự bất tiện này",
+          confirmButtonText: "Đã hiểu",
+          timer: 20000,
+          timerProgressBar: true,
+        });
+        return;
+      }
+      else {
         localStorage.setItem("authToken", token);
         localStorage.setItem("IDNguoiDung", userId);
         localStorage.setItem("AnhNenUser", avatar);
         window.location.href = "/";
       }
-    } catch (error) {
-      console.error("Lỗi đăng nhập:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Đăng nhập thất bại",
-        text: "Đã có lỗi xảy ra khi đăng nhập.",
-      });
+    } catch (error: unknown) {
+      interface ErrorWithResponse {
+        response?: {
+          status?: number;
+        };
+      }
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "response" in error &&
+        (error as ErrorWithResponse).response?.status === 401
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Tài khoản không tồn tại",
+          text: "Vui lòng kiểm tra lại thông tin hoặc đăng ký.",
+        });
+      } else {
+        console.error("Lỗi đăng nhập:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Lỗi hệ thống",
+          text: "Đã có sự cố xảy ra khi đăng nhập.",
+        });
+      }
     }
   };
 
@@ -102,14 +123,7 @@ const LoginForm = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:3000/api/register", {
-        TenNguoiDung: name,
-        SoDienThoai: phone,
-        Email: email,
-        MatKhau: password,
-      });
-
-      if (response.status === 201) {
+      await LoginService.Register(name, phone, email, password);
         Swal.fire({
           icon: "success",
           title: "Đăng ký thành công!",
@@ -122,7 +136,7 @@ const LoginForm = () => {
         setConfirmPassword("");
         setName("");
         setPhone("");
-      }
+      
     } catch (error) {
       console.error("Lỗi đăng ký:", error);
       Swal.fire({
@@ -175,7 +189,7 @@ const LoginForm = () => {
           ) : (
             <>
               <TextField label="Tên người dùng" fullWidth value={name} onChange={(e) => setName(e.target.value)} />
-              <TextField label="Số điện thoại" fullWidth value={phone} onChange={(e) => setPhone(e.target.value)} />
+              <TextField label="Số điện thoại" inputProps={{maxLength : 10}} fullWidth value={phone} onChange={(e) => setPhone(e.target.value)} />
               <TextField label="Email" type="email" fullWidth value={email} onChange={(e) => setEmail(e.target.value)} />
               <TextField
                 label="Mật khẩu"

@@ -158,10 +158,6 @@ const TicketBooking = () => {
 
   return (
     <>
-      <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
-      />
       <div style={{height : "100%", zoom : "0.9"}}>
         <nav className="navbar navbar-expand-lg navbar-light pt-3 pb-3 position-sticky top-0 z-3">
           <div className="container justify-content-center">        
@@ -309,7 +305,7 @@ const TicketBooking = () => {
                 <span className="fw-bold fs-5">{totalAmount.toLocaleString()} đ</span>
               </p>
 
-              <div className="position-fixed w-100 bottom-0 bg-secondary p-3 text-center text-white" style={{ maxWidth: "39rem" }}>
+              <div className="position-fixed w-100 bottom-0 bg-secondary p-3 text-center text-white" style={{ maxWidth: "41rem" }}>
                 <Link href={`/User/Checkout-Tickets/?id_detail=${id_detail}`}>
                   <button className="btn fs-4 btn-success text-white d-flex justify-content-center align-items-center gap-2 w-100 fw-bold"
                     onClick={createInvoice} disabled={cart.length === 0}>

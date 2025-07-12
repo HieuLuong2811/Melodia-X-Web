@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import LeftSidebar from "@/components/LeftSide-Organizer.jsx";
-import TopSidebar from "@/components/topSide-Organizer.jsx";
+import LeftSidebar from "@/app/Organizer/component/LeftSide-Organizer.tsx";
+import TopSidebar from "@/app/Organizer/component/topSide-Organizer.tsx";
 import "./style.css";
 import "../../style/Home.css";
 import "slick-carousel/slick/slick.css";
@@ -75,10 +75,6 @@ const MyEvent = () => {
 
     return (
         <>
-            <link
-                rel="stylesheet"
-                href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
-            />
             <link
                 rel="stylesheet"
                 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"

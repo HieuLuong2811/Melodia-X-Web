@@ -2,10 +2,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
-import LeftSidebar from "../component/menu";
+const LeftSidebar = dynamic(() => import("../component/menu.tsx").then(), { ssr: false });
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import TopSidebar from "@/components/topSide-Organizer";
+import TopSidebar from "@/app/Organizer/component/topSide-Organizer.tsx";
 import "./dashboard.css";
 import "../../../style/Home.css";
 import { SoLuongVe, DoanhThu } from "@/interfaces/DashBoard";
@@ -265,9 +265,7 @@ export default function Statistics() {
                 </div>
                 <div className="col-md-6 text-end">
                   <Select id="suatDienSelect"
-                    sx={{ color: 'white', width : "300px", border: '1px solid white', borderRadius: '5px',
-                      '.MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-                      '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                    sx={{ color: 'white', width : "350px", border: '1px solid white', borderRadius: '5px',
                       '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
                     }}
                      value={selectedSuatDienId ? JSON.stringify(selectedSuatDienId) : ''}

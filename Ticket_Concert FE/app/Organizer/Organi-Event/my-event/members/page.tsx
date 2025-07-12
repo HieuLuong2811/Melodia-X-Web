@@ -3,8 +3,9 @@ import { useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import './style.css';
 import "../../../style/Home.css"
-const LeftSidebar = dynamic(() => import('../component/menu'), { ssr: false });
-const TopSidebar = dynamic(() => import('@/components/topSide-Organizer'), { ssr: false });
+const LeftSidebar = dynamic(() => import('../component/menu.tsx'), { ssr: false });
+const TopSidebar = dynamic(() => import('@/app/Organizer/component/topSide-Organizer.tsx'), { ssr: false });
+const EmptyData = dynamic(() => import('@/components/emptydata'), {ssr: false});
 import { ThanhVien } from "@/interfaces/ThanhVien";
 import { ThanhVienService } from '@/services/ThanhVien';
 import Swal from 'sweetalert2';
@@ -12,8 +13,6 @@ import { TextField, Button, Select, MenuItem, InputLabel, FormControl, Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 
 export default function MembersPage() {
   const [showModal, setShowModal] = useState(false);
@@ -44,6 +43,23 @@ export default function MembersPage() {
     setFormData(member);
     setShowModal(true);
   };
+
+  const Closepopup = () => {
+    Swal.fire({
+      title: "Xác nhận huỷ?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Xác nhận",
+      cancelButtonText: "Huỷ",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        setShowModal(false);
+        setFormData({ TenThanhVien: "", Email: "", VaiTro: "" });
+      }
+    });
+  } 
 
   const filteredMembers = useMemo(() => {
     return member.filter(member => 
@@ -121,7 +137,7 @@ export default function MembersPage() {
           <div className="container m-0 p-3" style={{ height: "100dvh", background: "linear-gradient(rgb(11, 43, 26), rgb(37 15 33))" }}>
             <div className="d-flex justify-content-between align-items-center mb-3">
               <TextField className='col-md-8 bg-white rounded' label="Nhập tên hoặc email" value={search} onChange={e => setSearch(e.target.value)} />
-              <Button className='col-md-3 d-flex gap-2' onClick={() => setShowModal(true)} style={{ height: "40px" }} variant="contained">
+              <Button className='col-md-3 d-flex gap-2' onClick={() => setShowModal(true)} style={{ height: "50px" }} variant="contained">
                 <i className="bi fs-4 bi-plus-circle"></i>Thêm thành viên
               </Button>
             </div>
@@ -145,12 +161,10 @@ export default function MembersPage() {
                         <td>{member.VaiTro}</td>
                         <td className='d-flex gap-3 justify-content-center'>
                           <Button className='col-md-2 d-flex align-items-center' size="small" variant="outlined" onClick={() => handleEditMember(member)}>
-                            <EditIcon />
-                            <i className="bi bi-pencil-square"></i>Sửa
+                            <i className="bi bi-pencil-square pe-1"></i> Sửa
                           </Button>
                           <Button className='col-md-2 d-flex align-items-center' size="small" variant="outlined" color="error" onClick={() => handleDeleteMember(member)}>
-                            <DeleteIcon />
-                            <i className="bi bi-trash"></i>Xoá
+                            <i className="bi bi-trash pe-1"></i> Xoá
                           </Button>
                         </td>
                       </tr>
@@ -158,7 +172,10 @@ export default function MembersPage() {
                   </tbody>
                 </table>
               ) : (
-                <div>Chưa có nhân viên nào</div>
+                <div className='d-flex flex-column align-items-center gap-3'>
+                  <EmptyData />
+                  <span className='text-black fs-5 fw-bold'>Chưa có thành viên nào</span>
+                </div>
               )}
             </div>
 
@@ -209,7 +226,7 @@ export default function MembersPage() {
               </DialogContent>
 
               <DialogActions sx={{display: "flex", gap : "30px"}}>
-                <Button onClick={() => setShowModal(false)} color="secondary">Đóng</Button>
+                <Button onClick={() => Closepopup()} color="secondary">Đóng</Button>
                 <Button onClick={handleSaveMember} color="primary" variant="contained">Lưu</Button>
               </DialogActions>
             </Dialog>

@@ -1,6 +1,5 @@
 "use client"
 import React from "react";
-import { QRCodeCanvas } from "qrcode.react";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import Swal from "sweetalert2"; 
@@ -76,14 +75,6 @@ const TicketQRWarning = () => {
   const eventid = useParams?.get("eventId");
   const isEditMode = !!eventid;
 
-  // Dữ liệu giả lập QR
-  const orderId = "ORD123456";
-  const buyerInfo = { name: "Nguyễn Văn A", email: "nguyenvana@example.com", phone: "0987654321" };
-  const tickets = [
-    { id: "TCK001", type: "VIP", price: "500,000 VND" },
-    { id: "TCK002", type: "Standard", price: "300,000 VND" },
-  ];
-
   return (
     <>
     <div className="justify-content-between mb-2 d-flex align-items-center">
@@ -106,7 +97,6 @@ const TicketQRWarning = () => {
       </div>
       <div className="ms-3 col-md-5 text-center">
         <p>Mã QR mẫu nếu mua hàng thành công</p>
-        <QRCodeCanvas value={JSON.stringify({ orderId, buyerInfo, tickets })} className="w-50 p-3" size={250} />
       </div>
     </div>
     </>

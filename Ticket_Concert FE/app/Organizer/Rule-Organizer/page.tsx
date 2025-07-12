@@ -1,8 +1,8 @@
 "use client"
 import React from "react";
 import dynamic from "next/dynamic";
-const LeftSidebar = dynamic(() => import("@/components/LeftSide-Organizer"), { ssr: false });
-const TopSidebar = dynamic(() => import("@/components/topSide-Organizer"), { ssr: false });
+const LeftSidebar = dynamic(() => import("@/app/Organizer/component/LeftSide-Organizer"), { ssr: false });
+const TopSidebar = dynamic(() => import("@/app/Organizer/component/topSide-Organizer"), { ssr: false });
 import "../style/Home.css"
 import Link from "next/link.js";
 

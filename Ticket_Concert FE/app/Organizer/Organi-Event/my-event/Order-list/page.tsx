@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { Editor } from "@tinymce/tinymce-react";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { SuatDien } from "@/interfaces/SuatDien";
@@ -11,8 +10,11 @@ import { HoaDonMuaService } from "@/services/HoaDonMuaVe";
 import { HoaDonMua } from "@/interfaces/HoaDonMuaVe";
 import "../../../style/Home.css";
 const EmptyData = dynamic(() => import('@/components/emptydata'));import Swal from "sweetalert2";
-const LeftSidebar = dynamic(() => import("../component/menu").then(), { ssr: false });
-const TopSidebar = dynamic(() => import("@/components/topSide-Organizer").then(), { ssr: false });
+const LeftSidebar = dynamic(() => import("../component/menu.tsx").then(), { ssr: false });
+const TopSidebar = dynamic(() => import("@/app/Organizer/component/topSide-Organizer.tsx").then(), { ssr: false });
+const CKEditor = dynamic(() => import('@/components/CKEditorClientOnly.tsx'), {
+  ssr: false,
+}); 
 
 export default function OrdersAndTickets() {
 
@@ -43,7 +45,7 @@ export default function OrdersAndTickets() {
 
           if (suatDienArray.length > 1) {
             try {
-              const ordersData = await HoaDonMuaService.getHoaDonByIDSuatDien(selectedSuatDienId || suatDienArray[0].IDSuatDien);
+              const ordersData = await HoaDonMuaService.getHoaDonByIDSuatDien(suatDienArray[0].IDSuatDien);
               setOrders(ordersData);
             } catch (error) {
               console.error("Lỗi khi lấy đơn hàng:", error);
@@ -61,14 +63,14 @@ export default function OrdersAndTickets() {
       }
     };
     fetchData();
-  }, [selectedSuatDienId]);
+  }, [selectedSuatDienId, selectedSuatDien]);
 
   // Xử lý thay đổi suất diễn
   const handleSelectChange = (event: SelectChangeEvent<string>) => {
     const selectedId = event.target.value;
     setSelectedSuatDienId(selectedId);
-    const foundSuatDien = suatDiens.find((s) => s.IDSuatDien === selectedId);
-    setSelectedSuatDien(foundSuatDien || null);
+    const found = suatDiens.find((s) => s.IDSuatDien === selectedId);
+    setSelectedSuatDien(found ?? null);
   };
 
   // Xử lý chọn tất cả checkbox
@@ -229,10 +231,7 @@ export default function OrdersAndTickets() {
                 Tiêu đề email
               </label>
               <div className="input-group">
-                <span className="input-group-text">
-                  <img src="/logo.png" width={24} height={24} alt="Logo" />
-                </span>
-                <input type="text" className="form-control border-2" id="emailSubject" value={emailSubject} placeholder="Tiêu đề email"
+                <input type="text" className="border rounded w-100 p-2" id="emailSubject" value={emailSubject} placeholder="Tiêu đề email"
                   onChange={(e) => setEmailSubject(e.target.value)}/>
               </div>
 
@@ -241,18 +240,7 @@ export default function OrdersAndTickets() {
               <label htmlFor="emailContent" className="form-label">
                 Nội dung email
               </label>
-              <Editor value={emailContent}
-                onEditorChange={(content) => setEmailContent(content)}
-                apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-                init={{
-                  height: 300,
-                  content_style: "body { font-size: 14px; }",
-                  menubar: true,
-                  plugins: "lists link image table",
-                  toolbar:
-                    "undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image",
-                }}
-              />
+              <CKEditor value={emailContent} onChange={setEmailContent}/>
             </div>
           </div>
           <div className="modal-footer">

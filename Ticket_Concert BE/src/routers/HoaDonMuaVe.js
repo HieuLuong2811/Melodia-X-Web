@@ -9,7 +9,7 @@ router.get('/HoaDons', authenticate, (req, res, next) => {
         next();
     }
     return res.status()
-}, getAllHoaDonCtrl);
+}, HoaDonMuaVeController.getAllHoaDonCtrl);
 
 
 router.get('/HoaDons/details', HoaDonMuaVeController.fetchAllHoaDonChiTietCtrl);

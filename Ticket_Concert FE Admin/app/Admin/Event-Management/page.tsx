@@ -91,7 +91,6 @@ const OrderManagement = () => {
                     <LoaiSuKienManager onClose={() => setOpenModal(false)}/> 
                   </div>
             </div>
-           
           )}
         
           {/* Hiển thị sự kiện sau khi lọc */}

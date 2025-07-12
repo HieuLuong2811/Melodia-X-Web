@@ -1,10 +1,8 @@
 "use client";
-import { useState } from "react";
 
 export default function Footer() {
     return (
       <>
-        {/* Bootstrap & Flag Icon CSS CDN */}
       <link 
         rel="stylesheet" 
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"

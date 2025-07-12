@@ -28,7 +28,6 @@ export default function LeftSidebar() {
       if (result.isConfirmed) {
         localStorage.clear();
         sessionStorage.clear();
-        setIsLoggedIn(false);
         Swal.fire("Đã đăng xuất!", "Bạn đã đăng xuất thành công.", "success");
         window.location.href = "/";
       }

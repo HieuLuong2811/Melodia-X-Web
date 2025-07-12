@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Head from "next/head";
 import Menu from "@/components/Menu";
 import Link from "next/link";
 import dynamic from 'next/dynamic';
@@ -96,12 +95,6 @@ const Home = () => {
 
   return (
     <>
-      <Head>
-        <link
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-          rel="stylesheet"
-        />
-      </Head>
       <div style={{ backgroundColor: "#1a1a1a", color: "#fff", zoom: 0.9 }}>
         <Nav />
         <Menu/>

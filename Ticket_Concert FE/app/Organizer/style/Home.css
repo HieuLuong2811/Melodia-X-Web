@@ -4,6 +4,12 @@
     box-sizing: border-box;
     font-family: "Poppins", sans-serif;
   }
+
+  .ck.ck-editor__editable_inline {
+  min-height: 600px !important;
+  color: #000 !important;
+}
+
   
   body {
     width: 100%;
@@ -14,6 +20,7 @@
  .container .pt-4 ul li:hover {
   background-color: #e6e6e6;
   transition: all 0.3s ease-in-out;
+  cursor: alias;
  }
   
   a {

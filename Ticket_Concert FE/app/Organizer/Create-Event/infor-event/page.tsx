@@ -10,23 +10,18 @@ import Swal from "sweetalert2";
 import { suKienService } from "@/services/SuKien.ts";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import TopSidebar from "@/components/topSide-Organizer";
-const WelcomeDialog = dynamic(() => import("@/components/WelcomeDialog.tsx"), { ssr: false });
-const LeftSidebar = dynamic(() => import("@/components/LeftSide-Organizer"), { ssr: false });
+import TopSidebar from "@/app/Organizer/component/topSide-Organizer.tsx";
+const WelcomeDialog = dynamic(() => import("../welcome/WelcomeDialog.tsx"), { ssr: false });
+const LeftSidebar = dynamic(() => import("../../component/LeftSide-Organizer.tsx"), { ssr: false });
+const CKEditor = dynamic(() => import('@/components/CKEditorClientOnly.tsx'), {
+  ssr: false,
+});
 import dynamic from "next/dynamic";
-import "../../style/Home.css";
 import "./create-event.css";
 
 const MediaUploader = dynamic(() => import("@/components/ImageUploader.tsx"), {
   ssr: false,
 });
-
-const Editor = dynamic(
-  () => import("@tinymce/tinymce-react").then((mod) => mod.Editor),
-  {
-    ssr: false,
-  }
-);
 
 
 const EventForm = () => {
@@ -246,7 +241,7 @@ const EventForm = () => {
         <div id="right" className="bg-black overflow-auto">
           <TopSidebar title="Thông tin sự kiện" />
           <WelcomeDialog />
-          <div className="container p-0" style={{ width: "100%", height: "100%" }}>
+          <div className="container p-0 m-0" style={{ height: "100%" }}>
             <div>
               <ul
                 className="nav bg-black ps-2 pe-2 nav-tabs nav-line d-flex nav-color-secondary justify-content-between p-0 align-items-center"
@@ -537,54 +532,9 @@ const EventForm = () => {
                             Thông tin sự kiện
                           </label>
                           {isEditMode ? (
-                            <Editor
-                              value={thongTinSuKien || ""}
-                              apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-                              init={{
-                                height: 400,
-                                content_style: "body { font-size: 14px; }",
-                                menubar: true,
-                                plugins: "lists link image table",
-                                toolbar:
-                                  "undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image",
-                              }}
-                              onBlur={(e) => setContent(e.target.getContent())}
-                            />
+                            <CKEditor value={thongTinSuKien} onChange={setContent} />
                           ) : (
-                            <Editor
-                              value={thongTinSuKien || ""}
-                              apiKey={process.env.NEXT_PUBLIC_TINYMCE_API_KEY}
-                              initialValue={`
-                                      <p><strong>Giới thiệu sự kiện:</strong></p>
-                                      <p>[Tóm tắt ngắn gọn về sự kiện: Nội dung chính của sự kiện, điểm đặc sắc nhất và lý do khiến người tham gia không nên bỏ lỡ]</p>
-                                      <ul>
-                                        <li>
-                                          <strong>Chương trình chính:</strong> 
-                                          [Liệt kê những hoạt động nổi bật trong sự kiện: các phần trình diễn, khách mời đặc biệt, lịch trình các tiết mục cụ thể nếu có.]
-                                        </li>
-                                        <li>
-                                          <strong>Khách mời:</strong> [Thông tin về các khách mời đặc biệt, nghệ sĩ, diễn giả sẽ tham gia sự kiện. Có thể bao gồm phần mô tả ngắn gọn về họ và những gì họ sẽ mang lại cho sự kiện.]
-                                        </li>
-                                        <li>
-                                          <strong>Trải nghiệm đặc biệt:</strong> 
-                                          [Nếu có các hoạt động đặc biệt khác như workshop, khu trải nghiệm, photo booth, khu vực check-in hay các phần quà/ưu đãi dành riêng cho người tham dự.]
-                                        </li>
-                                      </ul>
-                                      <p><strong>Điều khoản và điều kiện:</strong></p>
-                                      <p>[TnC] sự kiện</p>
-                                      <p>Lưu ý về điều khoản trẻ em</p>
-                                      <p>Lưu ý về điều khoản VAT</p>
-                                    `}
-                              init={{
-                                height: 400,
-                                content_style: "body { font-size: 14px; }",
-                                menubar: true,
-                                plugins: "lists link image table",
-                                toolbar:
-                                  "undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | link image",
-                              }}
-                              onBlur={(e) => setContent(e.target.getContent())}
-                            />
+                            <CKEditor value={thongTinSuKien} onChange={setContent} />
                           )}
                         </div>
                       </div>

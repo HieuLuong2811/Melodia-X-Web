@@ -1,16 +1,20 @@
 "use client";
-import React , {useState, useEffect, use} from "react";
+import React , {useState, useEffect} from "react";
 import Link from "next/link";
 import Swal from "sweetalert2";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import { ThongBaoService } from "@/services/ThongBao";
+import {ThongBao} from "@/interfaces/ThongBao";
 
 
 const Nav = () => {
 
-  const [searchTerm, setSearchTerm] = useState("");
   const suggestions = ["Jisoo", "NTPMM", "Noo Phước Thịnh", "Chị đẹp"];
   const [avatars, setAvatar] = useState('');
+  const [thongBaos, setThongBaos] = useState<ThongBao[]>([]); 
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -18,12 +22,24 @@ const Nav = () => {
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     const userId = localStorage.getItem("IDNguoiDung");
-    const avatar = localStorage.getItem("AnhNenUser") 
+    const getValidAvatar = (value: string | null) => {
+      if (!value || value === "null" || value === "undefined" || value.trim() === "") {
+        return "https://static.ticketbox.vn/avatar.png";
+      }
+      return value;
+    };
     if (token && userId) {
       setIsLoggedIn(true);
-      setAvatar(avatar);
+      setAvatar(getValidAvatar(localStorage.getItem("AnhNenUser")));    
     }
-  }, []);
+    if(userId){
+      const fetchThongBao = async () => {
+        const data = await ThongBaoService.GetThongBaoByIDuser(userId);
+        setThongBaos(data);
+      }
+      fetchThongBao();
+    }
+  }, [thongBaos]);
 
   const handleLogout = () => {
     Swal.fire({
@@ -56,20 +72,6 @@ const Nav = () => {
 
   return (
     <>
-      <link 
-        rel="stylesheet" 
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      />
-      <link 
-        rel="stylesheet" 
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
-      />
-      <link 
-        rel="stylesheet" 
-        href="https://cdn.jsdelivr.net/npm/flag-icon-css/css/flag-icon.min.css"
-      />
-
-
       <nav className="navbar navbar-expand-lg navbar-light pt-3 pb-3 position-sticky top-0 z-3">
         <div className="container d-flex align-items-center justify-content-between">
           
@@ -82,7 +84,7 @@ const Nav = () => {
             options={suggestions}
             onChange={(event, value) => {
               if (value) {
-                router.push(`/search?query=${value}`);
+                // router.push(`/search?query=${value}`);
               }
             }}
             renderInput={(params) => (
@@ -92,7 +94,7 @@ const Nav = () => {
                 variant="outlined"
                 size="small"
                 sx={{ backgroundColor: "white", borderRadius: "5px", width: 400, height: 40, border: "none" }}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                // onChange={(e) => setSearchTerm(e.target.value)}
               />
             )}
           />
@@ -109,9 +111,10 @@ const Nav = () => {
               </Link>
 
               <div className="dropdown mt-0">
-                <button className="btn text-white dropdown-toggle" type="button">
-                  <Link href= "/Authen/Login/" className="text-decoration-none text-white" passHref>
-                    <img src={avatars} style={{ borderRadius : "50%", width : "2.5rem", height : "2.5rem", objectFit : "cover"}} alt="" /> Tài khoản
+                <button className="btn text-white dropdown-toggle pb-1 pe-0" type="button">
+                  <Link href= "/Authen/Login/" className="text-decoration-none d-flex align-items-center gap-1 text-white" passHref>
+                    <img src={avatars} style={{ borderRadius : "50%", width : "40px", height : "40px", objectFit : "cover"}} alt="" /> Tài khoản
+                    <i className="bi bi-arrow-down-short"></i>
                   </Link>
                 </button>
                 <ul className="dropdown-menu mt-0">
@@ -126,6 +129,46 @@ const Nav = () => {
                     </li>
                 </ul>
               </div>
+              <div className="dropdown">
+                <div className="btn text-white dropdown-toggle px-0">
+                  <i className="bi bi-bell-fill fs-3 position-relative"></i>
+                  {thongBaos.filter(tb => tb.TrangThai === "Chưa đọc").length > 0 && (
+                    <span className="position-absolute start-100 translate-middle badge rounded-pill bg-danger" style={{top :"10px"}}>
+                      {thongBaos.filter(tb => tb.TrangThai === "Chưa đọc").length}
+                    </span>
+                  )}
+                </div>
+
+                <ul className="dropdown-menu dropdown-menu-start p-0" style={{ minWidth: "300px", right: "0px", overflowY: "auto" }}>
+                  {thongBaos.length === 0 ? (
+                    <li className="text-center text-muted">Không có thông báo nào</li>
+                  ) : (
+                    thongBaos.filter(tb => tb.TrangThai).slice(0, 5).map((item, index) => (
+                      <li key={index} className="border m-0">
+                        <div className={`dropdown-item d-flex shadow-sm flex-column ${item.TrangThai === "Chưa đọc" ? "fw-bold bg-light" : ""}`}
+                          style={{ padding: "10px", overflowY :"hidden"}}>
+                          <div className="d-flex justify-content-between align-items-center">
+                            <span className="text-truncate" title={item.TieuDe}>
+                              {item.TieuDe}
+                            </span>
+                          </div>
+                          <div className="d-flex align-items-center justify-content-between">
+                            <small className={`mt-1 ${item.TrangThai === "Chưa đọc" ? "text-danger" : "text-muted"}`}>
+                              {item.TrangThai}
+                            </small>
+                            <small className="text-muted text-nowrap">
+                              {new Date(item.NgayTao).toLocaleDateString("vi-VN", {day: "2-digit", month: "2-digit", year: "numeric"})}
+                            </small>
+                          </div>
+                        </div>
+                      </li>
+                    ))
+                  )}
+                  <div className="text-center my-2">
+                    <button className="btn btn-outline-primary btn-sm">Xem thêm</button>
+                  </div>
+                </ul>
+              </div>
             </div>
             
           ) : (
@@ -134,19 +177,11 @@ const Nav = () => {
             </Link>
           )}
             
-            <div className="dropdown ms-2 w-0">
-              <button className="btn text-white dropdown-toggle" type="button">
-                <span className="flag-icon flag-icon-vn"></span>
-              </button>
-              <ul className="dropdown-menu">
-                  <li><Link className="dropdown-item d-flex align-items-center gap-2" href="#"><span className="flag-icon flag-icon-vn"></span> Tiếng Việt</Link></li>
-                  <li><Link className="dropdown-item d-flex align-items-center gap-2" href="#"><span className="flag-icon flag-icon-gb"></span> English</Link></li>
-                </ul>
-            </div>
+ 
           </div>
         </div>
       </nav>
-      </>
+    </>
   );
 };
 

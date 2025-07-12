@@ -6,11 +6,11 @@ import Link from "next/link";
 export default function LeftSidebar() {
   const pathname = usePathname();
   const [selected, setSelected] = useState(pathname);
-  const [eventId, setEventId] = useState(null); 
+  const [eventId, setEventId] = useState<string | null>(null); 
   
   useEffect(() => {
     const id = localStorage.getItem("IDSuKien_Organizer_Detail");
-    setEventId(id);
+    setEventId(id || null);
   }, []);
   
   useEffect(() => {
