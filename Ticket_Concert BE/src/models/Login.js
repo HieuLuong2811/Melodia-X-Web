@@ -6,10 +6,6 @@ export const findUserByEmail = async (Email) => {
 
   if (!user) return null;
 
-  if (user.TrangThai === 'Khoá') {
-    return { locked: true, message: "Tài khoản của bạn đã bị khoá. Vui lòng liên hệ số hotline: 0123 456 789 để biết thêm chi tiết." };
-  }
-
   return user;
 };
 

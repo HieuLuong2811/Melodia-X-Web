@@ -1,7 +1,7 @@
 // controllers/NguoiDungController.js
 import { getAllNguoiDung, getNguoiDungByID, createNguoiDung, updateNguoiDung, updateTrangThaiNguoiDung, deleteNguoiDung } from '../models/NguoiDung.js';
 import { v4 as uuidv4 } from 'uuid';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 const getNguoiDungData = (data) => ({
     hinhAnh: data.HinhAnh || null,
@@ -11,7 +11,7 @@ const getNguoiDungData = (data) => ({
     gioiTinh: data.GioiTinh || null,
     ngaySinh: data.NgaySinh || null,
     matKhau: data.MatKhau,
-    quyenHan: data.QuyenHan || 'User',
+    quyenHan: data.QuyenHan || 'Admin',
     trangThai: data.TrangThai || 'Hoạt động'
 });
 

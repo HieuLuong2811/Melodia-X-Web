@@ -1,6 +1,6 @@
 // controllers/LoginController.js
 import { findUserByEmail,createUser,findUserByEmailOrPhone  } from "../models/Login.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from 'uuid';
 import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
@@ -18,7 +18,7 @@ const LoginController = {
 
             const user = await findUserByEmail(Email);
             if (!user) {
-                return res.status(401).json({ error: "Sai email hoặc mật khẩu" });
+                return res.status(401).json({ error: "Không tồn tại tài khoản"});
             }
             
             const isValid = await bcrypt.compare(MatKhau, user.MatKhau);
@@ -38,6 +38,7 @@ const LoginController = {
                 userId: user.IDNguoiDung,
                 avatar: user.HinhAnh,
                 QuyenHan: user.QuyenHan,
+                TrangThai: user.TrangThai
             });
         } catch (error) {
             console.error("Lỗi khi đăng nhập:", error);

@@ -113,14 +113,15 @@ const TopNav = ({ title }: TopNavProps) => {
             data-bs-toggle="dropdown"
           >
             <div className="w-10">
-              <img src={avatars}
-                style={{
-                  borderRadius: "50%",
-                  width: "2.5rem",
-                  height: "2.5rem",
-                  objectFit: "cover",
-                }}
-                alt="avatar" />
+             {avatars ? (
+                <img
+                  src={avatars}
+                  style={{
+                    borderRadius: "50%",
+                    width: "2.5rem",
+                  }}
+                />
+              ) : null}
             </div>
             <span className="fw-bold text-white">Tài khoản</span>
             <i className="bi bi-arrow-down-short text-white"></i>
