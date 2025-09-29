@@ -22,11 +22,11 @@ export const getChiTietHoaDonByID = async (idChiTietHoaDon) => {
 
 // Thêm chi tiết hóa đơn mới
 export const createChiTietHoaDon = async (id, data, connection = pool) => {
-  const { idHoaDon, idLoaiVe, soLuong, giaTien, trangThaiVe } = data;
+  const { idHoaDon, idLoaiVe, tenKhuVuc, soLuong, giaTien, trangThaiVe } = data;
   const [rows] = await connection.query(`
-    INSERT INTO ChiTietHoaDon (IDChiTietHoaDon, IDHoaDon, IDLoaiVe, SoLuong, GiaTien, TrangThaiVe)
-    VALUES (?, ?, ?, ?, ?, ?)`, 
-    [id, idHoaDon, idLoaiVe, soLuong, giaTien, trangThaiVe]
+    INSERT INTO ChiTietHoaDon (IDChiTietHoaDon, IDHoaDon, IDLoaiVe, TenKhuVuc, SoLuong, GiaTien, TrangThaiVe)
+    VALUES (?, ?, ?, ?, ?, ?, ?)`, 
+    [id, idHoaDon, idLoaiVe, tenKhuVuc, soLuong, giaTien, trangThaiVe]
   );
   return rows;
 };

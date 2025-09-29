@@ -29,7 +29,7 @@ const TopNav = ({ title }: TopNavProps) => {
         fetchThongBao();
       }
     }
-  }, [thongBaos]);
+  }, []);
 
   const handleCreateEvent = () => {
     localStorage.removeItem("uploadedMedia_logo");

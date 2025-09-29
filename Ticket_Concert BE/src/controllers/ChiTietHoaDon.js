@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 const getChiTietHoaDonData = (data) => ({
     idHoaDon: data.IDHoaDon,
     idLoaiVe: data.IDLoaiVe,
+    tenKhuVuc: data.TenKhuVuc,
     soLuong: data.SoLuong,
     giaTien: data.GiaTien,
     trangThaiVe : data.TrangThaiVe,

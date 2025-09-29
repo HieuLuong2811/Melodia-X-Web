@@ -18,6 +18,7 @@ const getChiTietHoaDonData = (chiTietList, idHoaDon) => {
     return chiTietList.map((data) => ({
         idHoaDon: idHoaDon,
         idLoaiVe: data.idLoaiVe,
+        tenKhuVuc: data.tenKhuVuc,
         soLuong: data.soLuong,
         giaTien: data.giaTien,
         trangThaiVe: data.trangThaiVe

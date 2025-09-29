@@ -1,8 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 
-// Khởi tạo ứng dụng Express
 dotenv.config();
 const app = express();
 
@@ -16,18 +17,17 @@ import SuatDienRouters from './routers/SuatDien.js';
 import HoaDonRouters from './routers/HoaDonMuaVe.js';
 import ChiTietHoaDonRouters from './routers/ChiTietHoaDon.js';
 import emailRoutes from './routers/emailRoutes.js';
-import dashboardAdmin from './routers/dashboardRoutes.js'
+import dashboardAdmin from './routers/dashboardRoutes.js';
 import paymentRouter from './routers/payment.js';
 import ThongTinThanhToanRouter from './routers/ThongTinThanhToan.js';
 import ThanhVienRouter from './routers/ThanhVien.js';
 import ThongBaoRouter from './routers/ThongBao.js';
+import KhuVucRouter from './routers/KhuVuc.js';
 
-// Cấu hình middleware
 app.use(cors());
-app.use(express.json()); 
-app.use(express.urlencoded({ extended: true })); 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Định nghĩa các tuyến API
 app.use('/api', NguoiDungRouter);
 app.use('/api', hoaDonRoutes);
 app.use('/api', ThanhVienRouter);
@@ -43,11 +43,34 @@ app.use('/api', paymentRouter);
 app.use('/api', dashboardAdmin);
 app.use('/api', ThongTinThanhToanRouter);
 app.use('/api', ThongBaoRouter);
+app.use('/api', KhuVucRouter);
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-    console.log(`✅ Server đang chạy trên http://localhost:${PORT}`);
+const server = createServer(app);
+
+export const io = new Server(server, {
+  cors: {
+    origin: "*", 
+    methods: ["GET", "POST", "PUT", "DELETE"]
+  }
+});
+
+io.on("connection", (socket) => {
+  console.log("⚡ Client connected:", socket.id);
+
+  socket.on("join_room", (roomId) => {
+    socket.join(roomId);
+    console.log(`✅ ${socket.id} joined room ${roomId}`);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("❌ Client disconnected:", socket.id);
+  });
+});
+
+server.listen(PORT, () => {
+  console.log(`✅ Server đang chạy trên http://localhost:${PORT}`);
 });
 
 export const viteNodeApp = app;

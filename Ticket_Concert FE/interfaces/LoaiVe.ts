@@ -1,8 +1,8 @@
 export interface LoaiVe {
     IDLoaiVe? : string,
-    IDSuatDien : string,
+    IDSuatDien? : string,
     TenVe : string,
-    AnhVe : string,
+    AnhVe? : string,
     GiaVe : number,
     SoLuongVe : number,
     SoLuongToiDaMotDon : number,

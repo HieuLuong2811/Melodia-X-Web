@@ -33,7 +33,6 @@ export const createSuatDien = async (idSuatDien, data, connection) => {
     }
 };
 
-
 // Cập nhật suất diễn
 export const updateSuatDien = async (idSuatDien, data) => {
     try {

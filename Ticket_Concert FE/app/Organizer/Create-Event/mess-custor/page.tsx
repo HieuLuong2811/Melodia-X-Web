@@ -10,11 +10,13 @@ const TicketQRWarning = () => {
       const danhSachSuKien = JSON.parse(sessionStorage.getItem("danhSachSuKien") || "[]");
       const danhSachSuatDien = JSON.parse(sessionStorage.getItem("danhSachSuatDien") || "[]");
       const danhSachLoaiVe = JSON.parse(sessionStorage.getItem("danhSachLoaiVe") || "[]");
+      const danhSachVeKhuVuc = JSON.parse(sessionStorage.getItem("danhSachVeKhuVuc") || "[]");
 
       if (
         !danhSachSuKien.length ||
         !danhSachSuatDien.length ||
-        !danhSachLoaiVe.length
+        !danhSachLoaiVe.length ||
+        !danhSachVeKhuVuc.length
       ) {
         Swal.fire({
           icon: "error",
@@ -30,6 +32,7 @@ const TicketQRWarning = () => {
         danhSachSuKien,
         danhSachSuatDien,
         danhSachLoaiVe,
+        danhSachVeKhuVuc,
       };
 
       const response = await axios.post("http://localhost:3000/api/SuKiens", requestBody, {

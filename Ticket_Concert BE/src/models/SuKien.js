@@ -23,7 +23,6 @@ export const CountSuKien = async () => {
     return rows;  
 }
 
-
 export const getSuKienListUser = async (isAdmin = false) => {
     const sql = `SELECT 
             sk.IDSuKien,
@@ -120,8 +119,7 @@ export const getSuKienChiTietById = async (idSuKien) => {
             sk.LogoBanToChuc,
             sk.TenBanToChuc,
             sk.ThongTinBanToChuc,
-            sk.Video,
-            sk.AnhSoDoGhe
+            sk.Video
         FROM SuKien sk
         JOIN LoaiSuKien lsk ON sk.IDLoaiSuKien = lsk.IDLoaiSuKien
         WHERE sk.IDSuKien = ?`;
@@ -170,12 +168,11 @@ export const createSuKien = async (idSuKien, data, connection) => {
         data.tenBanToChuc,
         data.thongTinBanToChuc,
         data.video,
-        data.anhSoDoGhe
     ];
     const query =
         `INSERT INTO SuKien 
-        (IDSuKien, IDLoaiSuKien, IDNguoiDung, Logo, AnhNen, TenSuKien, DiaDiem, ThongTinSuKien, TrangThaiSuKien, LogoBanToChuc, TenBanToChuc, ThongTinBanToChuc, Video, AnhSoDoGhe)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        (IDSuKien, IDLoaiSuKien, IDNguoiDung, Logo, AnhNen, TenSuKien, DiaDiem, ThongTinSuKien, TrangThaiSuKien, LogoBanToChuc, TenBanToChuc, ThongTinBanToChuc, Video)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     await connection.query(query, values);
     return idSuKien;
 };

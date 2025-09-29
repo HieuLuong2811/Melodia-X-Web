@@ -100,7 +100,7 @@ const EventForm = () => {
   const [soDoGhe, setSoDoGhe] = useState<string | null>(null);
 
   const [tenSuKien, setTenSuKien] = useState("");
-  const [diaDiem, setDiaDiem] = useState("");
+  const [diaDiem, setDiaDiem] = useState("MY DINH INDOOR ATHLETICS ARENA - Tran Huu Duc, Phường Cầu Diễn, Quận Nam Từ Liêm, Thành Phố Hà Nội");
   const [thongTinSuKien, setContent] = useState("");
   const [tenBanToChuc, setTenBanToChuc] = useState("");
   const [thongTinBanToChuc, setThongTinBanToChuc] = useState("");
@@ -489,8 +489,9 @@ const EventForm = () => {
                             type="text"
                             className="ps-3 form-control input-full w-100"
                             id="inlineinput"
+                            disabled
                             placeholder="Địa điểm tổ chức"
-                            value={diaDiem || ""}
+                            value={diaDiem || "MY DINH INDOOR ATHLETICS ARENA - Tran Huu Duc, Phường Cầu Diễn, Quận Nam Từ Liêm, Thành Phố Hà Nội"}
                             onChange={(e) => setDiaDiem(e.target.value)}
                           />
                         </div>

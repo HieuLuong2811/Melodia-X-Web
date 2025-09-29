@@ -31,33 +31,32 @@ button.form-control:hover {
 }
 
 .popup-overlay {
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5) !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* Popup căn giữa màn hình */
-  .popup {
-    backdrop-filter: blur(30px);
-    background-color: rgba(81, 81, 88, .3) !important;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-  }
-  
-  .popup-overlay .MuiPaper-root {
-    background-color: rgba(81, 81, 88, .3) !important;
-    max-width: 700px !important;
-  }
-  .popup .fo {
-    background-color: #6464674d;
-  }
- .popup textarea.form-control {
-    height: 210px !important;
-  }
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .wt {
-    width: 15% !important;
-  }
+.popup {
+  backdrop-filter: blur(30px);
+  background-color: rgba(81, 81, 88, .3) !important;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+
+.popup-overlay .MuiPaper-root {
+  background-color: rgba(81, 81, 88, .3) !important;
+  max-width: 700px !important;
+}
+.popup .fo {
+  background-color: #6464674d;
+}
+.popup textarea.form-control {
+  height: 210px !important;
+}
+
+.wt {
+  width: 15% !important;
+}

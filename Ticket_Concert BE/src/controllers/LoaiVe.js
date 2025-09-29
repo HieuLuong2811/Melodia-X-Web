@@ -67,15 +67,29 @@ const LoaiVeController = {
         }
     },
 
-    // Cập nhật loại vé
     updateLoaiVeCtrl: async (req, res) => {
         try {
-            const loaiVeData = getLoaiVeData(req.body);
-            const affectedRows = await updateLoaiVe(req.params.idLoaiVe, loaiVeData);
-            if (affectedRows) res.json({ message: 'Cập nhật loại vé thành công' });
-            else res.status(404).json({ message: 'Không tìm thấy loại vé' });
+        const loaiVeData = getLoaiVeData(req.body);
+        const idLoaiVe = req.params.idLoaiVe;
+
+        const affectedRows = await updateLoaiVe(idLoaiVe, loaiVeData);
+
+        if (affectedRows) {
+            const updated = await getLoaiVeByID(idLoaiVe);
+
+            if (req.body.IDSuatDien) {
+                io.to(req.body.IDSuatDien).emit("ticket_updated", updated);
+            } else {
+                io.emit("ticket_updated", updated);
+            }
+
+            res.json(updated);
+        } else {
+            res.status(404).json({ message: 'Không tìm thấy loại vé' });
+        }
         } catch (error) {
-            res.status(500).json({ message: error.message });
+        console.error("❌ Lỗi update LoaiVe:", error);
+        res.status(500).json({ message: error.message });
         }
     },
 

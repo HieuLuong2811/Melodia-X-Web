@@ -237,7 +237,11 @@ const TicketBooking = () => {
                           style={{ backgroundColor: "rgb(235, 235, 240)" }}>
                           <i className="bi bi-exclamation-circle fs-4 ps-2"></i>
                           <div className="pt-1">{ticket.ThongTinVe}</div>
+                          <div>
+                            {ticket.SoLuongVe}
+                          </div>
                         </div>
+
                       </div>
                     );
                   })

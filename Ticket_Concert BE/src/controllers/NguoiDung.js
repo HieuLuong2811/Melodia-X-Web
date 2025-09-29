@@ -11,7 +11,7 @@ const getNguoiDungData = (data) => ({
     gioiTinh: data.GioiTinh || null,
     ngaySinh: data.NgaySinh || null,
     matKhau: data.MatKhau,
-    quyenHan: data.QuyenHan || 'Admin',
+    quyenHan: data.QuyenHan || 'User',
     trangThai: data.TrangThai || 'Hoạt động'
 });
 

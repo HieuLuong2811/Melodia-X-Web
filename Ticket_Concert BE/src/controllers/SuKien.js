@@ -3,6 +3,7 @@ import { getSuKienListUser,getSuKienListAdmin, CountSuKien, DuyetSuKien, getSuKi
 import { v4 as uuidv4 } from 'uuid';
 import { createSuatDien } from '../models/SuatDien.js'; 
 import { createLoaiVe } from '../models/LoaiVe.js';
+import { createVeKhuVuc } from '../models/VeKhuVuc.js'
 import pool from '../config/db.js';
 
 const getSuKienData = (data) => {
@@ -18,7 +19,6 @@ const getSuKienData = (data) => {
     tenBanToChuc: data.TenBanToChuc,
     thongTinBanToChuc: data.ThongTinBanToChuc,
     video: data.Video,
-    anhSoDoGhe: data.AnhSoDoGhe
   }
 };
 
@@ -39,6 +39,7 @@ const SuKienController = {
       danhSachSuKien,
       danhSachSuatDien,
       danhSachLoaiVe,
+      danhSachVeKhuVuc
     } = req.body;
 
     const connection = await pool.getConnection(); 
@@ -61,7 +62,6 @@ const SuKienController = {
         tenBanToChuc: suKien.TenBanToChuc,
         thongTinBanToChuc: suKien.ThongTinBanToChuc,
         video: suKien.Video,
-        anhSoDoGhe: suKien.AnhSoDoGhe,
       };
 
       await createSuKien(IDSuKien, suKienData, connection);
@@ -82,23 +82,45 @@ const SuKienController = {
         })
       );
 
-      await Promise.all(
-        danhSachLoaiVe.map(async (ve) => {
-          const IDLoaiVe = uuidv4();
-          const suatDien = suatDienResults.find((sd) => sd.tempIDSuatDien === ve.IDSuatDien);
-          if (!suatDien) throw new Error(`Không tìm thấy suất diễn cho vé ${ve.TenVe}`);
+      const loaiVeResults = await Promise.all(
+      danhSachLoaiVe.map(async (ve) => {
+        const IDLoaiVe = uuidv4();
+        const suatDien = suatDienResults.find((sd) => sd.tempIDSuatDien === ve.IDSuatDien);
+        if (!suatDien) throw new Error(`Không tìm thấy suất diễn cho vé ${ve.TenVe}`);
 
-          const loaiVeData = {
+        const loaiVeData = {
+          IDSuatDien: suatDien.IDSuatDien,
+          TenVe: ve.TenVe,
+          AnhVe: ve.AnhVe || null,
+          GiaVe: ve.GiaVe,
+          SoLuongVe: ve.SoLuongVe,
+          SoLuongToiDaMotDon: ve.SoLuongToiDaMotDon,
+          ThongTinVe: ve.ThongTinVe || null,
+        };
+        await createLoaiVe(IDLoaiVe, loaiVeData, connection);
+        return {
+          tempIDLoaiVe: ve.IDLoaiVe,
+          IDLoaiVe,
+        };
+      })
+    );
+
+      await Promise.all(
+        danhSachVeKhuVuc.map(async (ve) => {
+          const IDVeGhe = uuidv4();
+          const suatDien = suatDienResults.find((sd) => sd.tempIDSuatDien === ve.IDSuatDien);
+          const loaiVe = loaiVeResults.find((lv) => lv.tempIDLoaiVe === ve.IDLoaiVe);
+          if (!suatDien || !loaiVe) throw new Error(`Dữ liệu không hợp lệ cho vé khu vực với tempIDSuatDien: ${ve.IDSuatDien} hoặc tempIDLoaiVe: ${ve.IDLoaiVe}`);
+
+          const veKhuVucData = {
             IDSuatDien: suatDien.IDSuatDien,
-            TenVe: ve.TenVe,
-            AnhVe: ve.AnhVe || null,
-            GiaVe: ve.GiaVe,
-            SoLuongVe: ve.SoLuongVe,
-            SoLuongToiDaMotDon: ve.SoLuongToiDaMotDon,
-            ThongTinVe: ve.ThongTinVe || null,
+            IDLoaiVe: loaiVe.IDLoaiVe,
+            IDKhuVuc: ve.IDKhuVuc,
+            IDSuKien: IDSuKien,
           };
-          await createLoaiVe(IDLoaiVe, loaiVeData, connection);
-        })
+
+          await createVeKhuVuc(IDVeGhe, veKhuVucData, connection);
+        }),
       );
 
       await connection.commit(); 
