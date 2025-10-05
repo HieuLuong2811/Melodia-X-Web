@@ -1,4 +1,4 @@
-import { getAllHoaDon, getHoaDonByID, createHoaDon, fetchAllHoaDonChiTiet, deleteHoaDon,getHoaDonByIDSuatDien  } from '../models/HoaDonMuaVe.js';
+import { getAllHoaDon, getHoaDonByID, createHoaDon, fetchAllHoaDonChiTiet, deleteHoaDon,getHoaDonByIDSuatDien, updateHoaDon  } from '../models/HoaDonMuaVe.js';
 import {createChiTietHoaDon} from '../models/ChiTietHoaDon.js';
 import pool from '../config/db.js';
 import { checkAndUpdateSoLuongVe } from '../models/LoaiVe.js';
@@ -18,9 +18,9 @@ const getChiTietHoaDonData = (chiTietList, idHoaDon) => {
     return chiTietList.map((data) => ({
         idHoaDon: idHoaDon,
         idLoaiVe: data.idLoaiVe,
-        tenKhuVuc: data.tenKhuVuc,
+        tenKhuVuc: "VIP1",
         soLuong: data.soLuong,
-        giaTien: data.giaTien,
+        giaTien: parseFloat(data.giaTien),
         trangThaiVe: data.trangThaiVe
     }));
 };
@@ -44,6 +44,16 @@ const HoaDonMuaVeController = {
             else res.status(404).json({ message: 'Không tìm thấy hóa đơn' });
         } catch (error) {
             res.status(500).json({ message: error.message });
+        }
+    },
+
+    updateHoaDonCtrl: async (idHoaDon) => {
+        try {
+            const hoaDon = await updateHoaDon(idHoaDon);
+            if (hoaDon) return console.log('Cập nhật hóa đơn thanh cong');
+            else console.error('Không tìm thấy hóa đơn');
+        } catch (error) {
+            console.error('Lỗi khi cập nhật hóa đơn:', error);
         }
     },
 
@@ -79,10 +89,13 @@ const HoaDonMuaVeController = {
             const HoaDonData = getHoaDonMuaVeData(req.body);
             const { chiTiet } = req.body;
             const idHoaDon = uuidv4();
+            console.log(HoaDonData);
+            console.log(chiTiet);
 
             await createHoaDon(idHoaDon, HoaDonData, connection);
 
             const chiTietHoaDonList = getChiTietHoaDonData(chiTiet, idHoaDon);
+            console.log(chiTietHoaDonList);
 
             for (const chiTietItem of chiTietHoaDonList) {
                 const idChiTietHoaDon = uuidv4();

@@ -1,5 +1,6 @@
 import transporter from "../config/email.js";
 import QRCode from "qrcode";
+import HoaDonMuaVeController from "./HoaDonMuaVe.js";
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -291,14 +292,14 @@ const payticketpass = async (req, res) => {
     </body>
     </html>`; 
 
-    console.log("QR Base64:", qrCodeImageBase64);
-
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
       subject: `Xác nhận thanh toán - ${tenSuKien}`,
       html: htmlTemplate,
     });
+
+    await HoaDonMuaVeController.updateHoaDonCtrl(maHoaDon);
 
     res.status(200).json({ message: "Email xác nhận đã được gửi thành công" });
   } catch (error) {

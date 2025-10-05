@@ -20,13 +20,17 @@ export const getLoaiVeByID = async (idLoaiVe) => {
     }
 };
 
-export const getLoaiVeByIDSuatDien = async (idSuatDien) => {
+export const getLoaiVeByIDSuatDien = async (idSuatDien, idKhuVuc) => {
     try {
         const [rows] = await pool.query(
-            "SELECT LV.IDLoaiVe, SD.IDSuatDien, LV.TenVe, LV.AnhVe, LV.GiaVe, LV.ThongTinVe, LV.SoLuongVe, LV.SoLuongToiDaMotDon, SD.ThoiGianBatDau, SD.ThoiGianKetThuc FROM LoaiVe LV INNER JOIN SuatDien SD ON LV.IDSuatDien = SD.IDSuatDien WHERE LV.IDSuatDien = ?", 
-            [idSuatDien]
+            `SELECT LV.IDLoaiVe, LV.TenVe, LV.GiaVe, LV.SoLuongVe, LV.SoLuongToiDaMotDon, LV.ThongTinVe, KV.TenKhuVuc, KV.LuongVeToiDa
+             FROM LoaiVe LV
+             INNER JOIN VeKhuVuc VKV ON LV.IDLoaiVe = VKV.IDLoaiVe
+             INNER JOIN KhuVuc KV ON VKV.IDKhuVuc = KV.IDKhuVuc
+             WHERE LV.IDSuatDien = ? AND KV.IDKhuVuc = ?`,
+            [idSuatDien, idKhuVuc]
         );
-        return rows; 
+        return rows;
     } catch (error) {
         throw error;
     }
@@ -83,6 +87,7 @@ export const getVeDaMuaByUserId = async (idNguoiDung) => {
           cthd.SoLuong,
           cthd.GiaTien,
           cthd.TrangThaiVe,
+          cthd.TenKhuVuc,
           hd.NgayThanhToan
       FROM ChiTietHoaDon cthd
       JOIN HoaDonMuaVe hd ON cthd.IDHoaDon = hd.IDHoaDon

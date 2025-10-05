@@ -122,6 +122,8 @@ CREATE TABLE ChiTietHoaDon (
     FOREIGN KEY (IDLoaiVe) REFERENCES LoaiVe(IDLoaiVe)
 );
 
+select * from ChiTietHoaDon;
+
 CREATE TABLE ThongBao (
     IDThongBao VARCHAR(36) PRIMARY KEY NOT NULL,
     IDNguoiDung VARCHAR(36) NOT NULL,

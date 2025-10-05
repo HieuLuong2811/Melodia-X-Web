@@ -43,8 +43,6 @@ const EventForm = () => {
       fetchSuKien();
     }
   }, [searchParams]);
-  
-  const [hovered, setHovered] = useState(false);
 
   const handleDuyetOrHuySuKien = (trangThai: "Đã xác nhận" | "Hủy") => {
     const IDFromURL = searchParams.get('id');
@@ -193,27 +191,7 @@ const EventForm = () => {
                           )}
                       </div>
                   </div>
-
-                  {/* Card Ảnh sơ đồ ghế */}
-                  <div className="flex-grow-1 p-3 rounded" style={{maxWidth : "49%", backgroundColor: "#2C2F38" }}>
-                    <div className="d-flex align-items-center justify-content-between">
-                      <h5 className="text-white mb-3">🪑 Sơ đồ ghế</h5>
-                    </div>
-                      <div className="mt-3 d-flex justify-content-center"  onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} >
-                        {suKien.AnhSoDoGhe ? (
-                          <img src={suKien.AnhSoDoGhe} alt="Sơ đồ ghế sự kiện" style={{ width: "100%", height: "300px", borderRadius: "4px" }}/>
-                        ) : (
-                          <div className="sc-ffc90067-7 sc-cd78c11b-1 fFJbAL ePwTxf text-center">
-                            <EmptyData />
-                            <div className="sc-cd78c11b-2 cimqQp fw-bold mt-3">Không tồn tại</div>
-                          </div>
-                        )}                      
-                      </div>
-                  </div>
                 </div>
-                {hovered && suKien.AnhSoDoGhe && (
-                  <img src={suKien.AnhSoDoGhe} width={600} height={400} style={{zIndex: 5, padding: 4, position: "absolute", top: "150px", left: "300px", border: "2px solid #ccc", backgroundColor: "#fff" }} alt="Sơ đồ ghế"/>
-                )}
                 <div className="p-3 rounded-3" style={{ backgroundColor: "#23252C" }}>
                   <label className="text-white border-0 pb-2">Thông tin sự kiện</label>
                   <div className={`event-details ${openDetail ? 'expanded' : ''}`}>

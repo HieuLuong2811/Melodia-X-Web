@@ -6,40 +6,52 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { ThongBaoService } from "@/services/ThongBao";
+// import { ThongBaoService } from "@/services/ThongBao";
 import {ThongBao} from "@/interfaces/ThongBao";
-
+import socket from "@/middleware/socket.io";
 
 const Nav = () => {
 
   const suggestions = ["Jisoo", "NTPMM", "Noo Phước Thịnh", "Chị đẹp"];
-  const [avatars, setAvatar] = useState('');
+  // const [avatars, setAvatar] = useState('');
   const [thongBaos, setThongBaos] = useState<ThongBao[]>([]); 
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const unreadThongBaos = thongBaos.filter(tb => tb.TrangThai === "Chưa đọc");
+  const unreadCount = unreadThongBaos.length;
+
+useEffect(() => {
+  const token = localStorage.getItem("authToken");
+  const userId = localStorage.getItem("IDNguoiDung");
+
+  if (token && userId) {
+    setIsLoggedIn(true);
+
+    // join socket room
+    socket.emit("join_room", userId);
+
+    // lấy lịch sử từ socket khi join
+    socket.on("init_notifications", (list: ThongBao[]) => {
+      console.log("📦 Init notifications:", list);
+      setThongBaos(list);
+    });
+
+    // realtime noti mới
+    socket.on("new_notification", (noti: ThongBao) => {
+      console.log("🔥 Noti mới:", noti);
+      setThongBaos(prev => [noti, ...prev]);
+    });
+  }
+
+  return () => {
+    socket.off("init_notifications");
+    socket.off("new_notification");
+  };
+}, []);
 
 
-  useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    const userId = localStorage.getItem("IDNguoiDung");
-    const getValidAvatar = (value: string | null) => {
-      if (!value || value === "null" || value === "undefined" || value.trim() === "") {
-        return "https://static.ticketbox.vn/avatar.png";
-      }
-      return value;
-    };
-    if (token && userId) {
-      setIsLoggedIn(true);
-      setAvatar(getValidAvatar(localStorage.getItem("AnhNenUser")));    
-    }
-    if(userId){
-      const fetchThongBao = async () => {
-        const data = await ThongBaoService.GetThongBaoByIDuser(userId);
-        setThongBaos(data);
-      }
-      fetchThongBao();
-    }
-  }, [thongBaos]);
+
+
 
   const handleLogout = () => {
     Swal.fire({
@@ -68,8 +80,6 @@ const Nav = () => {
     localStorage.removeItem("IDSuKien_Organizer_Detail");
   };
   
-  
-
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light pt-3 pb-3 position-sticky top-0 z-3">
@@ -113,7 +123,8 @@ const Nav = () => {
               <div className="dropdown mt-0">
                 <button className="btn text-white dropdown-toggle pb-1 pe-0" type="button">
                   <Link href= "/Authen/Login/" className="text-decoration-none d-flex align-items-center gap-1 text-white" passHref>
-                    <img src={avatars} style={{ borderRadius : "50%", width : "40px", height : "40px", objectFit : "cover"}} alt="" /> Tài khoản
+                    {/* <img src={avatars} style={{ borderRadius : "50%", width : "40px", height : "40px", objectFit : "cover"}} alt="" />  */}
+                    Tài khoản
                     <i className="bi bi-arrow-down-short"></i>
                   </Link>
                 </button>
@@ -130,43 +141,64 @@ const Nav = () => {
                 </ul>
               </div>
               <div className="dropdown">
-                <div className="btn text-white dropdown-toggle px-0">
-                  <i className="bi bi-bell-fill fs-3 position-relative"></i>
-                  {thongBaos.filter(tb => tb.TrangThai === "Chưa đọc").length > 0 && (
-                    <span className="position-absolute start-100 translate-middle badge rounded-pill bg-danger" style={{top :"10px"}}>
-                      {thongBaos.filter(tb => tb.TrangThai === "Chưa đọc").length}
-                    </span>
-                  )}
+                <div className="mx-3">
+                  <button 
+                    className="btn text-white dropdown-toggle position-relative px-0" 
+                    aria-label={`Có ${unreadCount} thông báo chưa đọc`}
+                  >
+                    <i className="bi bi-bell-fill fs-3 "></i>
+                    {unreadCount > 0 && (
+                      <span 
+                        className="position-absolute start-100 translate-middle badge rounded-pill bg-danger" 
+                        style={{ top: "10px" }}
+                      >
+                        {unreadCount > 99 ? "99+" : unreadCount}
+                      </span>
+                    )}
+                  </button>
                 </div>
 
-                <ul className="dropdown-menu dropdown-menu-start p-0" style={{ minWidth: "300px", right: "0px", overflowY: "auto" }}>
+                <ul 
+                  className="dropdown-menu dropdown-menu-start p-0 shadow-lg" 
+                  style={{ maxWidth: "450px", right: 0, maxHeight: "400px", overflowY: "auto" }}
+                  role="alert"
+                  aria-live="polite"
+                >
                   {thongBaos.length === 0 ? (
-                    <li className="text-center text-muted">Không có thông báo nào</li>
+                    <li className="text-center text-muted py-2">Không có thông báo nào</li>
                   ) : (
-                    thongBaos.filter(tb => tb.TrangThai).slice(0, 5).map((item, index) => (
-                      <li key={index} className="border m-0">
-                        <div className={`dropdown-item d-flex shadow-sm flex-column ${item.TrangThai === "Chưa đọc" ? "fw-bold bg-light" : ""}`}
-                          style={{ padding: "10px", overflowY :"hidden"}}>
+                    thongBaos.slice(0, 5).map((item, index) => (
+                      <li key={index} className="border-bottom">
+                        <div 
+                          className={`dropdown-item d-flex flex-column ${item.TrangThai === "Chưa đọc" ? "bg-light fw-bold" : ""}`}
+                          style={{ padding: "10px" }}
+                        >
                           <div className="d-flex justify-content-between align-items-center">
                             <span className="text-truncate" title={item.TieuDe}>
                               {item.TieuDe}
                             </span>
+                            {item.TrangThai === "Chưa đọc" && <span className="text-danger ms-2">●</span>}
                           </div>
-                          <div className="d-flex align-items-center justify-content-between">
-                            <small className={`mt-1 ${item.TrangThai === "Chưa đọc" ? "text-danger" : "text-muted"}`}>
-                              {item.TrangThai}
-                            </small>
+                          <small className="text-muted text-truncate">
+                            {item.NoiDung}
+                          </small>
+                          <div className="d-flex justify-content-between mt-1">
                             <small className="text-muted text-nowrap">
-                              {new Date(item.NgayTao).toLocaleDateString("vi-VN", {day: "2-digit", month: "2-digit", year: "numeric"})}
+                              {new Date(item.NgayTao).toLocaleDateString("vi-VN", {
+                                day: "2-digit", month: "2-digit", year: "numeric"
+                              })}
+                            </small>
+                            <small className={item.TrangThai === "Chưa đọc" ? "text-danger" : "text-muted"}>
+                              {item.TrangThai}
                             </small>
                           </div>
                         </div>
                       </li>
                     ))
                   )}
-                  <div className="text-center my-2">
+                  <li className="text-center my-2">
                     <button className="btn btn-outline-primary btn-sm">Xem thêm</button>
-                  </div>
+                  </li>
                 </ul>
               </div>
             </div>

@@ -21,7 +21,7 @@ router.get("/SuKiensUser/:idNguoiDung", SuKienController.getSuKienByIdUserCtrl);
 router.post("/SuKiens", SuKienController.createSuKienCtrl);
 
 router.put("/SuKiens/:idSuKien", authenticate, (req, res, next) => {
-    if (req.user.QuyenHan === "User") {
+    if (req.user.QuyenHan === "Admin") {
         return next();
     }
     return res.status(403).json({ message: "Không có quyền chỉnh sửa sự kiện!" });

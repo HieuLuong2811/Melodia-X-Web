@@ -200,7 +200,7 @@ const SuKienController = {
           const suKienMap = {};
 
           event.forEach(row => {
-              const { IDSuKien,IDLoaiSuKien, TenSuKien, Logo, AnhNen, DiaDiem, ThongTinSuKien, LogoBanToChuc, TenBanToChuc, ThongTinBanToChuc, Video, AnhSoDoGhe, IDSuatDien, ThoiGianBatDau, ThoiGianKetThuc, IDLoaiVe, TenVe, GiaVe, SoLuongVe } = row;
+              const { IDSuKien,IDLoaiSuKien, TenSuKien, Logo, AnhNen, DiaDiem, ThongTinSuKien, LogoBanToChuc, TenBanToChuc, ThongTinBanToChuc, Video, IDSuatDien, ThoiGianBatDau, ThoiGianKetThuc, IDLoaiVe, TenVe, GiaVe, SoLuongVe } = row;
 
               if (!suKienMap[IDSuKien]) {
                   suKienMap[IDSuKien] = {
@@ -215,7 +215,6 @@ const SuKienController = {
                       TenBanToChuc,
                       ThongTinBanToChuc,
                       Video,
-                      AnhSoDoGhe,
                       suatDiens: {}
                   };
               }
@@ -256,6 +255,7 @@ const SuKienController = {
   updateSuKienCtrl: async (req, res) => {
       try {
           const suKienData = getSuKienData(req.body);
+          console.log(suKienData);
 
           await updateSuKien(req.params.idSuKien, suKienData);
           res.status(200).json({ message: "Cập nhật sự kiện thành công" });

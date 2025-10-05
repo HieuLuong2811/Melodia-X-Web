@@ -12,6 +12,7 @@ export interface LoaiVe {
 export interface LoaiVe2 {
     IDLoaiVe : string,
     TenSuKien : string,
+    TenKhuVuc: string,
     TenVe : string,
     GiaVe : string,
     SoLuong : string,

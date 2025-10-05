@@ -64,10 +64,6 @@ const EventForm = () => {
             localStorage.setItem("uploadedMedia_video", response.Video);
             setVideoVisible(true);
           }
-          if (response?.AnhSoDoGhe) {
-            localStorage.setItem("uploadedMedia_soDoGhe", response.AnhSoDoGhe);
-            setSoDoGheVisible(true);
-          }
           setTenBanToChuc(response.TenBanToChuc || "");
           setThongTinBanToChuc(response.ThongTinBanToChuc || "");
         } catch (error) {
@@ -97,7 +93,6 @@ const EventForm = () => {
   const [background, setBackground] = useState<string | null>(null);
   const [logoOganizer, setLogoOganizer] = useState<string | null>(null);
   const [video, setVideo] = useState<string | null>(null);
-  const [soDoGhe, setSoDoGhe] = useState<string | null>(null);
 
   const [tenSuKien, setTenSuKien] = useState("");
   const [diaDiem, setDiaDiem] = useState("MY DINH INDOOR ATHLETICS ARENA - Tran Huu Duc, Phường Cầu Diễn, Quận Nam Từ Liêm, Thành Phố Hà Nội");
@@ -106,7 +101,6 @@ const EventForm = () => {
   const [thongTinBanToChuc, setThongTinBanToChuc] = useState("");
 
   const [videoVisible, setVideoVisible] = useState(false);
-  const [soDoGheVisible, setSoDoGheVisible] = useState(false);
 
   const [LoaiSuKiens, SetLoaiSuKiens] = useState<LoaiSuKien[]>([]);
   const [selectedLoaiSuKien, SetselectedLoaiSuKien] = useState<string | null>(
@@ -147,7 +141,6 @@ const EventForm = () => {
         TenBanToChuc: tenBanToChuc,
         ThongTinBanToChuc: thongTinBanToChuc,
         Video: video || localStorage.getItem("uploadedMedia_video") || "",
-        AnhSoDoGhe: localStorage.getItem("uploadedMedia_soDoGhe") || "",
       };
       if (!tenSuKien || !diaDiem || !eventData.IDLoaiSuKien) {
         Swal.fire({
@@ -189,7 +182,6 @@ const EventForm = () => {
       TenBanToChuc: tenBanToChuc,
       ThongTinBanToChuc: thongTinBanToChuc,
       Video: video || localStorage.getItem("uploadedMedia_video") || "",
-      AnhSoDoGhe: localStorage.getItem("uploadedMedia_soDoGhe") || "",
     };
 
     if (!tenSuKien || !diaDiem || !eventData.IDLoaiSuKien) {
@@ -287,7 +279,7 @@ const EventForm = () => {
                     }
                     onClick={() => {
                       if (isEditMode) {
-                        UpdateEvent(eventId as string);
+                        UpdateEvent(eventId);
                       } else {
                         handleContinue();
                       }
@@ -401,56 +393,6 @@ const EventForm = () => {
                                   muted
                                   loop
                                   playsInline
-                                />
-                              )}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Card Ảnh sơ đồ ghế */}
-                        <div
-                          className="flex-grow-1 p-3 rounded"
-                          style={{
-                            maxWidth: "49%",
-                            backgroundColor: "#2C2F38",
-                          }}
-                        >
-                          <div className="d-flex align-items-center justify-content-between">
-                            <h5 className="text-white mb-3">🪑 Sơ đồ ghế</h5>
-                            <div className="form-check form-switch">
-                              <label
-                                className="form-check-label text-white"
-                                htmlFor="soDoGheToggle"
-                              >
-                                {soDoGheVisible ? "Hiển thị" : "Ẩn"}
-                              </label>
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="soDoGheToggle"
-                                checked={soDoGheVisible}
-                                onChange={(e) =>
-                                  setSoDoGheVisible(e.target.checked)
-                                }
-                              />
-                            </div>
-                          </div>
-                          {soDoGheVisible && (
-                            <div className="mt-3 d-flex justify-content-center">
-                              <MediaUploader
-                                type="soDoGhe"
-                                mediaType="image"
-                                onUploadSuccess={setSoDoGhe}
-                              />
-                              {soDoGhe && (
-                                <img
-                                  src={soDoGhe}
-                                  alt="Sơ đồ ghế sự kiện"
-                                  style={{
-                                    width: "100px",
-                                    height: "300px",
-                                    borderRadius: "4px",
-                                  }}
                                 />
                               )}
                             </div>

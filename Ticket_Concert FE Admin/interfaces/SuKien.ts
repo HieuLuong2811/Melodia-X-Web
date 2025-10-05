@@ -13,7 +13,6 @@ export interface SuKien {
   TenBanToChuc: string;
   ThongTinBanToChuc: string;
   Video : string;
-  AnhSoDoGhe : string;
 }
 
 export interface LoaiVe {

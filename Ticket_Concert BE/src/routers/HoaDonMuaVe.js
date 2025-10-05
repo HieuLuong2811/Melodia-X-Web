@@ -17,5 +17,6 @@ router.get('/HoaDons/:idHoaDon', HoaDonMuaVeController.getHoaDonByIDCtrl);
 router.get('/HoaDonsBySuatDien/:idSuatDien', HoaDonMuaVeController.getHoaDonByIDsuatdienCtrl);
 router.post('/HoaDons/', HoaDonMuaVeController.createHoaDonWithDetailsCtrl);
 router.delete('/HoaDons/:idHoaDon', HoaDonMuaVeController.deleteHoaDonCtrl);
+router.delete('/HoaDons/:idHoaDon', HoaDonMuaVeController.updateHoaDonCtrl);
 
 export default router;

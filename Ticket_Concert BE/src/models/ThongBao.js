@@ -1,4 +1,5 @@
 import pool from '../config/db.js';
+import { v4 as uuidv4 } from 'uuid';
 
 const ThongBaoModel = {
     // Lấy thông báo theo ID
@@ -52,7 +53,35 @@ const ThongBaoModel = {
         } catch (error) {
             throw error;
         }
-    }
+    },
+
+    sendToUsersBySuatDien: async (idSuKien, idSuatDien, tieuDe, noiDung) => {
+        try {
+            const [rows] = await pool.execute(`
+                SELECT DISTINCT hd.IDNguoiDung
+                FROM HoaDonMuaVe hd
+                JOIN ChiTietHoaDon cthd ON hd.IDHoaDon = cthd.IDHoaDon
+                JOIN LoaiVe lv ON cthd.IDLoaiVe = lv.IDLoaiVe
+                WHERE lv.IDSuatDien = ? 
+            `, [idSuatDien]);
+
+            for (const row of rows) {
+                const idThongBao = uuidv4();
+                const data = {
+                    idNguoiDung: row.IDNguoiDung,
+                    tieuDe,
+                    noiDung,
+                    ngayTao: new Date(),
+                    trangThai: 'Chưa đọc'
+                };
+                await ThongBaoModel.createThongBao(idThongBao, data);
+            }
+
+            console.log(`✅ Gửi thông báo cho ${rows.length} user ở sự kiện ${idSuKien}, suất diễn ${idSuatDien}`);
+        } catch (error) {
+            console.error("❌ Lỗi gửi thông báo:", error);
+        }
+    },
 };
 
 export default ThongBaoModel;

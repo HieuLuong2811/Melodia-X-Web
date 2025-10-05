@@ -247,7 +247,6 @@ export default function Product_details() {
                             ThoiGianBatDau: suat.ThoiGianBatDau,
                             ThoiGianKetThuc: suat.ThoiGianKetThuc,
                             AnhNen: suKien.AnhNen,
-                            AnhSoDoGhe: suKien.AnhSoDoGhe,
                           };
                           sessionStorage.setItem(
                             "suatInfo",

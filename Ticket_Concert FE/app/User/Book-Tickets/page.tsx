@@ -10,14 +10,10 @@ const TicketBooking = () => {
 
   const [LoaiVes, SetLoaiVe] = useState<LoaiVe[]>([]);
   const [cart, setCart] = useState<{ IDLoaiVe: string; TenLoaiVe: string; SoLuong: number; GiaTien: number }[]>([]);
-
-  const [hovered, setHovered] = useState(false);
-
   const [tenSuKien, setTenSuKien] = useState("");
   const [diaDiem, setDiaDiem] = useState("");
   const [thoiGianBatDau, setThoiGianBatDau] = useState("");
   const [thoiGianKetThuc, setThoiGianKetThuc] = useState("");
-  const [soDoGhe, setSoDoGhe] = useState("");
 
   const searchParams = useSearchParams();
   const id_detail = searchParams.get("id_detail");
@@ -40,7 +36,6 @@ const TicketBooking = () => {
         setDiaDiem(suatdien.DiaDiem);
         setThoiGianBatDau(suatdien.ThoiGianBatDau);
         setThoiGianKetThuc(suatdien.ThoiGianKetThuc);
-        setSoDoGhe(suatdien.AnhSoDoGhe);
       } catch (err) {
         console.error("Parse suatInfo error:", err);
       }
@@ -271,22 +266,8 @@ const TicketBooking = () => {
                   <i className="bi bi-geo-alt"></i>
                   <span>{diaDiem}</span>
                 </p>
-                {soDoGhe ? (
-                  <p className="d-flex flex-column gap-2" style={{cursor : "pointer", width : "max-content"}}  onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} >
-                    <span>Ảnh sơ đồ ghế</span>
-                    <img src={soDoGhe} height={100} width={100} alt=""/>
-                  </p>
-                ) : (
-                  <div>Không có sơ đồ ghế</div>
-                )}
    
               </div>
-              <hr className="border-secondary" />
-              {hovered && (
-                <div className="over-lay w-100 bg-light">
-                    <img src={soDoGhe} width={1100} height={800} style={{ zIndex: 5, padding: 4, position: "absolute", top: "100px", left: "80px", border: "2px solid #ccc", backgroundColor: "#fff" }} alt="Sơ đồ ghế"/>
-                </div>
-              )}            
               {/* Hiển thị danh sách vé trong cart */}
               <div className="p-3">
                 <h5 className="fw-bold">Giỏ vé</h5>

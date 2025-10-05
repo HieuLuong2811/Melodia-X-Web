@@ -50,7 +50,7 @@ export const getSuKienDatalist = async (type) => {
                 JOIN SuatDien sd ON sk.IDSuKien = sd.IDSuKien
                 JOIN LoaiVe lv ON lv.IDSuatDien = sd.IDSuatDien
                 JOIN ChiTietHoaDon cthd ON cthd.IDLoaiVe = lv.IDLoaiVe
-                WHERE sk.TrangThaiSuKien = 'Đã xác nhận'
+                WHERE sk.TrangThaiSuKien in ('Đã xác nhận', 'Chưa bắt đầu', 'Đang diễn ra', 'Hoàn thành')
                 GROUP BY sk.IDSuKien
                 ORDER BY TongVeBan DESC
                 LIMIT 10;
@@ -65,7 +65,7 @@ export const getSuKienDatalist = async (type) => {
                 JOIN LoaiVe lv ON lv.IDSuatDien = sd.IDSuatDien
                 JOIN ChiTietHoaDon cthd ON cthd.IDLoaiVe = lv.IDLoaiVe
                 JOIN HoaDonMuaVe hd ON hd.IDHoaDon = cthd.IDHoaDon
-                WHERE sk.TrangThaiSuKien = 'Đã xác nhận'
+                WHERE sk.TrangThaiSuKien in ('Đã xác nhận', 'Chưa bắt đầu', 'Đang diễn ra', 'Hoàn thành')
                 GROUP BY sk.IDSuKien
                 ORDER BY GanNhatMua DESC
                 LIMIT 10;
@@ -76,7 +76,7 @@ export const getSuKienDatalist = async (type) => {
             sql = `
                 SELECT IDSuKien, Video, AnhNen 
                 FROM SuKien 
-                WHERE Video IS NOT NULL AND TRIM(Video) <> '' AND TrangThaiSuKien = 'Đã xác nhận'
+                WHERE Video IS NOT NULL AND TRIM(Video) <> '' AND TrangThaiSuKien in ('Đã xác nhận', 'Chưa bắt đầu', 'Đang diễn ra', 'Hoàn thành')
                 LIMIT 6;
             `;
             break;
@@ -85,7 +85,7 @@ export const getSuKienDatalist = async (type) => {
             sql = `
                 SELECT * 
                 FROM SuKien 
-                WHERE TrangThaiSuKien = 'Đã xác nhận'
+                WHERE TrangThaiSuKien in ('Đã xác nhận', 'Chưa bắt đầu', 'Đang diễn ra', 'Hoàn thành')
                 LIMIT 10;
             `;
             break;
@@ -181,10 +181,10 @@ export const createSuKien = async (idSuKien, data, connection) => {
 // Cập nhật sự kiện
 export const updateSuKien = async (idSuKien, suKien) => {
     try {
-        const {idLoaiSuKien, idNguoiDung, tenSuKien, logo, anhNen, diaDiem, thongTinSuKien, logoBanToChuc, tenBanToChuc, thongTinBanToChuc, video, anhSoDoGhe} = suKien;
+        const {idLoaiSuKien, idNguoiDung, tenSuKien, logo, anhNen, diaDiem, thongTinSuKien, logoBanToChuc, tenBanToChuc, thongTinBanToChuc, video} = suKien;
         await pool.execute(
-            'UPDATE SuKien SET IDLoaiSuKien = ?, IDNguoiDung = ?, TenSuKien = ?, Logo = ?, AnhNen = ?, DiaDiem = ?, ThongTinSuKien = ?, LogoBanToChuc = ?, TenBanToChuc = ?, ThongTinBanToChuc = ?, Video = ?, AnhSoDoGhe = ? WHERE IDSuKien = ?',
-            [idLoaiSuKien, idNguoiDung, tenSuKien, logo, anhNen, diaDiem, thongTinSuKien, logoBanToChuc, tenBanToChuc, thongTinBanToChuc, video, anhSoDoGhe ,idSuKien]
+            'UPDATE SuKien SET IDLoaiSuKien = ?, IDNguoiDung = ?, TenSuKien = ?, Logo = ?, AnhNen = ?, DiaDiem = ?, ThongTinSuKien = ?, LogoBanToChuc = ?, TenBanToChuc = ?, ThongTinBanToChuc = ?, Video = ? WHERE IDSuKien = ?',
+            [idLoaiSuKien, idNguoiDung, tenSuKien, logo, anhNen, diaDiem, thongTinSuKien, logoBanToChuc, tenBanToChuc, thongTinBanToChuc, video ,idSuKien]
         );
     } catch (error) {
         throw error;

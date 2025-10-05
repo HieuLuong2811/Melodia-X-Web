@@ -258,6 +258,7 @@ const AccountInformation = () => {
                             STT
                           </th>
                           <th scope="col">Tên sự kiện</th>
+                          <th scope="col">Khu vực</th>
                           <th scope="col">Tên vé</th>
                           <th className="text-center" scope="col">
                             Giá vé
@@ -281,8 +282,9 @@ const AccountInformation = () => {
                           .map((ve, index) => (
                             <tr key={ve.IDLoaiVe || index}>
                               <td className="text-center">{index + 1}</td>
-                              <td style={{ width: "35%" }}>{ve.TenSuKien}</td>
-                              <td style={{ width: "20%" }}>{ve.TenVe}</td>
+                              <td style={{ width: "25%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{ve.TenSuKien}</td>
+                              <td style={{ width: '10%',  whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}} >{ve.TenKhuVuc}</td>
+                              <td style={{ width: "20%",  whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{ve.TenVe}</td>
                               <td className="text-center">{ve.GiaVe}</td>
                               <td className="text-center">{ve.SoLuong}</td>
                               <td>

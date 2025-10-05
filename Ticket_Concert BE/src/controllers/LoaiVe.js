@@ -37,8 +37,10 @@ const LoaiVeController = {
 
     getLoaiVeByIDSuatDienCtrl: async (req, res) => {
         try {
-            const suatdien = await getLoaiVeByIDSuatDien(req.params.idSuatDien);
-            res.json(suatdien);
+            const {idSuatDien} = req.params;
+            const {idkhuVuc} = req.query;
+            const suatdien = await getLoaiVeByIDSuatDien(idSuatDien, idkhuVuc);
+            res.status(201).json(suatdien);
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

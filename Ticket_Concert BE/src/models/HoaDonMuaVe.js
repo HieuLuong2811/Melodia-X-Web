@@ -37,6 +37,21 @@ export const createHoaDon = async (idHoaDon,hoaDon ) => {
     return idHoaDon;
 };
 
+export const updateHoaDon = async (idHoaDon) => {
+  try {
+    const query = `
+      UPDATE HoaDon 
+      SET TrangThaiThanhToan = "Đã thanh toán"
+      WHERE IDHoaDon = ?
+    `;
+    const [result] = await pool.query(query, [idHoaDon]);
+    return result.affectedRows;
+  } catch (error) {
+    throw error;
+  }
+}
+
+
 export const deleteHoaDon = async (idHoaDon) => {
     const [result] = await pool.query('delete from HoaDonMuaVe where IDHoaDon = ?', [idHoaDon]);
     return result;

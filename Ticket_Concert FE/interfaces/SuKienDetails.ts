@@ -21,6 +21,5 @@ export interface LoaiVe {
     LogoBanToChuc : string;
     TenBanToChuc : string;
     ThongTinBanToChuc : string;
-    AnhSoDoGhe: string,
     suatDiens: SuatDien[];
   }

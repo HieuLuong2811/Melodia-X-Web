@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import { ThongBaoRealTime } from './cron/ThongBao.js'
 
 dotenv.config();
 const app = express();
@@ -44,6 +45,7 @@ app.use('/api', dashboardAdmin);
 app.use('/api', ThongTinThanhToanRouter);
 app.use('/api', ThongBaoRouter);
 app.use('/api', KhuVucRouter);
+ThongBaoRealTime();
 
 const PORT = process.env.PORT || 3000;
 
@@ -52,16 +54,28 @@ const server = createServer(app);
 export const io = new Server(server, {
   cors: {
     origin: "*", 
-    methods: ["GET", "POST", "PUT", "DELETE"]
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
   }
 });
 
 io.on("connection", (socket) => {
   console.log("⚡ Client connected:", socket.id);
 
-  socket.on("join_room", (roomId) => {
-    socket.join(roomId);
-    console.log(`✅ ${socket.id} joined room ${roomId}`);
+  socket.on("join_room", async (userId) => {
+    socket.join(userId);
+    console.log(`✅ ${socket.id} joined room ${userId}`);
+
+    // gửi toàn bộ noti lịch sử cho user khi join
+    const history = await getNotificationsFromDB(userId);
+    socket.emit("init_notifications", history);
+  });
+
+  // ví dụ có cron job hoặc action nào đó tạo noti mới
+  socket.on("create_notification", async ({ userId, noti }) => {
+    const saved = await saveNotificationToDB(userId, noti);
+    // bắn realtime cho đúng user
+    io.to(userId).emit("new_notification", saved);
   });
 
   socket.on("disconnect", () => {

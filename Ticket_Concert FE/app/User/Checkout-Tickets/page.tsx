@@ -159,7 +159,6 @@ const Checkout = () => {
         const hoaDon = createOrderRes.data;
         sessionStorage.setItem("invoice", JSON.stringify(hoaDon));
 
-        // Gửi đến API MoMo để tạo link thanh toán
         const momoRes = await axios.post("http://localhost:3000/api/momo", {
           orderId: hoaDon.idHoaDon,
           amount: hoaDon.tongTien,
