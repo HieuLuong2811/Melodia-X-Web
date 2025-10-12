@@ -25,7 +25,8 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-const EmptyData = dynamic(() => import('@/components/emptydata'));import { Chart as ChartJS, LineElement,  CategoryScale, LinearScale, ChartOptions, PointElement, Title, Tooltip,Legend,} from "chart.js";
+const EmptyData = dynamic(() => import('@/components/emptydata'));
+import { Chart as ChartJS, LineElement,  CategoryScale, LinearScale, ChartOptions, PointElement, Title, Tooltip,Legend,} from "chart.js";
 import { LoaiVe } from "@/interfaces/LoaiVe";
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend);

@@ -97,7 +97,10 @@ const OrderManagement = () => {
                       <FormControl className="col-md-8" variant="outlined">
                         <TextField label="Trạng thái sự kiện" fullWidth variant="outlined" value={SuKien.TrangThaiSuKien}/>
                       </FormControl>
-                      <Link href = "/Admin/EventDetail/infor-event/">
+                      <Link  href={{
+                          pathname: `/Admin/EventDetail/infor-event/${SuKien.IDSuKien}`,
+                          query: { idNguoiDung: SuKien.IDNguoiDung },
+                        }}>
                         <Button variant="contained" color="primary" startIcon={<InfoIcon />} onClick={() => {
                           localStorage.setItem("IDSuKien", SuKien.IDSuKien);
                           localStorage.setItem("IDNguoiDung-Detail",SuKien.IDNguoiDung)}}>

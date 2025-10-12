@@ -2,11 +2,6 @@ import axiosInstance  from "../middleware/axiosConfig";
 import { LoaiVe, LoaiVe2 } from "../interfaces/LoaiVe.ts";
 
 export const LoaiVeService = {
-  getAllSuKiens: async (): Promise<LoaiVe[]> => {
-    const response = await axiosInstance.get<LoaiVe[]>('LoaiSuKiens');
-    return response.data;
-  },
-
   getVeDaMuaByUserId: async (IDNguoiDung: string): Promise<LoaiVe2[]> => {
     const response = await axiosInstance.get(`http://localhost:3000/api/LoaiVesDaMua/${IDNguoiDung}`);
     return response.data

@@ -111,7 +111,7 @@ export const checkAndUpdateSoLuongVe = async (idLoaiVe, soLuong, connection = po
         throw new Error(`Không đủ số lượng vé cho IDLoaiVe: ${idLoaiVe}`);
     }
 
-    return result;
+    return result; 
 };
 
 export const returnLoaiVe = async (idLoaiVe, soLuong, connection = pool) => {

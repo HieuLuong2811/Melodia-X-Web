@@ -9,6 +9,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 // import { ThongBaoService } from "@/services/ThongBao";
 import {ThongBao} from "@/interfaces/ThongBao";
 import socket from "@/middleware/socket.io";
+import { ThongBaoService } from "@/services/ThongBao";
 
 const Nav = () => {
 
@@ -20,38 +21,41 @@ const Nav = () => {
   const unreadThongBaos = thongBaos.filter(tb => tb.TrangThai === "Chưa đọc");
   const unreadCount = unreadThongBaos.length;
 
-useEffect(() => {
-  const token = localStorage.getItem("authToken");
-  const userId = localStorage.getItem("IDNguoiDung");
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    const userId = localStorage.getItem("IDNguoiDung");
 
-  if (token && userId) {
-    setIsLoggedIn(true);
+    if (token && userId) {
+      setIsLoggedIn(true);
 
-    // join socket room
-    socket.emit("join_room", userId);
+      const fetchThongBao = async () => {
+        const data = await ThongBaoService.GetThongBaoByIDuser(userId);
+        setThongBaos(data);
+        console.log(data);
+      }
 
-    // lấy lịch sử từ socket khi join
-    socket.on("init_notifications", (list: ThongBao[]) => {
-      console.log("📦 Init notifications:", list);
-      setThongBaos(list);
-    });
+      // join socket room
+      socket.emit("join_room", userId);
 
-    // realtime noti mới
-    socket.on("new_notification", (noti: ThongBao) => {
-      console.log("🔥 Noti mới:", noti);
-      setThongBaos(prev => [noti, ...prev]);
-    });
-  }
+      // lấy lịch sử từ socket khi join
+      socket.on("init_notifications", (list: ThongBao[]) => {
+        console.log("📦 Init notifications:", list);
+        setThongBaos(list);
+      });
 
-  return () => {
-    socket.off("init_notifications");
-    socket.off("new_notification");
-  };
-}, []);
+      // realtime noti mới
+      socket.on("new_notification", (noti: ThongBao) => {
+        console.log("🔥 Noti mới:", noti);
+        setThongBaos(prev => [noti, ...prev]);
+      });    
+      fetchThongBao();
+    }
 
-
-
-
+    return () => {
+      socket.off("init_notifications");
+      socket.off("new_notification");
+    };
+  }, []);
 
   const handleLogout = () => {
     Swal.fire({

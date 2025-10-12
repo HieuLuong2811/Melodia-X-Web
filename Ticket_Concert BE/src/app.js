@@ -65,16 +65,9 @@ io.on("connection", (socket) => {
   socket.on("join_room", async (userId) => {
     socket.join(userId);
     console.log(`✅ ${socket.id} joined room ${userId}`);
-
-    // gửi toàn bộ noti lịch sử cho user khi join
-    const history = await getNotificationsFromDB(userId);
-    socket.emit("init_notifications", history);
   });
 
-  // ví dụ có cron job hoặc action nào đó tạo noti mới
   socket.on("create_notification", async ({ userId, noti }) => {
-    const saved = await saveNotificationToDB(userId, noti);
-    // bắn realtime cho đúng user
     io.to(userId).emit("new_notification", saved);
   });
 

@@ -49,6 +49,9 @@ CREATE TABLE SuKien (
     FOREIGN KEY (IDLoaiSuKien) REFERENCES LoaiSuKien(IDLoaiSuKien)
 );
 
+select * from SuKien ;
+update SuKien set TrangThaiSuKien = 'Chờ xác nhận' where IDSuKien = '4bfaf293-61a8-490e-9e07-00631b8121e9';
+
 CREATE TABLE ThanhVien (
 	IDThanhVien VARCHAR(36) PRIMARY KEY NOT NULL,
     IDSuKien VARCHAR(36) NOT NULL,
@@ -66,6 +69,7 @@ CREATE TABLE SuatDien (
 	FOREIGN KEY (IDSuKien) REFERENCES SuKien(IDSuKien)
 );
 
+
 CREATE TABLE KhuVuc (
     IDKhuVuc VARCHAR(36) PRIMARY KEY NOT NULL,
     TenKhuVuc VARCHAR(50) NOT NULL,               
@@ -79,7 +83,7 @@ CREATE TABLE LoaiVe (
     TenVe VARCHAR(50) CHARACTER SET utf8mb4 NOT NULL,
     AnhVe TEXT NULL,
     GiaVe DECIMAL(10,2) NOT NULL,
-    SoLuongVe INT NOT NULL,
+    SoLuongVe INT NOT NULL,	
     SoLuongToiDaMotDon INT NULL,
     ThongTinVe TEXT CHARACTER SET utf8mb4 NULL,
     FOREIGN KEY (IDSuatDien) REFERENCES SuatDien(IDSuatDien) ON DELETE CASCADE
@@ -96,6 +100,9 @@ CREATE TABLE VeKhuVuc (
     FOREIGN KEY (IDSuatDien) REFERENCES SuatDien(IDSuatDien),
     FOREIGN KEY (IDSuKien) REFERENCES SuKien(IDSuKien)
 );
+
+SELECT LV.IDLoaiVe, LV.TenVe, LV.GiaVe, LV.SoLuongVe, LV.SoLuongToiDaMotDon, LV.ThongTinVe, KV.TenKhuVuc, KV.LuongVeToiDa 
+FROM LoaiVe lV inner join VeKhuVuc VKV on LV.IDLoaiVe = VKV.IDLoaiVe inner join KhuVuc KV on VKV.IDKhuVuc = KV.IDKhuVuc where LV.IDSuatDien = '31b60d42-eabe-4f50-aaeb-c5334cbfe039' and KV.IDKhuVuc = '1a2b3c4d-0002-0000-0000-000000000002';
 
 -- Bảng hoá đơn
 CREATE TABLE HoaDonMuaVe (
@@ -122,8 +129,9 @@ CREATE TABLE ChiTietHoaDon (
     FOREIGN KEY (IDLoaiVe) REFERENCES LoaiVe(IDLoaiVe)
 );
 
-select * from ChiTietHoaDon;
-
+select * from LoaiVe where IDLoaiVe = '12d6b7cd-b275-48da-a97c-5a9fb363e2a8';
+select * from SuatDien where IDSuatDien = '31b60d42-eabe-4f50-aaeb-c5334cbfe039';
+select * from SuKien where IDSuKien = '9a6cc8f4-7bfb-4f98-a53b-e858163a303e';
 CREATE TABLE ThongBao (
     IDThongBao VARCHAR(36) PRIMARY KEY NOT NULL,
     IDNguoiDung VARCHAR(36) NOT NULL,
@@ -133,6 +141,7 @@ CREATE TABLE ThongBao (
     TrangThai ENUM('Chưa đọc', 'Đã đọc') DEFAULT 'Chưa đọc',
     FOREIGN KEY (IDNguoiDung) REFERENCES NguoiDung(IDNguoiDung) ON DELETE CASCADE
 );
+select * from ThongBao where IDNguoiDung = '3671ca1e-0445-4aac-968f-9fb45cd86149';
 -- Xóa bảng con trước
 DROP TABLE IF EXISTS VeKhuVuc;
 DROP TABLE IF EXISTS ChiTietHoaDon;

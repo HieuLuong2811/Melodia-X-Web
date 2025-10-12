@@ -2,17 +2,17 @@
 import React, { useState, useEffect } from "react";
 import { suKienService } from "@/services/SuKien";
 import { SuKien } from "@/interfaces/SuKien";
-import ProductDetails from "../infor-ticket/page";
-import PaymentInvoiceForm from "../infor-payment/page";
-import { useSearchParams } from 'next/navigation';
-import Statistics from "../dashboard/page";
+import ProductDetails from "../../infor-ticket/page";
+import PaymentInvoiceForm from "../../infor-payment/page";
+import { useSearchParams, useParams } from 'next/navigation';
+import Statistics from "../../dashboard/page";
 import dynamic from 'next/dynamic';
 const EmptyData = dynamic(() => import('@/components/Emptydata'));
 import "./create-event.css";
 import { useRouter } from 'next/navigation';
 const LeftSide = dynamic(() => import('@/components/LeftSide-Admin'), { ssr: false })
 const TopSize = dynamic(() => import('@/components/topSize-Admin.jsx'), { ssr: false })
-import EventDetails from "./EventDetails";
+import EventDetails from "../EventDetails";
 import Swal from "sweetalert2";
 
 const EventForm = () => {
@@ -23,18 +23,17 @@ const EventForm = () => {
   const [openDetail , setopenDetail] = useState(false);
 
   const searchParams = useSearchParams();
-  const IDFromURL = searchParams.get('id');
+  const { idSuKien } = useParams(); 
+  const idNguoiDung = searchParams.get('idNguoiDung'); 
+  const suKienId = Array.isArray(idSuKien) ? idSuKien[0] : idSuKien;
+  const nguoiDungId = Array.isArray(idNguoiDung) ? idNguoiDung[0] : idNguoiDung;
 
-  
   useEffect(() => {
-    const IDFromLocal = localStorage.getItem("IDSuKien");
   
-    const finalID = IDFromURL || IDFromLocal;
-  
-    if (finalID) {
+    if (suKienId) {
       const fetchSuKien = async () => {
         try {
-          const data = await suKienService.getSuKienChiTiet(finalID);
+          const data = await suKienService.getSuKienChiTiet(suKienId);
           setSuKien(data);
         } catch (error) {
           console.error("Lỗi khi lấy dữ liệu sự kiện:", error);
@@ -42,17 +41,14 @@ const EventForm = () => {
       };
       fetchSuKien();
     }
-  }, [searchParams]);
+  }, [suKienId]);
 
   const handleDuyetOrHuySuKien = (trangThai: "Đã xác nhận" | "Hủy") => {
-    const IDFromURL = searchParams.get('id');
-    const IDFromLocal = localStorage.getItem("IDSuKien");
-    const finalID = IDFromURL || IDFromLocal;
   
-    if (finalID) {
+    if (suKienId) {
       const updateSuKien = async () => {
         try {
-          await suKienService.DuyetSuKien(finalID, trangThai);
+          await suKienService.DuyetSuKien(suKienId, nguoiDungId, trangThai);
           Swal.fire({
             icon: "success",
             title: "Thành công",
@@ -110,7 +106,7 @@ const EventForm = () => {
                 </button>
               </li>
             ))}
-              {!IDFromURL && (
+              {idNguoiDung && (
                   <>
                     <button className=" text btn btn-success me-2"
                       onClick={() => handleDuyetOrHuySuKien("Đã xác nhận")}

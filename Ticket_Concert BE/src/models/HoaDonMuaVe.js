@@ -34,13 +34,13 @@ export const createHoaDon = async (idHoaDon,hoaDon ) => {
         [idHoaDon, ...HoaDonData]
     );
 
-    return idHoaDon;
+    return result;
 };
 
 export const updateHoaDon = async (idHoaDon) => {
   try {
     const query = `
-      UPDATE HoaDon 
+      UPDATE HoaDonMuaVe 
       SET TrangThaiThanhToan = "Đã thanh toán"
       WHERE IDHoaDon = ?
     `;

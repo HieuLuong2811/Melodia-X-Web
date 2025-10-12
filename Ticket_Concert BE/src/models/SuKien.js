@@ -29,7 +29,8 @@ export const getSuKienListUser = async (isAdmin = false) => {
             sk.TenSuKien,
             sk.AnhNen,
             MIN(sd.ThoiGianBatDau) AS NgayDienDauTien,
-            MIN(lv.GiaVe) AS GiaVeReNhat
+            MIN(lv.GiaVe) AS GiaVeReNhat,
+            sk.DiaDiem
             FROM SuKien sk
             JOIN SuatDien sd ON sk.IDSuKien = sd.IDSuKien
             JOIN LoaiVe lv ON lv.IDSuatDien = sd.IDSuatDien

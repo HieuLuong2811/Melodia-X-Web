@@ -39,8 +39,8 @@ export const suKienService = {
     return response.data;
   },
 
-  DuyetSuKien : async (IDSuKien : string, trangThaiSuKien : string): Promise<SuKien> => {
-    const response = await axiosInstance.put<SuKien>(`http://localhost:3000/api/Admin/DuyetSuKien/${IDSuKien}`, {trangThaiSuKien});
+  DuyetSuKien : async (IDSuKien : string, IDNguoiDung: string, trangThaiSuKien : string): Promise<SuKien> => {
+    const response = await axiosInstance.put<SuKien>(`http://localhost:3000/api/Admin/DuyetSuKien/${IDSuKien}?idNguoiDung=${IDNguoiDung}`, {trangThaiSuKien});
     return response.data;
   }
 };

@@ -69,46 +69,49 @@ export const ThongBaoRealTime = () => {
             let newStatus = null;
             let message = null;
 
-            if (now >= start && now < end && suat.TrangThaiSuKien !== 'Đang diễn ra') {
-                newStatus = 'Đang diễn ra';
-                message = `Sự kiện "${suat.TenSuKien}" đã bắt đầu!`;
-            } else if (now >= end && suat.TrangThaiSuKien !== 'Hoàn thành') {
-                newStatus = 'Hoàn thành';
-                message = `Sự kiện "${suat.TenSuKien}" đã kết thúc. Cảm ơn bạn đã tham gia!`;
-            } else if (now < start && suat.TrangThaiSuKien !== 'Chưa bắt đầu') {
-                newStatus = 'Chưa bắt đầu';
+            if (suat.TrangThaiSuKien === 'Chờ xác nhận') {
+                return;
             }
-
-            if (newStatus) {
-                await pool.execute(`UPDATE SuKien SET TrangThaiSuKien = ? WHERE IDSuKien = ?`, [newStatus, suat.IDSuKien]);
-
-                if (message) {
-                    const msg = {
-                        tieuDe: "Cập nhật sự kiện",
-                        noiDung: message,
-                        ngayTao: new Date(),
-                        trangThai: "Chưa đọc"
-                    };
-
-                    const [users] = await pool.execute(`
-                        SELECT DISTINCT hd.IDNguoiDung
-                        FROM HoaDonMuaVe hd
-                        JOIN ChiTietHoaDon cthd ON hd.IDHoaDon = cthd.IDHoaDon
-                        JOIN LoaiVe lv ON cthd.IDLoaiVe = lv.IDLoaiVe
-                        WHERE lv.IDSuatDien = ?
-                    `, [suat.IDSuatDien]);
-
-                    const userIds = users.map(u => u.IDNguoiDung);
-
-                    for (const uid of userIds) {
-                        const idThongBao = uuidv4();
-                        await ThongBaoModel.createThongBao(idThongBao, { idNguoiDung: uid, ...msg });
-                    }
-
-                    sendNotificationToManyUsers(userIds, msg);
+            else {
+                if (now >= start && now < end && suat.TrangThaiSuKien !== 'Đang diễn ra') {
+                    newStatus = 'Đang diễn ra';
+                    message = `Sự kiện "${suat.TenSuKien}" đã bắt đầu!`;
+                } else if (now >= end && suat.TrangThaiSuKien !== 'Hoàn thành') {
+                    newStatus = 'Hoàn thành';
+                    message = `Sự kiện "${suat.TenSuKien}" đã kết thúc. Cảm ơn bạn đã tham gia!`;
+                } else if (now < start && suat.TrangThaiSuKien !== 'Chưa bắt đầu') {
+                    newStatus = 'Chưa bắt đầu';
                 }
 
-                console.log(`Cập nhật sự kiện ${suat.TenSuKien} → ${newStatus}`);
+                if (newStatus) {
+                    await pool.execute(`UPDATE SuKien SET TrangThaiSuKien = ? WHERE IDSuKien = ?`, [newStatus, suat.IDSuKien]);
+
+                    if (message) {
+                        const msg = {
+                            tieuDe: "Cập nhật sự kiện",
+                            noiDung: message,
+                            ngayTao: new Date(),
+                            trangThai: "Chưa đọc"
+                        };
+
+                        const [users] = await pool.execute(`
+                            SELECT DISTINCT hd.IDNguoiDung
+                            FROM HoaDonMuaVe hd
+                            JOIN ChiTietHoaDon cthd ON hd.IDHoaDon = cthd.IDHoaDon
+                            JOIN LoaiVe lv ON cthd.IDLoaiVe = lv.IDLoaiVe
+                            WHERE lv.IDSuatDien = ?
+                        `, [suat.IDSuatDien]);
+
+                        const userIds = users.map(u => u.IDNguoiDung);
+
+                        for (const uid of userIds) {
+                            const idThongBao = uuidv4();
+                            await ThongBaoModel.createThongBao(idThongBao, { idNguoiDung: uid, ...msg });
+                        }
+
+                        sendNotificationToManyUsers(userIds, msg);
+                    }
+                }
             }
         }
     });

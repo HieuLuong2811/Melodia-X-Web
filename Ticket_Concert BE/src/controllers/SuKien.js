@@ -4,7 +4,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { createSuatDien } from '../models/SuatDien.js'; 
 import { createLoaiVe } from '../models/LoaiVe.js';
 import { createVeKhuVuc } from '../models/VeKhuVuc.js'
+import ThongBaoModel from '../models/ThongBao.js'
 import pool from '../config/db.js';
+import { sendNotificationToUser } from '../models/notificationServiceSocket.js';
+import { io } from '../app.js';
 
 const getSuKienData = (data) => {
   return{
@@ -255,7 +258,6 @@ const SuKienController = {
   updateSuKienCtrl: async (req, res) => {
       try {
           const suKienData = getSuKienData(req.body);
-          console.log(suKienData);
 
           await updateSuKien(req.params.idSuKien, suKienData);
           res.status(200).json({ message: "Cập nhật sự kiện thành công" });
@@ -267,6 +269,7 @@ const SuKienController = {
   TrangThaiSuKienCtrl: async (req, res) => {
     try {
       const idSuKien = req.params.idSuKien;
+      const idNguoiDung = req.query.idNguoiDung;
       const { trangThaiSuKien } = req.body;
 
       const affectedRows = await DuyetSuKien(idSuKien, trangThaiSuKien);
@@ -275,9 +278,36 @@ const SuKienController = {
         return res.status(404).json({ message: `Không tìm thấy sự kiện với ID: ${idSuKien}` });
       }
 
-      let message = "Cập nhật trạng thái sự kiện thành công";
-      if (trangThaiSuKien === 2) message = "Duyệt sự kiện thành công";
-      if (trangThaiSuKien === 3) message = "Huỷ sự kiện thành công";
+      let message = "";
+
+      if (trangThaiSuKien === "Đã xác nhận") message = `Sự kiện đã được duyệt.`;
+      if (trangThaiSuKien === "Huỷ") message = `Sự kiện không được duyệt.`;
+
+      const msg = {
+        tieuDe: `Thông báo về sự kiện`,
+        noiDung: message,
+        ngayTao: new Date(),
+        trangThai: 'Chưa đọc'
+      };
+
+      const idThongBao = uuidv4();
+
+      if (!idNguoiDung) {
+        console.warn("Thiếu IDNguoiDung trong request, không thể gửi thông báo.");
+      } else {
+        await ThongBaoModel.createThongBao(idThongBao, {
+          idNguoiDung: idNguoiDung,
+          ...msg,
+        });
+      }
+
+      sendNotificationToUser(idNguoiDung, msg);
+
+      io.emit("event_updated", {
+        idSuKien,
+        trangThaiSuKien,
+        message: `Sự kiện ${idSuKien} ${trangThaiSuKien.toLowerCase()}`,
+      })
 
       res.status(200).json({ message });
     } catch (error) {

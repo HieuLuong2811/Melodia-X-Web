@@ -50,7 +50,7 @@ const OrderManagement = () => {
     <>
       <LeftSide />
       <div id="right" className="overflow-auto" style={{ backgroundColor: "#F5F7FD" }}>
-        <TopSize title="Order sự kiện" />
+        <TopSize title="Quản lý sự kiện" />
         <div className="container rounded-2 p-3 pt-3 mt-5" style={{minWidth : "1400px"}}>
           <div className="bg-white p-3">
             <div className="d-flex justify-content-between">

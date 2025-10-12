@@ -1,8 +1,11 @@
 import { getAllHoaDon, getHoaDonByID, createHoaDon, fetchAllHoaDonChiTiet, deleteHoaDon,getHoaDonByIDSuatDien, updateHoaDon  } from '../models/HoaDonMuaVe.js';
 import {createChiTietHoaDon} from '../models/ChiTietHoaDon.js';
 import pool from '../config/db.js';
-import { checkAndUpdateSoLuongVe } from '../models/LoaiVe.js';
+import { checkAndUpdateSoLuongVe, returnLoaiVe, getLoaiVeByID } from '../models/LoaiVe.js';
 import { v4 as uuidv4 } from 'uuid';
+import ThongBaoModel from '../models/ThongBao.js';
+import { sendNotificationToUser } from '../models/notificationServiceSocket.js';
+import { io } from '../app.js';
 
 const getHoaDonMuaVeData = (hoaDon) => ({
     idNguoiDung: hoaDon.idNguoiDung,
@@ -18,7 +21,7 @@ const getChiTietHoaDonData = (chiTietList, idHoaDon) => {
     return chiTietList.map((data) => ({
         idHoaDon: idHoaDon,
         idLoaiVe: data.idLoaiVe,
-        tenKhuVuc: "VIP1",
+        tenKhuVuc: data.tenKhuVuc,
         soLuong: data.soLuong,
         giaTien: parseFloat(data.giaTien),
         trangThaiVe: data.trangThaiVe
@@ -83,30 +86,49 @@ const HoaDonMuaVeController = {
     // tạo hóa đơn và chi tiết hóa đơn
     createHoaDonWithDetailsCtrl: async (req, res) => {
         const connection = await pool.getConnection();
+        let chiTietHoaDonList = []; 
+        const updatedTickets = [];
         try {
             await connection.beginTransaction();
 
             const HoaDonData = getHoaDonMuaVeData(req.body);
             const { chiTiet } = req.body;
             const idHoaDon = uuidv4();
-            console.log(HoaDonData);
-            console.log(chiTiet);
 
             await createHoaDon(idHoaDon, HoaDonData, connection);
 
-            const chiTietHoaDonList = getChiTietHoaDonData(chiTiet, idHoaDon);
-            console.log(chiTietHoaDonList);
+            chiTietHoaDonList = getChiTietHoaDonData(chiTiet, idHoaDon);
 
             for (const chiTietItem of chiTietHoaDonList) {
                 const idChiTietHoaDon = uuidv4();
                 const { idLoaiVe, soLuong } = chiTietItem;
 
                 await checkAndUpdateSoLuongVe(idLoaiVe, soLuong, connection);
-
+                updatedTickets.push(idLoaiVe);
                 await createChiTietHoaDon(idChiTietHoaDon, chiTietItem, connection);
             }
 
+            const msg = {
+                tieuDe: 'Mua vé thành công',
+                noiDung: `Đặt vé thành công. Vui lòng kiểm tra giỏ hàng và chi tiết loại vé`,
+                ngayTao: new Date(),
+                trangThai: 'Chưa đọc'
+            };
+
+            await ThongBaoModel.createThongBao(idHoaDon, {idNguoiDung: HoaDonData.idNguoiDung ,  ...msg});
+
+            sendNotificationToUser(HoaDonData.idNguoiDung, msg);
+            
             await connection.commit();
+
+            for (const idLoaiVe of updatedTickets) {
+            const updatedTicket = await getLoaiVeByID(idLoaiVe);
+            io.emit("ticket_updated", {
+                IDLoaiVe: updatedTicket.IDLoaiVe,
+                SoLuongVe: updatedTicket.SoLuongVe,
+                IDSuKien: updatedTicket.IDSuKien,
+            });
+            }
             res.status(201).json({ message: "Tạo hóa đơn và chi tiết hóa đơn thành công", idHoaDon, tongTien: HoaDonData.tongTien });
         } catch (error) {
             await connection.rollback();
