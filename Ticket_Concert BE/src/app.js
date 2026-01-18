@@ -47,7 +47,7 @@ app.use('/api', ThongBaoRouter);
 app.use('/api', KhuVucRouter);
 ThongBaoRealTime();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT_LOCAL || 3000;
 
 const server = createServer(app);
 

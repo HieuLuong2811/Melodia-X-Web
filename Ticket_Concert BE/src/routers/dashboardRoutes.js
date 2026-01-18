@@ -1,6 +1,6 @@
 // routes/dashboardRoutes.js
 import express from 'express';
-import { DoanhThuCtrl, SoLuongVeCtrl, SoLuongVeTonKhoCtrl, countaccCtrl} from '../controllers/dashboardController.js';
+import { DoanhThuCtrl, SoLuongVeCtrl, SoLuongVeTonKhoCtrl, countaccCtrl, DashboardCtrl} from '../controllers/dashboardController.js';
 import dashboardController from '../controllers/dashboardController.js';
 import {authenticate, authorize} from "../Middleware/Authen.js"
 
@@ -15,6 +15,7 @@ router.get('/AccHoatDong',authenticate, authorize(["Admin"]), countaccCtrl);
 router.get('/doanhthu/:idSuatDien', DoanhThuCtrl);
 router.get('/soluongve/:idSuatDien', SoLuongVeCtrl);
 router.get('/soluongvetonkho/:idSuatDien', SoLuongVeTonKhoCtrl);
+router.get("/dashboard/:idSuKien", DashboardCtrl);
 
 
 export default router;

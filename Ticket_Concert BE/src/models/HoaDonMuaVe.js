@@ -89,21 +89,50 @@ export const fetchAllHoaDonChiTiet = async () => {
 };
 
 
-export const getHoaDonByIDSuatDien = async(idSuatDien) => {
-    const [result] = await pool.query(`
-       SELECT
-            ND.TenNguoiDung,
-            ND.Email,
-            ND.SoDienThoai,
-            HD.PhuongThucThanhToan,
-            SUM(HD.TongSoVe) AS TongSoVeMua,
-            SUM(HD.TongTien) AS TongTienThanhToan
-        FROM HoaDonMuaVe HD
-        JOIN NguoiDung ND ON HD.IDNguoiDung = ND.IDNguoiDung
-        JOIN ChiTietHoaDon CTHD ON HD.IDHoaDon = CTHD.IDHoaDon
-        JOIN LoaiVe LV ON CTHD.IDLoaiVe = LV.IDLoaiVe
-        JOIN SuatDien SD ON LV.IDSuatDien = SD.IDSuatDien
-        WHERE SD.IDSuatDien = ? 
-        GROUP BY ND.TenNguoiDung, ND.Email, ND.SoDienThoai, HD.PhuongThucThanhToan;`, [idSuatDien]);
-    return result;
+export const getHoaDonByIDSuKien = async (idSuKien) => {
+  const [result] = await pool.query(`
+        SELECT
+        HD.IDHoaDon,
+        SD.IDSuatDien,
+        SD.ThoiGianBatDau,
+        SD.ThoiGianKetThuc,
+        ND.TenNguoiDung,
+        ND.Email,
+        ND.SoDienThoai,
+        HD.PhuongThucThanhToan,
+        HD.NgayThanhToan,
+        SUM(CTHD.SoLuong) AS TongSoVeMua,
+        SUM(CTHD.GiaTien) AS TongTienThanhToan
+    FROM HoaDonMuaVe HD
+    JOIN NguoiDung ND ON HD.IDNguoiDung = ND.IDNguoiDung
+    JOIN ChiTietHoaDon CTHD ON HD.IDHoaDon = CTHD.IDHoaDon
+    JOIN LoaiVe LV ON CTHD.IDLoaiVe = LV.IDLoaiVe
+    JOIN SuatDien SD ON LV.IDSuatDien = SD.IDSuatDien
+    WHERE SD.IDSuKien = ?
+    GROUP BY HD.IDHoaDon, SD.IDSuatDien, SD.ThoiGianBatDau, SD.ThoiGianKetThuc, ND.TenNguoiDung, ND.Email, ND.SoDienThoai, HD.PhuongThucThanhToan, HD.NgayThanhToan
+    ORDER BY HD.NgayThanhToan ASC;
+  `, [idSuKien]);
+
+  return result;
 }
+
+export const getThongKeDoanhThuBySuKienID = async (idSuKien) => {
+  const [result] = await pool.query(`
+    SELECT 
+        SD.IDSuatDien,
+        SD.ThoiGianBatDau,
+        SD.ThoiGianKetThuc,
+        COUNT(DISTINCT HD.IDHoaDon) AS SoHoaDon,
+        SUM(CTHD.SoLuong) AS TongVeBan,
+        SUM(CTHD.SoLuong * CTHD.GiaTien) AS TongTienThu
+    FROM SuatDien SD
+    LEFT JOIN LoaiVe LV ON SD.IDSuatDien = LV.IDSuatDien
+    LEFT JOIN ChiTietHoaDon CTHD ON LV.IDLoaiVe = CTHD.IDLoaiVe
+    LEFT JOIN HoaDonMuaVe HD ON CTHD.IDHoaDon = HD.IDHoaDon AND HD.TrangThaiThanhToan = 'Đã thanh toán'
+    WHERE SD.IDSuKien = ?
+    GROUP BY SD.IDSuatDien, SD.ThoiGianBatDau, SD.ThoiGianKetThuc
+    ORDER BY SD.ThoiGianBatDau ASC;
+  `, [idSuKien]);
+
+  return result;
+};

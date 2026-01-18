@@ -1,5 +1,5 @@
 // controllers/suKien.js
-import { getSuKienListUser,getSuKienListAdmin, CountSuKien, DuyetSuKien, getSuKienDatalist , getSuKienById, getSuKienByIdUser ,createSuKien, updateSuKien, deleteSuKien, getSuKienChiTietById } from '../models/SuKien.js';
+import { getSuKienListUser,getSuKienListAdmin, CountSuKien, DuyetSuKien, getSuKienDatalist, searchSuKien , getSuKienById, getSuKienByIdUser ,createSuKien, updateSuKien, deleteSuKien, getSuKienChiTietById } from '../models/SuKien.js';
 import { v4 as uuidv4 } from 'uuid';
 import { createSuatDien } from '../models/SuatDien.js'; 
 import { createLoaiVe } from '../models/LoaiVe.js';
@@ -355,6 +355,28 @@ const SuKienController = {
     } catch (error) {
         console.error("Lỗi khi lấy chi tiết sự kiện:", error);
         res.status(500).json({ message: "Lỗi server" });
+    }
+  },
+
+  searchSuKienCtrl: async (req, res) => {
+    try {
+      const { tenSuKien, idLoaiSuKien, ngayBatDau, ngayKetThuc } = req.query;
+
+      const results = await searchSuKien({
+        tenSuKien,
+        idLoaiSuKien,
+        ngayBatDau,
+        ngayKetThuc,
+      });
+
+      if (results.length === 0) {
+        return res.status(200).json({ message: "Không tìm thấy sự kiện phù hợp", data: [] });
+      }
+
+      res.status(200).json({ message: "Tìm kiếm thành công", data: results });
+    } catch (error) {
+      console.error("Lỗi khi tìm kiếm sự kiện:", error);
+      res.status(500).json({ message: "Lỗi khi tìm kiếm sự kiện", error: error.message });
     }
   },
 };

@@ -1,4 +1,4 @@
-import { getAllHoaDon, getHoaDonByID, createHoaDon, fetchAllHoaDonChiTiet, deleteHoaDon,getHoaDonByIDSuatDien, updateHoaDon  } from '../models/HoaDonMuaVe.js';
+import { getAllHoaDon, getHoaDonByID, createHoaDon, fetchAllHoaDonChiTiet, deleteHoaDon, getHoaDonByIDSuKien, updateHoaDon  } from '../models/HoaDonMuaVe.js';
 import {createChiTietHoaDon} from '../models/ChiTietHoaDon.js';
 import pool from '../config/db.js';
 import { checkAndUpdateSoLuongVe, returnLoaiVe, getLoaiVeByID } from '../models/LoaiVe.js';
@@ -60,9 +60,10 @@ const HoaDonMuaVeController = {
         }
     },
 
-    getHoaDonByIDsuatdienCtrl: async (req, res) => {
+    getHoaDonByIDsuKienCtrl: async (req, res) => {
         try {
-            const hoaDon = await getHoaDonByIDSuatDien(req.params.idSuatDien);
+            const { idSuKien } = req.params;
+            const hoaDon = await getHoaDonByIDSuKien(idSuKien);
             if (hoaDon) res.json(hoaDon);
             else res.status(404).json({ message: 'Không tìm thấy hóa đơn' });
         } catch (error) {
@@ -110,7 +111,7 @@ const HoaDonMuaVeController = {
 
             const msg = {
                 tieuDe: 'Mua vé thành công',
-                noiDung: `Đặt vé thành công. Vui lòng kiểm tra giỏ hàng và chi tiết loại vé`,
+                noiDung: `Đặt vé thành công. Vui lòng kiểm tra giỏ hàng`,
                 ngayTao: new Date(),
                 trangThai: 'Chưa đọc'
             };

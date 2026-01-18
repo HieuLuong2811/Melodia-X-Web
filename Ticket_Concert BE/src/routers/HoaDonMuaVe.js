@@ -14,7 +14,7 @@ router.get('/HoaDons', authenticate, (req, res, next) => {
 
 router.get('/HoaDons/details', HoaDonMuaVeController.fetchAllHoaDonChiTietCtrl);
 router.get('/HoaDons/:idHoaDon', HoaDonMuaVeController.getHoaDonByIDCtrl);
-router.get('/HoaDonsBySuatDien/:idSuatDien', HoaDonMuaVeController.getHoaDonByIDsuatdienCtrl);
+router.get('/HoaDonsBySuKienID/:idSuKien', HoaDonMuaVeController.getHoaDonByIDsuKienCtrl);
 router.post('/HoaDons/', HoaDonMuaVeController.createHoaDonWithDetailsCtrl);
 router.delete('/HoaDons/:idHoaDon', HoaDonMuaVeController.deleteHoaDonCtrl);
 router.delete('/HoaDons/:idHoaDon', HoaDonMuaVeController.updateHoaDonCtrl);

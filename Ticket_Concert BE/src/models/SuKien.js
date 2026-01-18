@@ -212,3 +212,46 @@ export const DuyetSuKien = async (idSuKien, trangThaiSuKien) => {
         throw error;
     }
 }
+
+export const searchSuKien = async ({ tenSuKien, idLoaiSuKien, ngayBatDau, ngayKetThuc }) => {
+    let sql = `
+        SELECT 
+            sk.IDSuKien,
+            sk.TenSuKien,
+            sk.AnhNen,
+            sk.DiaDiem,
+            lsk.TenLoai AS LoaiSuKien,
+            MIN(sd.ThoiGianBatDau) AS NgayDienDauTien,
+            MIN(lv.GiaVe) AS GiaVeReNhat
+        FROM SuKien sk
+        JOIN LoaiSuKien lsk ON sk.IDLoaiSuKien = lsk.IDLoaiSuKien
+        JOIN SuatDien sd ON sd.IDSuKien = sk.IDSuKien
+        JOIN LoaiVe lv ON lv.IDSuatDien = sd.IDSuatDien
+        WHERE sk.TrangThaiSuKien IN ('Đã xác nhận', 'Chưa bắt đầu', 'Đang diễn ra', 'Hoàn thành')
+    `;
+
+    const params = [];
+
+    if (tenSuKien) {
+        sql += ` AND sk.TenSuKien LIKE ?`;
+        params.push(`%${tenSuKien}%`);
+    }
+
+    if (idLoaiSuKien) {
+        sql += ` AND sk.IDLoaiSuKien = ?`;
+        params.push(idLoaiSuKien);
+    }
+
+    if (ngayBatDau && ngayKetThuc) {
+        sql += ` AND sd.ThoiGianBatDau BETWEEN ? AND ?`;
+        params.push(ngayBatDau, ngayKetThuc);
+    }
+
+    sql += `
+        GROUP BY sk.IDSuKien, sk.TenSuKien, sk.AnhNen, sk.DiaDiem, lsk.TenLoai
+        ORDER BY NgayDienDauTien ASC
+    `;
+
+    const [rows] = await pool.query(sql, params);
+    return rows;
+}

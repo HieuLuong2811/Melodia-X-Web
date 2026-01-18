@@ -1,6 +1,6 @@
 // controllers/dashboardController.js
 import { getStats, getRevenueStats, getEventStats, getRecentEvents, account } from '../models/statisticsModel.js';
-import { getDoanhThuBySuKien, getSoLuongVeDaBanBySuKien,getSoLuongVeTonKho } from '../models/dashboard.js';
+import { getDoanhThuBySuKien, getSoLuongVeDaBanBySuKien,getSoLuongVeTonKho, getDashboardBySuKien } from '../models/dashboard.js';
 
 export const DoanhThuCtrl = async (req, res) => {
   try {
@@ -9,6 +9,19 @@ export const DoanhThuCtrl = async (req, res) => {
     res.json(doanhThu);
   } catch (error) {
     res.status(500).json({ message: "Lỗi khi lấy doanh thu sự kiện", error: error.message });
+  }
+};
+
+export const DashboardCtrl = async (req, res) => {
+  try {
+    const { idSuKien } = req.params;
+    const data = await getDashboardBySuKien(idSuKien);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi khi lấy dữ liệu tổng quan sự kiện",
+      error: error.message,
+    });
   }
 };
 

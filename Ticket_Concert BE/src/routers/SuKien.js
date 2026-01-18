@@ -21,7 +21,7 @@ router.get("/SuKiensUser/:idNguoiDung", SuKienController.getSuKienByIdUserCtrl);
 router.post("/SuKiens", SuKienController.createSuKienCtrl);
 
 router.put("/SuKiens/:idSuKien", authenticate, (req, res, next) => {
-    if (req.user.QuyenHan === "Admin") {
+    if (req.user.QuyenHan === "User") {
         return next();
     }
     return res.status(403).json({ message: "Không có quyền chỉnh sửa sự kiện!" });
@@ -37,5 +37,6 @@ router.delete("/SuKiens/:idSuKien", authenticate, (req, res, next) => {
 router.get("/Special-Event/", SuKienController.getSuKienTongVeBanCtrl);
 router.get("/Trending-Events/", SuKienController.getSuKienGanNhatMuaCtrl);
 router.get("/Title-Event/", SuKienController.getSuKienCoVideoCtrl);
+router.get("/Search-SuKiens", SuKienController.searchSuKienCtrl);
 
 export default router;

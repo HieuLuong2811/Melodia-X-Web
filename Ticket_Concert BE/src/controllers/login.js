@@ -11,6 +11,7 @@ const LoginController = {
     loginUser: async (req, res) => {
         try {
             const { Email, MatKhau } = req.body;
+            console.log(req.body);
 
             if (!Email || !MatKhau) {
                 return res.status(400).json({ error: "Email và mật khẩu không được để trống" });
@@ -22,6 +23,9 @@ const LoginController = {
             }
             
             const isValid = await bcrypt.compare(MatKhau, user.MatKhau);
+
+            console.log(await bcrypt.compare('00000000', user.MatKhau));
+
 
             if (!isValid) {
                 return res.status(401).json({ error: "Sai email hoặc mật khẩu" });
